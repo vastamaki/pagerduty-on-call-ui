@@ -1,9 +1,11 @@
 import React, { PureComponent } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import { startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
+import fi from "date-fns/locale/fi";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
 import "./GetView.css";
+registerLocale("fi", fi);
 
 export default class GetView extends PureComponent {
   constructor(props) {
@@ -12,9 +14,10 @@ export default class GetView extends PureComponent {
     this.state = {
       incidents: [],
       teamID: "",
-      startDate: startOfWeek(new Date()),
-      endDate: endOfWeek(new Date()),
+      startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
+      endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
       showIncidents: false,
+      collapsedTables: [],
     };
   }
 
@@ -31,6 +34,7 @@ export default class GetView extends PureComponent {
   };
 
   getIncidents = async () => {
+    if (!this.state.teamID) return;
     this.setState({
       loading: true,
     });
@@ -82,13 +86,15 @@ export default class GetView extends PureComponent {
       <React.Fragment>
         {this.state.loading ? null : (
           <div className="timeSelect">
-            <h2>Start time:</h2>
+            <h2>Start time</h2>
             <DatePicker
+              locale="fi"
               selected={this.state.startDate}
               onChange={(e) => this.handleChange(e, "startDate")}
             />
             <h2>End time</h2>
             <DatePicker
+              locale="fi"
               selected={this.state.endDate}
               onChange={(e) => this.handleChange(e, "endDate")}
             />
@@ -157,20 +163,32 @@ export default class GetView extends PureComponent {
       <div className="columns">
         {this.state.sorted_incidents.map((day, index) => {
           return (
-            <ul key={index}>
-              <h1>
+            <React.Fragment>
+              <h1
+                onClick={() => {
+                  const collapsedTables = [...this.state.collapsedTables];
+                  collapsedTables[index] = !collapsedTables[index];
+                  this.setState({
+                    collapsedTables,
+                  });
+                }}
+              >
                 {this.state.weekdays[index]} ({day.length})
               </h1>
-              {day.map(function (incident, index) {
-                return (
-                  <li key={index}>
-                    <h2>{incident.service.summary}</h2>
-                    <h3>{incident.created_at}</h3>
-                    <a href={incident.html_url}>{incident.summary}</a>
-                  </li>
-                );
-              })}
-            </ul>
+              {!this.state.collapsedTables[index] && (
+                <ul id={index} key={index}>
+                  {day.map(function (incident, index) {
+                    return (
+                      <li key={index}>
+                        <h2>{incident.service.summary}</h2>
+                        <h3>{incident.created_at}</h3>
+                        <a href={incident.html_url}>{incident.summary}</a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </React.Fragment>
           );
         })}
       </div>
