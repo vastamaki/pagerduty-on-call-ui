@@ -33,3 +33,13 @@
   border: 1px solid #ffffff;
   border-radius: 15px;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border: solid 1px #ffffff;
+  padding: 10px;
+  border-radius: 15px;
+}

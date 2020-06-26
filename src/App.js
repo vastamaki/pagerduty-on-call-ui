@@ -32,14 +32,16 @@ class App extends PureComponent {
     return (
       <div className="App">
         <div className="App-header">
-          <p>Enter your PD token:</p>
-          <input onChange={(e) => this.onChange(e)} className="input" />
-          <input
-            onClick={() => this.setToken()}
-            className="submit"
-            type="submit"
-            value="Set token"
-          />
+          <div className="wrapper">
+            <h2>Enter your Pagerduty token</h2>
+            <input onChange={(e) => this.onChange(e)} className="input" />
+            <input
+              onClick={() => this.setToken()}
+              className="submit"
+              type="submit"
+              value="Continue"
+            />
+          </div>
         </div>
       </div>
     );
