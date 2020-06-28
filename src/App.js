@@ -24,7 +24,7 @@ class App extends PureComponent {
     });
   };
 
-  onChange(e) {
+  onTokenChange(e) {
     this.setState({
       token: e.target.value,
     });
@@ -32,6 +32,7 @@ class App extends PureComponent {
 
   setToken() {
     localStorage.setItem("token", this.state.token);
+    localStorage.setItem("teamID", this.state.teamID);
     this.props.history.push("/incidents");
   }
 
@@ -43,7 +44,7 @@ class App extends PureComponent {
             <p>Pagerduty token</p>
             <input
               placeholder="Pagerduty token"
-              onChange={(e) => this.onChange(e)}
+              onChange={(e) => this.onTokenChange(e)}
               className="input"
               value={this.state.token}
             />
