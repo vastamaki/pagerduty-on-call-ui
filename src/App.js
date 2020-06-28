@@ -7,15 +7,22 @@ class App extends PureComponent {
 
     this.state = {
       token: "",
+      teamID: "",
     };
   }
 
   componentDidMount() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      this.props.history.push("/incidents");
-    }
+    this.setState({
+      token: localStorage.getItem("token"),
+      teamID: localStorage.getItem("teamID"),
+    });
   }
+
+  changeTeamID = (e) => {
+    this.setState({
+      teamID: e.target.value,
+    });
+  };
 
   onChange(e) {
     this.setState({
@@ -33,14 +40,32 @@ class App extends PureComponent {
       <div className="App">
         <div className="App-header">
           <div className="wrapper">
-            <h2>Enter your Pagerduty token</h2>
-            <input onChange={(e) => this.onChange(e)} className="input" />
+            <p>Pagerduty token</p>
+            <input
+              placeholder="Pagerduty token"
+              onChange={(e) => this.onChange(e)}
+              className="input"
+              value={this.state.token}
+            />
+            <p>Pagerduty team ID</p>
+            <input
+              onChange={(e) => this.changeTeamID(e)}
+              className="input"
+              value={this.state.teamID}
+              placeholder="Team ID"
+            />
             <input
               onClick={() => this.setToken()}
               className="submit"
               type="submit"
               value="Continue"
             />
+            <p>
+              Don't have a{" "}
+              <a href=" https://support.pagerduty.com/docs/generating-api-keys#generating-a-personal-rest-api-key">
+                token?
+              </a>
+            </p>
           </div>
         </div>
       </div>

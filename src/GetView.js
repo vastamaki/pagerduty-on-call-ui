@@ -31,6 +31,7 @@ export default class GetView extends PureComponent {
     this.setState({
       teamID: e.target.value,
     });
+    localStorage.setItem("teamID", this.state.teamID);
   };
 
   getIncidents = async () => {
@@ -38,7 +39,6 @@ export default class GetView extends PureComponent {
     this.setState({
       loading: true,
     });
-    localStorage.setItem("teamID", this.state.teamID);
     const params = {
       method: "GET",
       headers: {
@@ -85,30 +85,32 @@ export default class GetView extends PureComponent {
     return (
       <React.Fragment>
         {this.state.loading ? null : (
-          <div className="timeSelect">
-            <h2>Start time</h2>
+          <div className="wrapper">
+            <p>Start time</p>
             <DatePicker
+              className="datepicker"
               locale="fi"
               selected={this.state.startDate}
               onChange={(e) => this.handleChange(e, "startDate")}
             />
-            <h2>End time</h2>
+            <p>End time</p>
             <DatePicker
+              className="datepicker"
               locale="fi"
               selected={this.state.endDate}
               onChange={(e) => this.handleChange(e, "endDate")}
-            />
-            <h2>Team ID</h2>
-            <input
-              onChange={(e) => this.changeTeamID(e)}
-              className="input"
-              value={this.state.teamID}
             />
             <input
               onClick={() => this.getIncidents()}
               className="submit"
               type="submit"
               value="Get Incidents"
+            />
+            <input
+              onClick={() => this.props.history.push("/")}
+              className="submit"
+              type="submit"
+              value="Back"
             />
           </div>
         )}
