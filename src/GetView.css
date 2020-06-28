@@ -1,10 +1,9 @@
 ul {
   list-style-type: none;
-  justify-content: center;
-  columns: 3;
-  -webkit-columns: 3;
-  -moz-columns: 3;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
+
 li {
   margin: 10px;
   padding: 10px;
@@ -20,17 +19,11 @@ li {
 }
 
 h1 {
-  cursor: pointer;
   color: #ffffff;
 }
 
 h2 {
   margin: 0px;
-  color: #000000;
-}
-
-h3 {
-  color: #000000;
 }
 
 .loading-spinner {

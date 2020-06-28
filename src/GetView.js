@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
 import fi from "date-fns/locale/fi";
+import Notification from "./Notification";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
 import "./GetView.css";
@@ -18,6 +19,11 @@ export default class GetView extends PureComponent {
       endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
       showIncidents: false,
       collapsedTables: [],
+      notification: {
+        hidden: true,
+        message: "",
+        success: true,
+      },
     };
   }
 
@@ -56,6 +62,16 @@ export default class GetView extends PureComponent {
 
     const incidents = await response.json();
 
+    if (!incidents.incidents[0]) {
+      this.setState({
+        notification: {
+          success: false,
+          message: "No incidents found!",
+          hidden: false,
+        },
+      });
+    }
+
     this.setState({
       incidents: incidents.incidents,
     });
@@ -88,14 +104,14 @@ export default class GetView extends PureComponent {
           <div className="wrapper">
             <p>Start time</p>
             <DatePicker
-              className="datepicker"
+              className="input"
               locale="fi"
               selected={this.state.startDate}
               onChange={(e) => this.handleChange(e, "startDate")}
             />
             <p>End time</p>
             <DatePicker
-              className="datepicker"
+              className="input"
               locale="fi"
               selected={this.state.endDate}
               onChange={(e) => this.handleChange(e, "endDate")}
@@ -116,6 +132,24 @@ export default class GetView extends PureComponent {
         )}
       </React.Fragment>
     );
+  };
+
+  copyToClipboard = (summary) => {
+    navigator.clipboard.writeText(summary);
+    this.setState({
+      notification: {
+        hidden: false,
+        success: true,
+        message: "Summary copied to clipboard!",
+      },
+    });
+    setTimeout(() => {
+      this.setState({
+        notification: {
+          hidden: true,
+        },
+      });
+    }, 5000);
   };
 
   getWeekDays = () => {
@@ -162,38 +196,54 @@ export default class GetView extends PureComponent {
 
   renderIncidents = () => {
     return (
-      <div className="columns">
-        {this.state.sorted_incidents.map((day, index) => {
-          return (
-            <React.Fragment>
-              <h1
-                onClick={() => {
-                  const collapsedTables = [...this.state.collapsedTables];
-                  collapsedTables[index] = !collapsedTables[index];
-                  this.setState({
-                    collapsedTables,
-                  });
-                }}
-              >
-                {this.state.weekdays[index]} ({day.length})
-              </h1>
-              {!this.state.collapsedTables[index] && (
-                <ul id={index} key={index}>
-                  {day.map(function (incident, index) {
-                    return (
-                      <li key={index}>
-                        <h2>{incident.service.summary}</h2>
-                        <h3>{incident.created_at}</h3>
-                        <a href={incident.html_url}>{incident.summary}</a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
+      <React.Fragment>
+        <Notification
+          success={this.state.notification.success}
+          hidden={this.state.notification.hidden}
+          message={this.state.notification.message}
+        />
+        <div className="columns">
+          {this.state.sorted_incidents.map((day, index) => {
+            return (
+              <div key={index}>
+                <h1>
+                  {this.state.weekdays[index]} ({day.length})
+                  <input
+                    type="submit"
+                    className="submit"
+                    onClick={() => {
+                      const collapsedTables = [...this.state.collapsedTables];
+                      collapsedTables[index] = !collapsedTables[index];
+                      this.setState({
+                        collapsedTables,
+                      });
+                    }}
+                    value={this.state.collapsedTables[index] ? "Show" : "Hide"}
+                  />
+                </h1>
+                {!this.state.collapsedTables[index] && (
+                  <ul id={index} key={index}>
+                    {day.map((incident, index) => {
+                      return (
+                        <li
+                          key={index}
+                          onClick={() => this.copyToClipboard(incident.summary)}
+                        >
+                          <h2>{incident.service.summary}</h2>
+                          <h3>{incident.created_at}</h3>
+                          <a alt={incident.summary} href={incident.html_url}>
+                            {incident.summary.substr(0, 50) + "..."}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </React.Fragment>
     );
   };
 

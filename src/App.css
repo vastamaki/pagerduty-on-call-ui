@@ -17,9 +17,9 @@
 }
 
 .input {
-  background-color: transparent;
-  border: none;
-  border-bottom: 1px solid #1d1d1d;
+  background-color: #f0eef1;
+  border-radius: 8px;
+  border: 1px solid #e7e7e7;
   color: #1d1d1d;
   text-align: center;
   font-size: 22px;
