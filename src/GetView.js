@@ -53,23 +53,40 @@ export default class GetView extends PureComponent {
       },
     };
 
-    const response = await fetch(
-      encodeURI(
-        `https://api.pagerduty.com/incidents?since=${this.state.startDate}&until=${this.state.endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=250`
-      ),
-      params
-    );
+    let response;
 
-    const incidents = await response.json();
-
-    if (!incidents.incidents[0]) {
+    try {
+      response = await fetch(
+        encodeURI(
+          `https://api.pagerduty.com/incidents?since=${this.state.startDate}&until=${this.state.endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=250`
+        ),
+        params
+      );
+    } catch (err) {
+      console.log(err);
       this.setState({
+        loading: false,
         notification: {
           success: false,
-          message: "No incidents found!",
+          message: "Failed to fetch data!",
           hidden: false,
         },
       });
+      return;
+    }
+
+    const incidents = await response.json();
+
+    if (!incidents.incidents || incidents.error) {
+      this.setState({
+        loading: false,
+        notification: {
+          success: false,
+          message: incidents.error.errors[0],
+          hidden: false,
+        },
+      });
+      return;
     }
 
     this.setState({
@@ -197,11 +214,6 @@ export default class GetView extends PureComponent {
   renderIncidents = () => {
     return (
       <React.Fragment>
-        <Notification
-          success={this.state.notification.success}
-          hidden={this.state.notification.hidden}
-          message={this.state.notification.message}
-        />
         <div className="columns">
           {this.state.sorted_incidents.map((day, index) => {
             return (
@@ -251,6 +263,11 @@ export default class GetView extends PureComponent {
     return (
       <div className="App">
         <div className="App-header">
+          <Notification
+            success={this.state.notification.success}
+            hidden={this.state.notification.hidden}
+            message={this.state.notification.message}
+          />
           {this.state.showIncidents
             ? this.renderIncidents()
             : this.timeSelect()}
