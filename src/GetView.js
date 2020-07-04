@@ -218,20 +218,16 @@ export default class GetView extends PureComponent {
           {this.state.sorted_incidents.map((day, index) => {
             return (
               <div key={index}>
-                <h1>
+                <h1
+                  onClick={() => {
+                    const collapsedTables = [...this.state.collapsedTables];
+                    collapsedTables[index] = !collapsedTables[index];
+                    this.setState({
+                      collapsedTables,
+                    });
+                  }}
+                >
                   {this.state.weekdays[index]} ({day.length})
-                  <input
-                    type="submit"
-                    className="submit"
-                    onClick={() => {
-                      const collapsedTables = [...this.state.collapsedTables];
-                      collapsedTables[index] = !collapsedTables[index];
-                      this.setState({
-                        collapsedTables,
-                      });
-                    }}
-                    value={this.state.collapsedTables[index] ? "Show" : "Hide"}
-                  />
                 </h1>
                 {!this.state.collapsedTables[index] && (
                   <ul id={index} key={index}>

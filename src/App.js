@@ -8,13 +8,18 @@ class App extends PureComponent {
     this.state = {
       token: "",
       teamID: "",
+      teamsFetched: false,
+      showTeams: false,
+      teams: [],
     };
   }
 
   componentDidMount() {
+    const token = localStorage.getItem("token");
+    const teamID = localStorage.getItem("teamID");
     this.setState({
-      token: localStorage.getItem("token"),
-      teamID: localStorage.getItem("teamID"),
+      token,
+      teamID,
     });
   }
 
@@ -30,10 +35,73 @@ class App extends PureComponent {
     });
   }
 
+  renderTeams() {
+    return (
+      <React.Fragment>
+        <p>Pagerduty team ID</p>
+        <select className="input" name="teams" id="teams">
+          {this.state.teams.map((team, index) => {
+            return (
+              <option
+                onClick={(e) => this.changeTeamID(e)}
+                key={index}
+                value={team.id}
+              >
+                {team.name}
+              </option>
+            );
+          })}
+        </select>
+      </React.Fragment>
+    );
+  }
+
+  async getTeams() {
+    const params = {
+      method: "GET",
+      headers: {
+        Accept: "application/vnd.pagerduty+json;version=2",
+        Authorization: "Token token=" + localStorage.getItem("token"),
+      },
+    };
+
+    let response;
+
+    try {
+      response = await fetch(
+        encodeURI(`https://api.pagerduty.com/teams`),
+        params
+      );
+    } catch (err) {
+      console.log(err);
+      this.setState({
+        loading: false,
+        notification: {
+          success: false,
+          message: "Failed to get teams!",
+          hidden: false,
+        },
+      });
+      return;
+    }
+
+    const teams = await response.json();
+
+    this.setState({
+      teams: teams.teams,
+      teamID: teams.teams[0].id,
+      showTeams: true,
+    });
+  }
+
   setToken() {
     localStorage.setItem("token", this.state.token);
+    this.getTeams();
+  }
+
+  redirect(location) {
     localStorage.setItem("teamID", this.state.teamID);
-    this.props.history.push("/incidents");
+    this.props.history.push(location);
   }
 
   render() {
@@ -47,19 +115,18 @@ class App extends PureComponent {
               onChange={(e) => this.onTokenChange(e)}
               className="input"
               value={this.state.token}
+              type="password"
             />
-            <p>Pagerduty team ID</p>
+            {this.state.showTeams ? this.renderTeams() : null}
             <input
-              onChange={(e) => this.changeTeamID(e)}
-              className="input"
-              value={this.state.teamID}
-              placeholder="Team ID"
-            />
-            <input
-              onClick={() => this.setToken()}
+              onClick={() =>
+                this.state.showTeams
+                  ? this.redirect("/incidents")
+                  : this.setToken()
+              }
               className="submit"
               type="submit"
-              value="Continue"
+              value={this.state.showTeams ? "Continue" : "Get teams"}
             />
             <p>
               Don't have a{" "}
