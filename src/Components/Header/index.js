@@ -39,7 +39,7 @@ class Header extends PureComponent {
     return (
       <React.Fragment>
         {this.state.settingsVisible && (
-          <Settings close={this.closeSettings} />
+          <Settings Notification={this.notification} close={this.closeSettings} />
         )}
         {this.state.filtersVisible && (
           <Filters close={this.closeFilters}/>

@@ -12,26 +12,26 @@ class Settings extends PureComponent {
       showTeams: false,
       teams: [],
       loading: false,
-      excludeFilter: null
     };
   }
 
   componentDidMount = () => {
-    const excludeFilter = localStorage.getItem("excludeFilter")
     const token = localStorage.getItem("token");
     this.setState({
       token,
-      excludeFilter
     });
-  }
+  };
 
   changeTeamID = (e) => {
     localStorage.setItem("teamID", e.target.value);
   };
 
   onTokenChange = (e) => {
+    this.setState({
+      token: e.target.value,
+    });
     localStorage.setItem("token", e.target.value);
-  }
+  };
 
   renderTeams = () => {
     return (
@@ -52,7 +52,7 @@ class Settings extends PureComponent {
         </select>
       </React.Fragment>
     );
-  }
+  };
 
   getTeams = async () => {
     const params = {
@@ -63,45 +63,32 @@ class Settings extends PureComponent {
       },
     };
 
-    let response;
+    const response = await fetch(
+      encodeURI(`https://api.pagerduty.com/teams`),
+      params
+    );
 
-    try {
-      response = await fetch(
-        encodeURI(`https://api.pagerduty.com/teams`),
-        params
-      );
-    } catch (err) {
+    if (response) {
+      const teams = await response.json();
+
       this.setState({
-        loading: false,
-        notification: {
-          success: false,
-          message: "Failed to get teams!",
-          hidden: false,
-        },
+        teams: teams.teams,
+        teamID: teams.teams[0].id,
+        showTeams: true,
       });
-      return;
     }
-
-    const teams = await response.json();
-
-    this.setState({
-      teams: teams.teams,
-      teamID: teams.teams[0].id,
-      showTeams: true,
-    });
-  }
+  };
 
   setToken = async () => {
     this.setState({
       loading: true,
     });
     localStorage.setItem("token", this.state.token);
-    localStorage.setItem("excludeFilter", this.state.excludeFilter)
     await this.getTeams();
     this.setState({
       loading: false,
     });
-  }
+  };
 
   render() {
     return (

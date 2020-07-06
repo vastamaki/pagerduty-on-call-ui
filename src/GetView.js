@@ -54,7 +54,7 @@ export default class GetView extends PureComponent {
         loading: false,
         notification: {
           success: false,
-          message: "Failed to fetch data!",
+          message: "Failed to fetch data! Check that your token is valid!",
           hidden: false,
         },
       });
@@ -79,10 +79,7 @@ export default class GetView extends PureComponent {
       incidents: incidents.incidents,
     });
     const weekdays = getWeekDays(incidents.incidents);
-    const sorted_incidents = mapIncidentToDay(
-      weekdays,
-      this.state.incidents
-    );
+    const sorted_incidents = mapIncidentToDay(weekdays, this.state.incidents);
     this.setState({
       weekdays,
       sorted_incidents,

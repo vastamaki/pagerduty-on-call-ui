@@ -11,7 +11,7 @@ class Filters extends PureComponent {
   }
 
   componentDidMount() {
-    const excludeFilter = localStorage.getItem("excludeFilter")
+    const excludeFilter = localStorage.getItem("excludeFilter");
     this.setState({
       excludeFilter,
     });
@@ -25,7 +25,7 @@ class Filters extends PureComponent {
 
   setFilters = () => {
     localStorage.setItem("excludeFilter", this.state.excludeFilter || "");
-    this.props.close()
+    this.props.close();
   };
 
   render() {

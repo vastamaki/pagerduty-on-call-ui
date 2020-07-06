@@ -1,7 +1,12 @@
 const isFiltered = (incident) => {
-  const filters = localStorage.getItem("excludeFilter")
+  const filters = localStorage.getItem("excludeFilter");
 
-  if (filters && filters.split(",").some((filter) => incident.service.summary.includes(filter))) {
+  if (
+    filters &&
+    filters
+      .split(",")
+      .some((filter) => incident.service.summary.includes(filter))
+  ) {
     return true;
   }
   return false;
