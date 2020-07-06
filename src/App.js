@@ -11,6 +11,7 @@ class App extends PureComponent {
       teamsFetched: false,
       showTeams: false,
       teams: [],
+      loading: false,
     };
   }
 
@@ -94,9 +95,15 @@ class App extends PureComponent {
     });
   }
 
-  setToken() {
+  async setToken() {
+    this.setState({
+      loading: true,
+    });
     localStorage.setItem("token", this.state.token);
-    this.getTeams();
+    await this.getTeams();
+    this.setState({
+      loading: false,
+    });
   }
 
   redirect(location) {
@@ -117,6 +124,7 @@ class App extends PureComponent {
               value={this.state.token}
               type="password"
             />
+            {this.state.loading ? <div className="loading-spinner" /> : null}
             {this.state.showTeams ? this.renderTeams() : null}
             <input
               onClick={() =>
