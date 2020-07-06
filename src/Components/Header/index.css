@@ -1,0 +1,24 @@
+.header {
+  width: 100%;
+  color: #ffffff;
+  justify-content: right;
+  align-items: center;
+  display: flex;
+  height: 60px;
+}
+
+.menu-item {
+    padding: 0px 15px 0px 15px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    cursor: pointer;
+    transition-duration: 0.3s;
+    border-radius: 8px;
+}
+
+.menu-item > p {
+  padding: 15px;
+  color: #ffffff;
+}

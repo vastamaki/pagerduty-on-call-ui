@@ -12,6 +12,7 @@ class Notification extends PureComponent {
     return (
       !this.props.hidden && (
         <div
+        onClick={() => this.props.closeNotification()}
           className={`notification ${this.props.success ? "success" : "error"}`}
         >
           <p>{this.props.success ? "Success!" : "Error!"}</p>

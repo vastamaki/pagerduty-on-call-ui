@@ -1,12 +1,11 @@
 import React, { PureComponent } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
-import { startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
-import fi from "date-fns/locale/fi";
 import Notification from "./Notification";
+import TimeSelect from "./Components/TimeSelect";
+import Incidents from "./Components/Incidents";
+import Header from "./Components/Header";
+import { getWeekDays, mapIncidentToDay } from "./helpers";
 import "react-datepicker/dist/react-datepicker.css";
-import "./App.css";
 import "./GetView.css";
-registerLocale("fi", fi);
 
 export default class GetView extends PureComponent {
   constructor(props) {
@@ -15,10 +14,10 @@ export default class GetView extends PureComponent {
     this.state = {
       incidents: [],
       teamID: "",
-      startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
-      endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
       showIncidents: false,
+      loading: false,
       collapsedTables: [],
+      weekdays: [],
       notification: {
         hidden: true,
         message: "",
@@ -27,21 +26,11 @@ export default class GetView extends PureComponent {
     };
   }
 
-  handleChange = (date, option) => {
-    this.setState({
-      [option]: option === "startDate" ? startOfDay(date) : endOfDay(date),
-    });
-  };
-
-  changeTeamID = (e) => {
-    this.setState({
-      teamID: e.target.value,
-    });
-    localStorage.setItem("teamID", this.state.teamID);
-  };
-
-  getIncidents = async () => {
-    if (!this.state.teamID) return;
+  getIncidents = async (startDate, endDate) => {
+    const teamID = localStorage.getItem("teamID");
+    if (!teamID) {
+      return;
+    }
     this.setState({
       loading: true,
     });
@@ -53,17 +42,14 @@ export default class GetView extends PureComponent {
       },
     };
 
-    let response;
-
     try {
-      response = await fetch(
+      var response = await fetch(
         encodeURI(
-          `https://api.pagerduty.com/incidents?since=${this.state.startDate}&until=${this.state.endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=250`
+          `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=250`
         ),
         params
       );
     } catch (err) {
-      console.log(err);
       this.setState({
         loading: false,
         notification: {
@@ -92,9 +78,13 @@ export default class GetView extends PureComponent {
     this.setState({
       incidents: incidents.incidents,
     });
-    this.getWeekDays();
-    const sorted_incidents = this.mapIncidentToDay();
+    const weekdays = getWeekDays(incidents.incidents);
+    const sorted_incidents = mapIncidentToDay(
+      weekdays,
+      this.state.incidents
+    );
     this.setState({
+      weekdays,
       sorted_incidents,
       showIncidents: true,
       loading: false,
@@ -103,52 +93,11 @@ export default class GetView extends PureComponent {
 
   componentDidMount = () => {
     const teamID = localStorage.getItem("teamID");
-    const token = localStorage.getItem("token");
     if (teamID) {
       this.setState({
         teamID,
       });
     }
-    if (!token) {
-      this.props.history.push("/");
-    }
-  };
-
-  timeSelect = () => {
-    return (
-      <React.Fragment>
-        {this.state.loading ? null : (
-          <div className="wrapper">
-            <p>Start time</p>
-            <DatePicker
-              className="input"
-              locale="fi"
-              selected={this.state.startDate}
-              onChange={(e) => this.handleChange(e, "startDate")}
-            />
-            <p>End time</p>
-            <DatePicker
-              className="input"
-              locale="fi"
-              selected={this.state.endDate}
-              onChange={(e) => this.handleChange(e, "endDate")}
-            />
-            <input
-              onClick={() => this.getIncidents()}
-              className="submit"
-              type="submit"
-              value="Get Incidents"
-            />
-            <input
-              onClick={() => this.props.history.push("/")}
-              className="submit"
-              type="submit"
-              value="Back"
-            />
-          </div>
-        )}
-      </React.Fragment>
-    );
   };
 
   copyToClipboard = (summary) => {
@@ -169,107 +118,56 @@ export default class GetView extends PureComponent {
     }, 5000);
   };
 
-  getWeekDays = () => {
-    const weekdays = [];
-    this.state.incidents.forEach((incident) => {
-      const createdAt = new Date(incident.created_at).toISOString();
-      if (!weekdays.includes(createdAt.substr(0, 10))) {
-        weekdays.push(createdAt.substr(0, 10));
-      }
-    });
+  toggleDay = (index) => {
+    const collapsedTables = [...this.state.collapsedTables];
+    collapsedTables[index] = !collapsedTables[index];
     this.setState({
-      weekdays,
+      collapsedTables,
     });
   };
 
-  mapIncidentToDay = () => {
-    return this.state.weekdays.map((day) => {
-      return this.state.incidents
-        .filter((incident) => {
-          const date = new Date(incident.created_at).toISOString();
-          if (date.substr(0, 10) === day) {
-            return true;
-          }
-          return null;
-        })
-        .map((incident) => {
-          const {
-            incident_number,
-            created_at,
-            service,
-            summary,
-            html_url,
-          } = incident;
-          return {
-            incident_number,
-            created_at,
-            service,
-            summary,
-            html_url,
-          };
-        });
+  clearIncidents = () => {
+    this.setState({
+      incidents: [],
+      sorted_incidents: [],
+      showIncidents: false,
     });
   };
 
-  renderIncidents = () => {
-    return (
-      <React.Fragment>
-        <div className="columns">
-          {this.state.sorted_incidents.map((day, index) => {
-            return (
-              <div key={index}>
-                <h1
-                  onClick={() => {
-                    const collapsedTables = [...this.state.collapsedTables];
-                    collapsedTables[index] = !collapsedTables[index];
-                    this.setState({
-                      collapsedTables,
-                    });
-                  }}
-                >
-                  {this.state.weekdays[index]} ({day.length})
-                </h1>
-                {!this.state.collapsedTables[index] && (
-                  <ul id={index} key={index}>
-                    {day.map((incident, index) => {
-                      return (
-                        <li
-                          key={index}
-                          onClick={() => this.copyToClipboard(incident.summary)}
-                        >
-                          <h2>{incident.service.summary}</h2>
-                          <h3>{incident.created_at}</h3>
-                          <a alt={incident.summary} href={incident.html_url}>
-                            {incident.summary.substr(0, 50) + "..."}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </React.Fragment>
-    );
+  closeNotification = () => {
+    this.setState({
+      notification: { hidden: true },
+    });
   };
 
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <Notification
-            success={this.state.notification.success}
-            hidden={this.state.notification.hidden}
-            message={this.state.notification.message}
-          />
-          {this.state.showIncidents
-            ? this.renderIncidents()
-            : this.timeSelect()}
-          {this.state.loading ? <div className="loading-spinner" /> : null}
+      <React.Fragment>
+        <Header clearIncidents={this.clearIncidents} />
+        <div className="App">
+          <div className="App-header">
+            <Notification
+              closeNotification={this.closeNotification}
+              success={this.state.notification.success}
+              hidden={this.state.notification.hidden}
+              message={this.state.notification.message}
+            />
+            {this.state.loading ? (
+              <div className="loading-spinner" />
+            ) : this.state.showIncidents ? (
+              <Incidents
+                collapsedTables={this.state.collapsedTables}
+                weekdays={this.state.weekdays}
+                sorted_incidents={this.state.sorted_incidents}
+                toggleDay={this.toggleDay}
+                copyToClipboard={this.copyToClipboard}
+              />
+            ) : (
+              <TimeSelect getIncidents={this.getIncidents} />
+            )}
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

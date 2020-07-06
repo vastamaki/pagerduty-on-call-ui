@@ -1,17 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Titillium+Web');
+@import url("https://fonts.googleapis.com/css2?family=Titillium+Web");
 
 * {
-  font-family: 'Titillium Web', sans-serif;
+  font-family: "Titillium Web", sans-serif;
 }
 
-html, body, #root {
-  background-color: #285FBA;
-  background-image: linear-gradient(to right,#285FBA, #7535AD);
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  animation-name: background;
+  animation-duration: 60s;
+  animation-iteration-count: infinite;
 }
 
 .loading-spinner {
@@ -22,19 +25,59 @@ html, body, #root {
 .loading-spinner:after {
   content: " ";
   display: block;
-  width: 64px;
-  height: 64px;
+  width: 50px;
+  height: 50px;
   margin: 8px;
   border-radius: 50%;
   border: 6px solid #000000;
   border-color: #000000 transparent #000000 transparent;
   animation: loading-spinner 1.2s linear infinite;
 }
+
+.input {
+  background-color: #f0eef1;
+  border-radius: 8px;
+  border: 1px solid #e7e7e7;
+  color: #1d1d1d;
+  text-align: center;
+  font-size: 22px;
+  margin: 10px;
+  padding: 3px;
+}
+
+.submit {
+  margin: 5px;
+  color: #ffffff;
+  background-color: #2ebc2e;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
 @keyframes loading-spinner {
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes background {
+  0% {
+    background-color: #008000;
+  }
+  25% {
+    background-color: #228B22;
+  }
+  50% {
+    background-color: #32CD32;
+  }
+  75% {
+    background-color: #009500;
+  }
+  100% {
+    background-color: #006400;
   }
 }

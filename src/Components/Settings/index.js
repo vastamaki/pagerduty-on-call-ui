@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
-import "./App.css";
+import "./index.css";
 
-class App extends PureComponent {
+class Settings extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -12,34 +12,31 @@ class App extends PureComponent {
       showTeams: false,
       teams: [],
       loading: false,
+      excludeFilter: null
     };
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
+    const excludeFilter = localStorage.getItem("excludeFilter")
     const token = localStorage.getItem("token");
-    const teamID = localStorage.getItem("teamID");
     this.setState({
       token,
-      teamID,
+      excludeFilter
     });
   }
 
   changeTeamID = (e) => {
-    this.setState({
-      teamID: e.target.value,
-    });
+    localStorage.setItem("teamID", e.target.value);
   };
 
-  onTokenChange(e) {
-    this.setState({
-      token: e.target.value,
-    });
+  onTokenChange = (e) => {
+    localStorage.setItem("token", e.target.value);
   }
 
-  renderTeams() {
+  renderTeams = () => {
     return (
       <React.Fragment>
-        <p>Pagerduty team ID</p>
+        <h4>Pagerduty team ID</h4>
         <select className="input" name="teams" id="teams">
           {this.state.teams.map((team, index) => {
             return (
@@ -57,7 +54,7 @@ class App extends PureComponent {
     );
   }
 
-  async getTeams() {
+  getTeams = async () => {
     const params = {
       method: "GET",
       headers: {
@@ -74,7 +71,6 @@ class App extends PureComponent {
         params
       );
     } catch (err) {
-      console.log(err);
       this.setState({
         loading: false,
         notification: {
@@ -95,58 +91,50 @@ class App extends PureComponent {
     });
   }
 
-  async setToken() {
+  setToken = async () => {
     this.setState({
       loading: true,
     });
     localStorage.setItem("token", this.state.token);
+    localStorage.setItem("excludeFilter", this.state.excludeFilter)
     await this.getTeams();
     this.setState({
       loading: false,
     });
   }
 
-  redirect(location) {
-    localStorage.setItem("teamID", this.state.teamID);
-    this.props.history.push(location);
-  }
-
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <div className="wrapper">
-            <p>Pagerduty token</p>
-            <input
-              placeholder="Pagerduty token"
-              onChange={(e) => this.onTokenChange(e)}
-              className="input"
-              value={this.state.token}
-              type="password"
-            />
-            {this.state.loading ? <div className="loading-spinner" /> : null}
-            {this.state.showTeams ? this.renderTeams() : null}
-            <input
-              onClick={() =>
-                this.state.showTeams
-                  ? this.redirect("/incidents")
-                  : this.setToken()
-              }
-              className="submit"
-              type="submit"
-              value={this.state.showTeams ? "Continue" : "Get teams"}
-            />
-            <p>
-              Don't have a{" "}
-              <a href=" https://support.pagerduty.com/docs/generating-api-keys#generating-a-personal-rest-api-key">
-                token?
-              </a>
-            </p>
-          </div>
+      <div className="settings-wrapper">
+        <div className="settings">
+          <h4>Pagerduty token</h4>
+          <input
+            placeholder="Pagerduty token"
+            onChange={(e) => this.onTokenChange(e)}
+            className="input"
+            value={this.state.token}
+            type="password"
+          />
+          {this.state.loading ? <div className="loading-spinner" /> : null}
+          {this.state.showTeams ? this.renderTeams() : null}
+          <input
+            onClick={() =>
+              this.state.showTeams ? this.props.close() : this.setToken()
+            }
+            className="submit"
+            type="submit"
+            value={this.state.showTeams ? "Save" : "Get teams"}
+          />
+          <p>
+            Don't have a{" "}
+            <a href=" https://support.pagerduty.com/docs/generating-api-keys#generating-a-personal-rest-api-key">
+              token?
+            </a>
+          </p>
         </div>
       </div>
     );
   }
 }
 
-export default App;
+export default Settings;
