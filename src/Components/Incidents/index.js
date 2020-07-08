@@ -19,10 +19,10 @@ class Incidents extends PureComponent {
                   {this.props.weekdays[index]} ({day.length})
                 </h1>
                 {!this.props.collapsedTables[index] && (
-                  <ul id={index} key={index}>
+                  <ul id={index}>
                     {day.map((incident) => {
                       return (
-                        <li key={index}>
+                        <li key={incident.incident_number}>
                           <h3
                             className="summary"
                             onClick={() =>
@@ -31,7 +31,7 @@ class Incidents extends PureComponent {
                           >
                             {incident.service.summary}
                           </h3>
-                          <a alt={incident.summary} href={incident.html_url}>
+                          <a title={incident.summary} href={incident.html_url}>
                             {incident.summary.substr(0, 50) + "..."}
                           </a>
                           <h4>Created: {incident.created_at}</h4>
