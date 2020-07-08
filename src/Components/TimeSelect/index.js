@@ -1,8 +1,16 @@
-import React, { PureComponent } from "react";
-import { startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
-import DatePicker, { registerLocale } from "react-datepicker";
-import fi from "date-fns/locale/fi";
-registerLocale("fi", fi);
+import React, { PureComponent } from 'react';
+import { startOfDay, endOfDay, startOfWeek, endOfWeek } from 'date-fns';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import fi from 'date-fns/locale/fi';
+import en from 'date-fns/locale/en-US';
+
+const language = window.navigator.language === 'fi' ? 'fi' : 'en-US';
+const locales = {
+  fi,
+  'en-US': en
+};
+
+registerLocale(language, locales[language]);
 
 class TimeSelect extends PureComponent {
   constructor(props) {
@@ -16,7 +24,7 @@ class TimeSelect extends PureComponent {
 
   handleDayChange = (date, option) => {
     this.setState({
-      [option]: option === "startDate" ? startOfDay(date) : endOfDay(date),
+      [option]: option === 'startDate' ? startOfDay(date) : endOfDay(date),
     });
   };
 
@@ -26,16 +34,16 @@ class TimeSelect extends PureComponent {
         <h3>Start time</h3>
         <DatePicker
           className="input"
-          locale="fi"
+          locale={language}
           selected={this.state.startDate}
-          onChange={(e) => this.handleDayChange(e, "startDate")}
+          onChange={(e) => this.handleDayChange(e, 'startDate')}
         />
         <h3>End time</h3>
         <DatePicker
           className="input"
-          locale="fi"
+          locale={language}
           selected={this.state.endDate}
-          onChange={(e) => this.handleDayChange(e, "endDate")}
+          onChange={(e) => this.handleDayChange(e, 'endDate')}
         />
         <input
           onClick={() => this.props.getIncidents(this.state.startDate, this.state.endDate)}
