@@ -40,6 +40,7 @@ export const mapIncidentToDay = (weekdays, incidents) => {
           html_url,
           last_status_change_at,
           last_status_change_by,
+          day
         };
       });
   });

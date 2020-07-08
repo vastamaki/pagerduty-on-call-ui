@@ -5,8 +5,40 @@ class Incidents extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      hoursMarked: {},
+    };
   }
+
+  componentDidMount = () => {
+    const hoursMarked = localStorage.getItem("hoursMarked");
+    hoursMarked &&
+      this.setState({
+        hoursMarked: JSON.parse(hoursMarked),
+      });
+  };
+
+  markHour = (incident) => {
+    this.setState(
+      {
+        hoursMarked: {
+          ...this.state.hoursMarked,
+          [incident.day]: this.state.hoursMarked[incident.day]
+            ? [
+                ...this.state.hoursMarked[incident.day],
+                incident.incident_number,
+              ]
+            : [incident.incident_number],
+        },
+      },
+      () => {
+        localStorage.setItem(
+          "hoursMarked",
+          JSON.stringify(this.state.hoursMarked)
+        );
+      }
+    );
+  };
 
   render() {
     return (
@@ -25,11 +57,20 @@ class Incidents extends PureComponent {
                         <li key={incident.incident_number}>
                           <h3
                             className="summary"
-                            onClick={() =>
-                              this.props.copyToClipboard(incident.summary)
-                            }
+                            onClick={() => {
+                              this.props.copyToClipboard(incident.summary);
+                              this.markHour(incident);
+                            }}
                           >
-                            {incident.service.summary}
+                            {incident.service.summary}{" "}
+                            {this.state.hoursMarked[incident.day] &&
+                            this.state.hoursMarked[incident.day].includes(
+                              incident.incident_number
+                            ) ? (
+                              <p className="hour-mark" />
+                            ) : (
+                              <p className="no-hour-mark" />
+                            )}
                           </h3>
                           <a title={incident.summary} href={incident.html_url}>
                             {incident.summary.substr(0, 50) + "..."}

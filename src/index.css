@@ -13,7 +13,7 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   animation-name: background;
-  animation-duration: 60s;
+  animation-duration: 30s;
   animation-iteration-count: infinite;
 }
 
@@ -66,13 +66,13 @@ body,
 
 @keyframes background {
   0% {
-    background-color: #008000;
+    background-color: #006400;
   }
   25% {
     background-color: #228B22;
   }
   50% {
-    background-color: #32CD32;
+    background-color: rgb(17, 173, 17);
   }
   75% {
     background-color: #009500;
