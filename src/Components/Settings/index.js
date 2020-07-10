@@ -17,9 +17,12 @@ class Settings extends PureComponent {
 
   componentDidMount = () => {
     const token = localStorage.getItem("token");
-    this.setState({
-      token,
-    });
+    if (token) {
+      this.setState({
+        token
+      })
+      this.getTeams();
+    }
   };
 
   changeTeamID = (e) => {
@@ -55,6 +58,9 @@ class Settings extends PureComponent {
   };
 
   getTeams = async () => {
+    this.setState({
+      loading: true,
+    });
     const params = {
       method: "GET",
       headers: {
@@ -73,8 +79,11 @@ class Settings extends PureComponent {
 
       this.setState({
         teams: teams.teams,
-        teamID: teams.teams[0].id,
         showTeams: true,
+      });
+      localStorage.setItem("teamID", teams.teams[0].id);
+      this.setState({
+        loading: false,
       });
     }
   };

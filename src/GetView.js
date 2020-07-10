@@ -54,7 +54,7 @@ export default class GetView extends PureComponent {
     try {
       var response = await fetch(
         encodeURI(
-          `https://api.pagerduty.com/incidents?since=${startDate || this.state.startDate}&until=${endDate || this.state.endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
+          `https://api.pagerduty.com/incidents?since=${startDate || this.state.startDate}&until=${endDate || this.state.endDate}&team_ids[]=${localStorage.getItem("teamID")}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
         ),
         params
       );
@@ -104,15 +104,6 @@ export default class GetView extends PureComponent {
       loading: false,
     });
   }
-
-  componentDidMount = () => {
-    const teamID = localStorage.getItem("teamID");
-    if (teamID) {
-      this.setState({
-        teamID,
-      });
-    }
-  };
 
   copyToClipboard = (summary) => {
     navigator.clipboard.writeText(summary);
