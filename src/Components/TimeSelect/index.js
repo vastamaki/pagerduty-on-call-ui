@@ -46,7 +46,7 @@ class TimeSelect extends PureComponent {
           onChange={(e) => this.handleDayChange(e, 'endDate')}
         />
         <input
-          onClick={() => this.props.getIncidents(this.state.startDate, this.state.endDate)}
+          onClick={() => this.props.getIncidents(this.state.startDate, this.state.endDate, true)}
           className="submit"
           type="submit"
           value="Get Incidents"

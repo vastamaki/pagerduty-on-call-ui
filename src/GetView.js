@@ -13,6 +13,7 @@ export default class GetView extends PureComponent {
 
     this.state = {
       incidents: [],
+      offset: 0,
       teamID: "",
       showIncidents: false,
       loading: false,
@@ -26,10 +27,18 @@ export default class GetView extends PureComponent {
     };
   }
 
-  getIncidents = async (startDate, endDate) => {
-    const teamID = localStorage.getItem("teamID");
-    if (!teamID) {
-      return;
+  getIncidents = async (startDate, endDate, clicked) => {
+    if(clicked) {
+      console.log('asd')
+      await this.setState({
+        offset: 0
+      })
+    }
+    if(startDate && endDate) {
+      this.setState({
+        startDate: startDate,
+      endDate: endDate,
+      })
     }
     this.setState({
       loading: true,
@@ -45,7 +54,7 @@ export default class GetView extends PureComponent {
     try {
       var response = await fetch(
         encodeURI(
-          `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=250`
+          `https://api.pagerduty.com/incidents?since=${startDate || this.state.startDate}&until=${endDate || this.state.endDate}&team_ids[]=${this.state.teamID}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
         ),
         params
       );
@@ -76,9 +85,17 @@ export default class GetView extends PureComponent {
     }
 
     this.setState({
-      incidents: incidents.incidents,
+      offset: incidents.offset === 0 ? 99 : 100 + (incidents.total - incidents.offset),
+      incidents: [...this.state.incidents, ...incidents.incidents]
     });
-    const weekdays = getWeekDays(incidents.incidents);
+    this.saveIncidents(incidents.more, incidents.total)
+  };
+
+  saveIncidents = (isMore) => {
+    if(isMore) {
+      this.getIncidents()
+    }
+    const weekdays = getWeekDays(this.state.incidents);
     const sorted_incidents = mapIncidentToDay(weekdays, this.state.incidents);
     this.setState({
       weekdays,
@@ -86,7 +103,7 @@ export default class GetView extends PureComponent {
       showIncidents: true,
       loading: false,
     });
-  };
+  }
 
   componentDidMount = () => {
     const teamID = localStorage.getItem("teamID");
