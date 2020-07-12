@@ -9,6 +9,7 @@ class Incidents extends PureComponent {
 
     this.state = {
       hoursMarked: {},
+      collapsedTables: [],
     };
   }
 
@@ -20,6 +21,14 @@ class Incidents extends PureComponent {
       });
   };
 
+  toggleDay = (index) => {
+    const collapsedTables = [...this.state.collapsedTables];
+    collapsedTables[index] = !collapsedTables[index];
+    this.setState({
+      collapsedTables,
+    });
+  };
+
   render() {
     const { dispatch, incidents, filters, weekdays } = this.context;
     return (
@@ -28,10 +37,10 @@ class Incidents extends PureComponent {
           {incidents.map((day, index) => {
             return (
               <div key={index}>
-                <h1 onClick={() => this.props.toggleDay(index)}>
+                <h1 onClick={() => this.toggleDay(index)}>
                   {weekdays[index]} ({day.length})
                 </h1>
-                {!this.props.collapsedTables[index] && (
+                {!this.state.collapsedTables[index] && (
                   <ul id={index}>
                     {day.map((incident) => {
                       const filteredOut = filters.exclude

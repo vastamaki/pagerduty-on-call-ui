@@ -1,24 +1,30 @@
 .header {
   width: 100%;
   color: #ffffff;
-  justify-content: right;
   align-items: center;
   display: flex;
   height: 60px;
+  justify-content: left;
 }
 
-.menu-item {
-    padding: 0px 15px 0px 15px;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    cursor: pointer;
-    transition-duration: 0.3s;
-    border-radius: 8px;
+.menu > .menu-left {
+  justify-content: left;
 }
 
-.menu-item > p {
+.menu-right {
+  position: absolute;
+  right: 0;
+  padding: 0px 15px 0px 15px;
+  align-items: center;
+  justify-content: right;
+  display: flex;
+  cursor: pointer;
+  transition-duration: 0.3s;
+  border-radius: 8px;
+}
+
+.menu-right > p,
+.menu-left > p {
   padding: 15px;
   color: #ffffff;
 }

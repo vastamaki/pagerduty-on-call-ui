@@ -49,7 +49,12 @@ class Header extends PureComponent {
         )}
         {this.state.filtersVisible && <Filters close={this.closeFilters} />}
         <div className="header">
-          <div className="menu-item">
+          <div className="menu-left">
+            <p title={localStorage.getItem("teamID")}>
+              {localStorage.getItem("teamName")}
+            </p>
+          </div>
+          <div className="menu-right">
             <p onClick={() => clearIncidents()(dispatch)}>Select time</p>
             <p
               onClick={() => {

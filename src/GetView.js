@@ -14,11 +14,8 @@ export default class GetView extends PureComponent {
     super(props);
 
     this.state = {
-      incidents: [],
       offset: 0,
       loading: false,
-      collapsedTables: [],
-      weekdays: [],
       notification: {
         hidden: true,
         message: "",
@@ -93,19 +90,18 @@ export default class GetView extends PureComponent {
       offset:
         incidents.offset === 0
           ? 99
-          : 100 + (incidents.total - incidents.offset),
-      incidents: [...this.state.incidents, ...incidents.incidents],
+          : 100 + (incidents.total - incidents.offset)
     });
-    this.saveIncidents(incidents.more);
+    this.saveIncidents(incidents.more, incidents.incidents);
   };
 
-  saveIncidents = (isMore) => {
+  saveIncidents = (isMore, incidents) => {
     const { dispatch } = this.context;
     if (isMore) {
       this.getIncidents();
     }
-    const weekdays = getWeekDays(this.state.incidents);
-    const sorted_incidents = mapIncidentToDay(weekdays, this.state.incidents);
+    const weekdays = getWeekDays(incidents);
+    const sorted_incidents = mapIncidentToDay(weekdays, incidents);
     getIncidents(sorted_incidents, weekdays)(dispatch);
     this.setState({
       loading: false,
@@ -128,14 +124,6 @@ export default class GetView extends PureComponent {
         },
       });
     }, 5000);
-  };
-
-  toggleDay = (index) => {
-    const collapsedTables = [...this.state.collapsedTables];
-    collapsedTables[index] = !collapsedTables[index];
-    this.setState({
-      collapsedTables,
-    });
   };
 
   closeNotification = () => {
@@ -161,10 +149,6 @@ export default class GetView extends PureComponent {
               <div className="loading-spinner" />
             ) : showIncidents ? (
               <Incidents
-                collapsedTables={this.state.collapsedTables}
-                weekdays={this.state.weekdays}
-                sorted_incidents={this.state.sorted_incidents}
-                toggleDay={this.toggleDay}
                 copyToClipboard={this.copyToClipboard}
               />
             ) : (

@@ -32,8 +32,8 @@ const reducer = (state, action) => {
     case "GET_INCIDENTS":
       return {
         ...state,
-        incidents: action.payload.incidents,
-        weekdays: action.payload.weekdays,
+        incidents: [...state.incidents, ...action.payload.incidents],
+        weekdays: [...state.weekdays, ...action.payload.weekdays],
         showIncidents: true
       }
     case "CLEAR_INCIDENTS":
@@ -57,6 +57,7 @@ export class Provider extends Component {
       exclude: ""
     },
     showIncidents: false,
+    weekdays: [],
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
   
