@@ -16,8 +16,6 @@ export default class GetView extends PureComponent {
     this.state = {
       incidents: [],
       offset: 0,
-      teamID: "",
-      showIncidents: false,
       loading: false,
       collapsedTables: [],
       weekdays: [],
@@ -98,7 +96,7 @@ export default class GetView extends PureComponent {
           : 100 + (incidents.total - incidents.offset),
       incidents: [...this.state.incidents, ...incidents.incidents],
     });
-    this.saveIncidents(incidents.more, incidents.total);
+    this.saveIncidents(incidents.more);
   };
 
   saveIncidents = (isMore) => {
@@ -108,11 +106,8 @@ export default class GetView extends PureComponent {
     }
     const weekdays = getWeekDays(this.state.incidents);
     const sorted_incidents = mapIncidentToDay(weekdays, this.state.incidents);
-    getIncidents(sorted_incidents)(dispatch);
+    getIncidents(sorted_incidents, weekdays)(dispatch);
     this.setState({
-      weekdays,
-      sorted_incidents,
-      showIncidents: true,
       loading: false,
     });
   };
@@ -143,14 +138,6 @@ export default class GetView extends PureComponent {
     });
   };
 
-  clearIncidents = () => {
-    this.setState({
-      incidents: [],
-      sorted_incidents: [],
-      showIncidents: false,
-    });
-  };
-
   closeNotification = () => {
     this.setState({
       notification: { hidden: true },
@@ -158,9 +145,10 @@ export default class GetView extends PureComponent {
   };
 
   render() {
+    const { showIncidents } = this.context;
     return (
       <React.Fragment>
-        <Header clearIncidents={this.clearIncidents} />
+        <Header />
         <div className="App">
           <div className="App-header">
             <Notification
@@ -171,7 +159,7 @@ export default class GetView extends PureComponent {
             />
             {this.state.loading ? (
               <div className="loading-spinner" />
-            ) : this.state.showIncidents ? (
+            ) : showIncidents ? (
               <Incidents
                 collapsedTables={this.state.collapsedTables}
                 weekdays={this.state.weekdays}

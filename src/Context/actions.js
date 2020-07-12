@@ -14,7 +14,6 @@ export const getTeams = () => async (dispatch) => {
 
   if (response) {
     const teams = await response.json();
-    localStorage.setItem("teamID", teams.teams[0].id);
     dispatch({
       type: "GET_TEAMS",
       payload: teams.teams,
@@ -32,6 +31,12 @@ export const setFilters = (name, value) => async (dispatch) => {
   });
 };
 
+export const clearIncidents = () => (dispatch) => {
+  dispatch({
+    type: "CLEAR_INCIDENTS"
+  })
+}
+
 export const markHour = (incident) => (dispatch) => {
   dispatch({
     type: "SET_HOUR_MARK",
@@ -39,9 +44,9 @@ export const markHour = (incident) => (dispatch) => {
   });
 };
 
-export const getIncidents = (incidents) => (dispatch) => {
+export const getIncidents = (incidents, weekdays) => (dispatch) => {
   dispatch({
     type: "GET_INCIDENTS",
-    payload: incidents,
+    payload: { incidents, weekdays },
   });
 };

@@ -21,7 +21,7 @@ class Incidents extends PureComponent {
   };
 
   render() {
-    const { dispatch, incidents, filters } = this.context;
+    const { dispatch, incidents, filters, weekdays } = this.context;
     return (
       <React.Fragment>
         <div className="columns">
@@ -29,7 +29,7 @@ class Incidents extends PureComponent {
             return (
               <div key={index}>
                 <h1 onClick={() => this.props.toggleDay(index)}>
-                  {this.props.weekdays[index]} ({day.length})
+                  {weekdays[index]} ({day.length})
                 </h1>
                 {!this.props.collapsedTables[index] && (
                   <ul id={index}>
@@ -40,7 +40,7 @@ class Incidents extends PureComponent {
                           (filter) =>
                             filter && incident.service.summary.includes(filter)
                         );
-                      if (filteredOut) return;
+                      if (filteredOut) return null;
                       return (
                         <li key={incident.incident_number}>
                           <h3

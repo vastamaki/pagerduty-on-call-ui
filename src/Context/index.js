@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 export const Context = React.createContext();
 
 const reducer = (state, action) => {
@@ -33,7 +32,16 @@ const reducer = (state, action) => {
     case "GET_INCIDENTS":
       return {
         ...state,
-        incidents: action.payload
+        incidents: action.payload.incidents,
+        weekdays: action.payload.weekdays,
+        showIncidents: true
+      }
+    case "CLEAR_INCIDENTS":
+      return {
+        ...state,
+        incidents: [],
+        weekdays: [],
+        showIncidents: false
       }
     default:
       return state;
@@ -48,6 +56,7 @@ export class Provider extends Component {
     filters: {
       exclude: ""
     },
+    showIncidents: false,
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
   

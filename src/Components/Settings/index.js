@@ -9,7 +9,6 @@ class Settings extends PureComponent {
 
     this.state = {
       token: "",
-      teamID: "",
       loading: false,
     };
   }
@@ -31,6 +30,7 @@ class Settings extends PureComponent {
 
   changeTeamID = (e) => {
     localStorage.setItem("teamID", e.target.value);
+    localStorage.setItem("teamName", e.target.text);
   };
 
   onTokenChange = (e) => {
@@ -43,7 +43,7 @@ class Settings extends PureComponent {
   setToken = async () => {
     const { dispatch } = this.context;
     localStorage.setItem("token", this.state.token);
-    getTeams()(dispatch);
+    await getTeams()(dispatch);
   };
 
   renderTeams = () => {
@@ -57,6 +57,7 @@ class Settings extends PureComponent {
                 onClick={(e) => this.changeTeamID(e)}
                 key={index}
                 value={team.id}
+                name={team.name}
               >
                 {team.name}
               </option>

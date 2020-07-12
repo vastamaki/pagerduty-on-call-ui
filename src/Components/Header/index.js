@@ -1,6 +1,8 @@
 import React, { PureComponent } from "react";
+import { clearIncidents } from "../../Context/actions";
+import { Context } from "../../Context";
 import Settings from "../Settings";
-import Filters from "../Filters"
+import Filters from "../Filters";
 import "./index.css";
 
 class Header extends PureComponent {
@@ -36,17 +38,19 @@ class Header extends PureComponent {
   }
 
   render() {
+    const { dispatch } = this.context;
     return (
       <React.Fragment>
         {this.state.settingsVisible && (
-          <Settings Notification={this.notification} close={this.closeSettings} />
+          <Settings
+            Notification={this.notification}
+            close={this.closeSettings}
+          />
         )}
-        {this.state.filtersVisible && (
-          <Filters close={this.closeFilters}/>
-        )}
+        {this.state.filtersVisible && <Filters close={this.closeFilters} />}
         <div className="header">
           <div className="menu-item">
-            <p onClick={() => this.props.clearIncidents()}>Select time</p>
+            <p onClick={() => clearIncidents()(dispatch)}>Select time</p>
             <p
               onClick={() => {
                 this.setState({
@@ -72,4 +76,5 @@ class Header extends PureComponent {
   }
 }
 
+Header.contextType = Context;
 export default Header;
