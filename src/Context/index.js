@@ -27,22 +27,31 @@ const reducer = (state, action) => {
             : [action.payload.incident_number],
         },
       };
-      localStorage.setItem("hoursMarked", JSON.stringify(hours.hoursMarked))
-      return hours
+      localStorage.setItem("hoursMarked", JSON.stringify(hours.hoursMarked));
+      return hours;
     case "GET_INCIDENTS":
       return {
         ...state,
         incidents: [...state.incidents, ...action.payload.incidents],
         weekdays: [...state.weekdays, ...action.payload.weekdays],
-        showIncidents: true
-      }
+        showIncidents: true,
+      };
     case "CLEAR_INCIDENTS":
       return {
         ...state,
         incidents: [],
         weekdays: [],
-        showIncidents: false
-      }
+        showIncidents: false,
+      };
+    case "TOGGLE_NOTIFICATION":
+      return {
+        ...state,
+        notification: {
+          hidden: action.payload.hidden,
+          message: action.payload.message,
+          success: action.payload.success,
+        },
+      };
     default:
       return state;
   }
@@ -54,13 +63,18 @@ export class Provider extends Component {
     incidents: [],
     hoursMarked: {},
     filters: {
-      exclude: ""
+      exclude: "",
+    },
+    notification: {
+      hidden: true,
+      message: "",
+      success: true,
     },
     showIncidents: false,
     weekdays: [],
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
-  
+
   componentDidMount = () => {
     const filters = localStorage.getItem("filters");
     const hoursMarked = localStorage.getItem("hoursMarked");

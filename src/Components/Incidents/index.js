@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { markHour } from "../../Context/actions";
+import { markHour, toggleNotification } from "../../Context/actions";
 import { Context } from "../../Context";
 import "./index.css";
 
@@ -8,18 +8,9 @@ class Incidents extends PureComponent {
     super(props);
 
     this.state = {
-      hoursMarked: {},
       collapsedTables: [],
     };
   }
-
-  componentDidMount = () => {
-    const hoursMarked = localStorage.getItem("hoursMarked");
-    hoursMarked &&
-      this.setState({
-        hoursMarked: JSON.parse(hoursMarked),
-      });
-  };
 
   toggleDay = (index) => {
     const collapsedTables = [...this.state.collapsedTables];
@@ -27,6 +18,23 @@ class Incidents extends PureComponent {
     this.setState({
       collapsedTables,
     });
+  };
+
+  copyToClipboard = (summary) => {
+    const { dispatch } = this.context;
+    navigator.clipboard.writeText(summary);
+    toggleNotification({
+      hidden: false,
+      success: true,
+      message: "Summary copied to clipboard!",
+    })(dispatch);
+    setTimeout(() => {
+      toggleNotification({
+        hidden: true,
+        message: "",
+        success: "true",
+      })(dispatch);
+    }, 3000);
   };
 
   render() {
@@ -55,7 +63,7 @@ class Incidents extends PureComponent {
                           <h3
                             className="summary"
                             onClick={() => {
-                              this.props.copyToClipboard(incident.summary);
+                              this.copyToClipboard(incident.summary);
                               markHour(incident)(dispatch);
                             }}
                           >

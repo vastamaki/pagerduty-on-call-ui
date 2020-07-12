@@ -33,9 +33,9 @@ export const setFilters = (name, value) => async (dispatch) => {
 
 export const clearIncidents = () => (dispatch) => {
   dispatch({
-    type: "CLEAR_INCIDENTS"
-  })
-}
+    type: "CLEAR_INCIDENTS",
+  });
+};
 
 export const markHour = (incident) => (dispatch) => {
   dispatch({
@@ -48,5 +48,16 @@ export const getIncidents = (incidents, weekdays) => (dispatch) => {
   dispatch({
     type: "GET_INCIDENTS",
     payload: { incidents, weekdays },
+  });
+};
+
+export const toggleNotification = (notification) => (dispatch) => {
+  dispatch({
+    type: "TOGGLE_NOTIFICATION",
+    payload: {
+      hidden: notification.hidden,
+      message: notification.message,
+      success: notification.success,
+    },
   });
 };

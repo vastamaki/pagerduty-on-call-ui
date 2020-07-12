@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import Notification from "./Notification";
 import TimeSelect from "./Components/TimeSelect";
 import Incidents from "./Components/Incidents";
 import Header from "./Components/Header";
@@ -15,12 +14,7 @@ export default class GetView extends PureComponent {
 
     this.state = {
       offset: 0,
-      loading: false,
-      notification: {
-        hidden: true,
-        message: "",
-        success: true,
-      },
+      loading: false
     };
   }
 
@@ -108,24 +102,6 @@ export default class GetView extends PureComponent {
     });
   };
 
-  copyToClipboard = (summary) => {
-    navigator.clipboard.writeText(summary);
-    this.setState({
-      notification: {
-        hidden: false,
-        success: true,
-        message: "Summary copied to clipboard!",
-      },
-    });
-    setTimeout(() => {
-      this.setState({
-        notification: {
-          hidden: true,
-        },
-      });
-    }, 5000);
-  };
-
   closeNotification = () => {
     this.setState({
       notification: { hidden: true },
@@ -139,18 +115,10 @@ export default class GetView extends PureComponent {
         <Header />
         <div className="App">
           <div className="App-header">
-            <Notification
-              closeNotification={this.closeNotification}
-              success={this.state.notification.success}
-              hidden={this.state.notification.hidden}
-              message={this.state.notification.message}
-            />
             {this.state.loading ? (
               <div className="loading-spinner" />
             ) : showIncidents ? (
-              <Incidents
-                copyToClipboard={this.copyToClipboard}
-              />
+              <Incidents />
             ) : (
               <TimeSelect getIncidents={this.getIncidents} />
             )}
