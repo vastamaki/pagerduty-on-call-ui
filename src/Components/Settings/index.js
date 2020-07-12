@@ -1,4 +1,6 @@
 import React, { PureComponent } from "react";
+import { getTeams } from "../../Context/actions";
+import { Context } from "../../Context";
 import "./index.css";
 
 class Settings extends PureComponent {
@@ -8,20 +10,22 @@ class Settings extends PureComponent {
     this.state = {
       token: "",
       teamID: "",
-      teamsFetched: false,
-      showTeams: false,
-      teams: [],
       loading: false,
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    this.setState({
+      loading: true,
+    });
+    const { dispatch } = this.context;
     const token = localStorage.getItem("token");
     if (token) {
+      await getTeams()(dispatch);
       this.setState({
-        token
-      })
-      this.getTeams();
+        token,
+        loading: false,
+      });
     }
   };
 
@@ -36,12 +40,18 @@ class Settings extends PureComponent {
     localStorage.setItem("token", e.target.value);
   };
 
+  setToken = async () => {
+    const { dispatch } = this.context;
+    localStorage.setItem("token", this.state.token);
+    getTeams()(dispatch);
+  };
+
   renderTeams = () => {
     return (
       <React.Fragment>
         <h4>Pagerduty team ID</h4>
         <select className="input" name="teams" id="teams">
-          {this.state.teams.map((team, index) => {
+          {this.context.teams.map((team, index) => {
             return (
               <option
                 onClick={(e) => this.changeTeamID(e)}
@@ -57,48 +67,6 @@ class Settings extends PureComponent {
     );
   };
 
-  getTeams = async () => {
-    this.setState({
-      loading: true,
-    });
-    const params = {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.pagerduty+json;version=2",
-        Authorization: "Token token=" + localStorage.getItem("token"),
-      },
-    };
-
-    const response = await fetch(
-      encodeURI(`https://api.pagerduty.com/teams`),
-      params
-    );
-
-    if (response) {
-      const teams = await response.json();
-
-      this.setState({
-        teams: teams.teams,
-        showTeams: true,
-      });
-      localStorage.setItem("teamID", teams.teams[0].id);
-      this.setState({
-        loading: false,
-      });
-    }
-  };
-
-  setToken = async () => {
-    this.setState({
-      loading: true,
-    });
-    localStorage.setItem("token", this.state.token);
-    await this.getTeams();
-    this.setState({
-      loading: false,
-    });
-  };
-
   render() {
     return (
       <div className="settings-wrapper">
@@ -112,14 +80,14 @@ class Settings extends PureComponent {
             type="password"
           />
           {this.state.loading ? <div className="loading-spinner" /> : null}
-          {this.state.showTeams ? this.renderTeams() : null}
+          {this.state.loading ? null : this.renderTeams()}
           <input
             onClick={() =>
-              this.state.showTeams ? this.props.close() : this.setToken()
+              this.context.teams ? this.props.close() : this.setToken()
             }
             className="submit"
             type="submit"
-            value={this.state.showTeams ? "Save" : "Get teams"}
+            value={this.context.teams ? "Save" : "Get teams"}
           />
           <p>
             Don't have a{" "}
@@ -132,5 +100,5 @@ class Settings extends PureComponent {
     );
   }
 }
-
+Settings.contextType = Context;
 export default Settings;

@@ -4,6 +4,8 @@ import TimeSelect from "./Components/TimeSelect";
 import Incidents from "./Components/Incidents";
 import Header from "./Components/Header";
 import { getWeekDays, mapIncidentToDay } from "./helpers";
+import { getIncidents } from "./Context/actions";
+import { Context } from "./Context";
 import "react-datepicker/dist/react-datepicker.css";
 import "./GetView.css";
 
@@ -28,17 +30,16 @@ export default class GetView extends PureComponent {
   }
 
   getIncidents = async (startDate, endDate, clicked) => {
-    if(clicked) {
-      console.log('asd')
+    if (clicked) {
       await this.setState({
-        offset: 0
-      })
+        offset: 0,
+      });
     }
-    if(startDate && endDate) {
+    if (startDate && endDate) {
       this.setState({
         startDate: startDate,
-      endDate: endDate,
-      })
+        endDate: endDate,
+      });
     }
     this.setState({
       loading: true,
@@ -54,7 +55,13 @@ export default class GetView extends PureComponent {
     try {
       var response = await fetch(
         encodeURI(
-          `https://api.pagerduty.com/incidents?since=${startDate || this.state.startDate}&until=${endDate || this.state.endDate}&team_ids[]=${localStorage.getItem("teamID")}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
+          `https://api.pagerduty.com/incidents?since=${
+            startDate || this.state.startDate
+          }&until=${
+            endDate || this.state.endDate
+          }&team_ids[]=${localStorage.getItem(
+            "teamID"
+          )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
         ),
         params
       );
@@ -85,25 +92,30 @@ export default class GetView extends PureComponent {
     }
 
     this.setState({
-      offset: incidents.offset === 0 ? 99 : 100 + (incidents.total - incidents.offset),
-      incidents: [...this.state.incidents, ...incidents.incidents]
+      offset:
+        incidents.offset === 0
+          ? 99
+          : 100 + (incidents.total - incidents.offset),
+      incidents: [...this.state.incidents, ...incidents.incidents],
     });
-    this.saveIncidents(incidents.more, incidents.total)
+    this.saveIncidents(incidents.more, incidents.total);
   };
 
   saveIncidents = (isMore) => {
-    if(isMore) {
-      this.getIncidents()
+    const { dispatch } = this.context;
+    if (isMore) {
+      this.getIncidents();
     }
     const weekdays = getWeekDays(this.state.incidents);
     const sorted_incidents = mapIncidentToDay(weekdays, this.state.incidents);
+    getIncidents(sorted_incidents)(dispatch);
     this.setState({
       weekdays,
       sorted_incidents,
       showIncidents: true,
       loading: false,
     });
-  }
+  };
 
   copyToClipboard = (summary) => {
     navigator.clipboard.writeText(summary);
@@ -176,3 +188,5 @@ export default class GetView extends PureComponent {
     );
   }
 }
+
+GetView.contextType = Context;

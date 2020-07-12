@@ -1,4 +1,6 @@
 import React, { PureComponent } from "react";
+import { markHour } from "../../Context/actions";
+import { Context } from "../../Context";
 import "./index.css";
 
 class Incidents extends PureComponent {
@@ -18,33 +20,12 @@ class Incidents extends PureComponent {
       });
   };
 
-  markHour = (incident) => {
-    this.setState(
-      {
-        hoursMarked: {
-          ...this.state.hoursMarked,
-          [incident.day]: this.state.hoursMarked[incident.day]
-            ? [
-                ...this.state.hoursMarked[incident.day],
-                incident.incident_number,
-              ]
-            : [incident.incident_number],
-        },
-      },
-      () => {
-        localStorage.setItem(
-          "hoursMarked",
-          JSON.stringify(this.state.hoursMarked)
-        );
-      }
-    );
-  };
-
   render() {
+    const { dispatch, incidents, filters } = this.context;
     return (
       <React.Fragment>
         <div className="columns">
-          {this.props.sorted_incidents.map((day, index) => {
+          {incidents.map((day, index) => {
             return (
               <div key={index}>
                 <h1 onClick={() => this.props.toggleDay(index)}>
@@ -53,18 +34,25 @@ class Incidents extends PureComponent {
                 {!this.props.collapsedTables[index] && (
                   <ul id={index}>
                     {day.map((incident) => {
+                      const filteredOut = filters.exclude
+                        .split(",")
+                        .some(
+                          (filter) =>
+                            filter && incident.service.summary.includes(filter)
+                        );
+                      if (filteredOut) return;
                       return (
                         <li key={incident.incident_number}>
                           <h3
                             className="summary"
                             onClick={() => {
                               this.props.copyToClipboard(incident.summary);
-                              this.markHour(incident);
+                              markHour(incident)(dispatch);
                             }}
                           >
                             {incident.service.summary}{" "}
-                            {this.state.hoursMarked[incident.day] &&
-                            this.state.hoursMarked[incident.day].includes(
+                            {this.context.hoursMarked[incident.day] &&
+                            this.context.hoursMarked[incident.day].includes(
                               incident.incident_number
                             ) ? (
                               <p className="hour-mark" />
@@ -97,4 +85,5 @@ class Incidents extends PureComponent {
   }
 }
 
+Incidents.contextType = Context;
 export default Incidents;

@@ -1,4 +1,6 @@
 import React, { PureComponent } from "react";
+import { Context } from "../../Context";
+import { setFilters } from "../../Context/actions";
 import "./index.css";
 
 class Filters extends PureComponent {
@@ -6,25 +8,29 @@ class Filters extends PureComponent {
     super(props);
 
     this.state = {
-      excludeFilter: "",
+      filters: {},
     };
   }
 
-  componentDidMount() {
-    const excludeFilter = localStorage.getItem("excludeFilter");
+  componentDidMount = () => {
+    const { filters } = this.context;
     this.setState({
-      excludeFilter,
+      filters,
     });
-  }
+  };
 
-  onExcludeFilterChange = async (e) => {
+  onFilterChange = async (filter, e) => {
     this.setState({
-      excludeFilter: e.target.value,
+      filters: {
+        [filter]: e.target.value,
+      },
     });
   };
 
   setFilters = () => {
-    localStorage.setItem("excludeFilter", this.state.excludeFilter || "");
+    const { dispatch } = this.context;
+    localStorage.setItem("filters", JSON.stringify(this.state.filters));
+    setFilters("exclude", this.state.filters.exclude)(dispatch);
     this.props.close();
   };
 
@@ -36,9 +42,9 @@ class Filters extends PureComponent {
           <h4>Exclude (use comma to separate)</h4>
           <input
             placeholder="Service names to filter out"
-            onChange={(e) => this.onExcludeFilterChange(e)}
+            onChange={(e) => this.onFilterChange("exclude", e)}
             className="input"
-            value={this.state.excludeFilter}
+            value={this.state.filters.exclude}
           />
           <input
             onClick={() => this.setFilters()}
@@ -52,4 +58,5 @@ class Filters extends PureComponent {
   }
 }
 
+Filters.contextType = Context;
 export default Filters;

@@ -1,23 +1,9 @@
-const isFiltered = (incident) => {
-  const filters = localStorage.getItem("excludeFilter");
-
-  if (
-    filters &&
-    filters
-      .split(",")
-      .some((filter) => incident.service.summary.includes(filter))
-  ) {
-    return true;
-  }
-  return false;
-};
-
 export const mapIncidentToDay = (weekdays, incidents) => {
   return weekdays.map((day) => {
     return incidents
       .filter((incident) => {
         const date = new Date(incident.created_at).toISOString();
-        if (date.substr(0, 10) === day && !isFiltered(incident)) {
+        if (date.substr(0, 10) === day) {
           return true;
         }
         return false;
