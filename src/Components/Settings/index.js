@@ -10,20 +10,25 @@ class Settings extends PureComponent {
     this.state = {
       token: "",
       loading: false,
+      showTeams: false,
     };
   }
 
   componentDidMount = async () => {
-    this.setState({
-      loading: true,
-    });
     const { dispatch } = this.context;
     const token = localStorage.getItem("token");
     if (token) {
+      this.setState({
+        token,
+      });
+      this.setState({
+        loading: true,
+      });
       await getTeams()(dispatch);
       this.setState({
         token,
         loading: false,
+        showTeams: true,
       });
     }
   };
@@ -41,9 +46,15 @@ class Settings extends PureComponent {
   };
 
   setToken = async () => {
+    this.setState({
+      loading: true
+    })
     const { dispatch } = this.context;
     localStorage.setItem("token", this.state.token);
     await getTeams()(dispatch);
+    this.setState({
+      loading: false
+    })
   };
 
   renderTeams = () => {
@@ -81,14 +92,16 @@ class Settings extends PureComponent {
             type="password"
           />
           {this.state.loading ? <div className="loading-spinner" /> : null}
-          {this.state.loading ? null : this.renderTeams()}
+          {this.context.teams.length !== 0 ? this.renderTeams() : null}
           <input
             onClick={() =>
-              this.context.teams ? this.props.close() : this.setToken()
+              this.context.teams.length !== 0
+                ? this.props.close()
+                : this.setToken()
             }
             className="submit"
             type="submit"
-            value={this.context.teams ? "Save" : "Get teams"}
+            value={this.context.teams.length !== 0 ? "Save" : "Get teams"}
           />
           <p>
             Don't have a{" "}
