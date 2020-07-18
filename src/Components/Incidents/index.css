@@ -1,12 +1,26 @@
 .summary {
-  cursor: pointer;
   justify-content: center;
   align-items: center;
-  padding-left: 25px;
 }
 
 h4 {
   margin: 5px;
+}
+
+ul {
+  padding: 0px;
+}
+
+.incident {
+  box-shadow: 2px 2px 2px #000000;
+}
+
+.incident-status {
+  float: left;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #bbb;
 }
 
 .hour-mark {
