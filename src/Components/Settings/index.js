@@ -34,8 +34,10 @@ class Settings extends PureComponent {
   };
 
   changeTeamID = (e) => {
-    localStorage.setItem("teamID", e.target.value);
-    localStorage.setItem("teamName", e.target.text);
+    const teamName = e.target[e.target.selectedIndex].text
+    const teamID =  e.target[e.target.selectedIndex].value
+    localStorage.setItem("teamID", teamID);
+    localStorage.setItem("teamName", teamName);
   };
 
   onTokenChange = (e) => {
@@ -47,25 +49,24 @@ class Settings extends PureComponent {
 
   setToken = async () => {
     this.setState({
-      loading: true
-    })
+      loading: true,
+    });
     const { dispatch } = this.context;
     localStorage.setItem("token", this.state.token);
     await getTeams()(dispatch);
     this.setState({
-      loading: false
-    })
+      loading: false,
+    });
   };
 
   renderTeams = () => {
     return (
       <React.Fragment>
         <h4>Pagerduty team ID</h4>
-        <select className="input" name="teams" id="teams">
+        <select onChange={(e) => this.changeTeamID(e)} className="input" name="teams" id="teams">
           {this.context.teams.map((team, index) => {
             return (
               <option
-                onClick={(e) => this.changeTeamID(e)}
                 key={index}
                 value={team.id}
                 name={team.name}
