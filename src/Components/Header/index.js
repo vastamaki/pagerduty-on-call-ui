@@ -67,6 +67,7 @@ class Header extends PureComponent {
             </p>
             <p
               onClick={() => {
+                clearIncidents()(dispatch)
                 this.setState({
                   settingsVisible: true,
                 });

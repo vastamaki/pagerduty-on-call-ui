@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import { markHour, toggleNotification } from "../../Context/actions";
 import { Context } from "../../Context";
+import ContextMenu from "../ContextMenu";
 import "./index.css";
 
 class Incidents extends PureComponent {
@@ -9,8 +9,25 @@ class Incidents extends PureComponent {
 
     this.state = {
       collapsedTables: [],
+      showContextMenu: false,
+      cursorPosition: {
+        x: 0,
+        y: 0,
+      },
     };
   }
+
+  onContextMenu = (e, incident) => {
+    e.preventDefault();
+    this.setState({
+      showContextMenu: !this.state.showContextMenu,
+      selectedIncident: incident,
+      cursorPosition: {
+        x: e.pageX,
+        y: e.pageY,
+      },
+    });
+  };
 
   toggleDay = (index) => {
     const collapsedTables = [...this.state.collapsedTables];
@@ -20,27 +37,36 @@ class Incidents extends PureComponent {
     });
   };
 
-  copyToClipboard = (summary) => {
-    const { dispatch } = this.context;
-    navigator.clipboard.writeText(summary);
-    toggleNotification({
-      hidden: false,
-      success: true,
-      message: "Summary copied to clipboard!",
-    })(dispatch);
-    setTimeout(() => {
-      toggleNotification({
-        hidden: true,
-        message: "",
-        success: "true",
-      })(dispatch);
-    }, 3000);
+  incidentStatusToColor = (incident) => {
+    if (incident.alert_counts.triggered > 0 && incident.acknowledgements[0]) {
+      return "#f59331";
+    }
+    if (incident.alert_counts.triggered > 0 && !incident.acknowledgements[0]) {
+      return "#ff0000";
+    } else if (incident.alert_counts.resolved === incident.alert_counts.all) {
+      return "#00a600";
+    }
   };
 
+  closeContextMenu = () => {
+    this.setState({
+      showContextMenu: false,
+      selectedIncident: {},
+      cursorPosition: {}
+    })
+  }
+
   render() {
-    const { dispatch, incidents, filters, weekdays } = this.context;
+    const { incidents, filters, weekdays } = this.context;
     return (
       <React.Fragment>
+        {this.state.showContextMenu && (
+          <ContextMenu
+            incident={this.state.selectedIncident}
+            cursorPosition={this.state.cursorPosition}
+            closeContextMenu={this.closeContextMenu}
+          />
+        )}
         <div className="columns">
           {incidents.map((day, index) => {
             return (
@@ -59,14 +85,20 @@ class Incidents extends PureComponent {
                         );
                       if (filteredOut) return null;
                       return (
-                        <li key={incident.incident_number}>
-                          <h3
-                            className="summary"
-                            onClick={() => {
-                              this.copyToClipboard(incident.summary);
-                              markHour(incident)(dispatch);
-                            }}
-                          >
+                        <li
+                        className="incident"
+                          key={incident.incident_number}
+                          onContextMenu={(e) => this.onContextMenu(e, incident)}
+                        >
+                          <h3 className="summary">
+                            <p
+                              style={{
+                                backgroundColor: this.incidentStatusToColor(
+                                  incident
+                                ),
+                              }}
+                              className="incident-status"
+                            ></p>
                             {incident.service.summary}{" "}
                             {this.context.hoursMarked[incident.day] &&
                             this.context.hoursMarked[incident.day].includes(

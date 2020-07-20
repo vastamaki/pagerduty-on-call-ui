@@ -11,14 +11,18 @@ export const mapIncidentToDay = (weekdays, incidents) => {
       .map((incident) => {
         const {
           incident_number,
+          acknowledgements,
           created_at,
           service,
           summary,
           html_url,
           last_status_change_at,
           last_status_change_by,
+          alert_counts
         } = incident;
         return {
+          acknowledgements,
+          alert_counts,
           incident_number,
           created_at,
           service,
