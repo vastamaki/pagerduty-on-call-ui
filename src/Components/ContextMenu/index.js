@@ -56,8 +56,8 @@ class ContextMenu extends PureComponent {
         onMouseLeave={() => this.onMouseLeave()}
         onMouseEnter={() => this.onMouseEnter()}
         style={{
-          top: this.props.cursorPosition.y,
-          left: this.props.cursorPosition.x,
+          top: this.props.cursorPosition.y - 3,
+          left: this.props.cursorPosition.x - 3,
         }}
         className="context-menu"
       >
