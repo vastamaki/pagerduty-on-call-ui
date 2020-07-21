@@ -15,6 +15,12 @@ ul {
   box-shadow: 2px 2px 2px #000000;
 }
 
+.day > ul {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .incident-status {
   float: left;
   width: 25px;

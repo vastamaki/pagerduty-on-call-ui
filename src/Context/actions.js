@@ -50,6 +50,14 @@ export const changeModalState = (modal) => (dispatch) => {
     payload: modal,
   });
 };
+
+export const updateCardContent = (cardContent) => (dispatch) => {
+  dispatch({
+    type: "UPDATE_CARD_CONTENT",
+    payload: cardContent,
+  });
+}
+
 export const getIncidents = (incidents, weekdays) => (dispatch) => {
   dispatch({
     type: "GET_INCIDENTS",
