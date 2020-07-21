@@ -1,8 +1,9 @@
-.settings > h2 {
-  padding: 0px 0px 15px 0px;
+h3 {
+  padding: 0px;
+  margin: 0px;
 }
 
-.settings-wrapper {
+.card-settings-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,7 +16,7 @@
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.settings {
+.card-settings {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,6 +26,22 @@
   padding: 20px 15px 20px 15px;
   border-radius: 8px;
   min-width: 300px;
+}
+
+.card-settings > ul {
+  list-style-type: none;
+}
+
+.card-settings > ul > li {
+  margin: 5px;
+  padding: 5px;
+  justify-content: left;
+  display: flex;
+}
+
+.card-settings > ul > li > p {
+  display: flex;
+  align-items: center;
 }
 
 p,

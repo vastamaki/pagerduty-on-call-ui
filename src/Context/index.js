@@ -59,6 +59,11 @@ const reducer = (state, action) => {
           [action.payload.modal]: action.payload.state,
         },
       };
+    case "UPDATE_CARD_CONTENT":
+      return {
+        ...state,
+        cardContent: action.payload
+      }
     default:
       return state;
   }
@@ -85,15 +90,23 @@ export class Provider extends Component {
       teams: false,
       cards: false,
     },
+    cardContent: {
+      summary: true,
+      createdAt: true,
+      latestChange: true,
+      changedBy: true,
+    },
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 
   componentDidMount = () => {
-    const filters = localStorage.getItem("filters");
-    const hoursMarked = localStorage.getItem("hoursMarked");
+    const filters = JSON.parse(localStorage.getItem("filters"));
+    const hoursMarked = JSON.parse(localStorage.getItem("hoursMarked"));
+    const cardContent = JSON.parse(localStorage.getItem("cardContent"));
     this.setState({
-      filters: JSON.parse(filters) || this.state.filters,
-      hoursMarked: JSON.parse(hoursMarked) || this.state.hoursMarked,
+      filters: filters || this.state.filters,
+      hoursMarked: hoursMarked || this.state.hoursMarked,
+      cardContent: cardContent,
     });
   };
 

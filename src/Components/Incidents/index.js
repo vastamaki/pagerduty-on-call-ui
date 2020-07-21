@@ -52,12 +52,12 @@ class Incidents extends PureComponent {
     this.setState({
       showContextMenu: false,
       selectedIncident: {},
-      cursorPosition: {}
-    })
-  }
+      cursorPosition: {},
+    });
+  };
 
   render() {
-    const { incidents, filters, weekdays } = this.context;
+    const { incidents, filters, weekdays, cardContent } = this.context;
     return (
       <React.Fragment>
         {this.state.showContextMenu && (
@@ -70,7 +70,7 @@ class Incidents extends PureComponent {
         <div className="columns">
           {incidents.map((day, index) => {
             return (
-              <div key={index}>
+              <div className="day" key={index}>
                 <h1 onClick={() => this.toggleDay(index)}>
                   {weekdays[index]} ({day.length})
                 </h1>
@@ -86,7 +86,7 @@ class Incidents extends PureComponent {
                       if (filteredOut) return null;
                       return (
                         <li
-                        className="incident"
+                          className="incident"
                           key={incident.incident_number}
                           onContextMenu={(e) => this.onContextMenu(e, incident)}
                         >
@@ -109,17 +109,28 @@ class Incidents extends PureComponent {
                               <p className="no-hour-mark" />
                             )}
                           </h3>
-                          <a title={incident.summary} href={incident.html_url}>
-                            {incident.summary.substr(0, 50) + "..."}
-                          </a>
-                          <h4>Created: {incident.created_at}</h4>
-                          <h4>
-                            Latest change: {incident.last_status_change_at}
-                          </h4>
-                          <h4>
-                            Last status change by:{" "}
-                            {incident.last_status_change_by.summary}
-                          </h4>
+                          {cardContent.summary && (
+                            <a
+                              title={incident.summary}
+                              href={incident.html_url}
+                            >
+                              {incident.summary.substr(0, 50) + "..."}
+                            </a>
+                          )}
+                          {cardContent.createdAt && (
+                            <h4>Created: {incident.created_at}</h4>
+                          )}
+                          {cardContent.latestChange && (
+                            <h4>
+                              Latest change: {incident.last_status_change_at}
+                            </h4>
+                          )}
+                          {cardContent.changedBy && (
+                            <h4>
+                              Last status change by:{" "}
+                              {incident.last_status_change_by.summary}
+                            </h4>
+                          )}
                         </li>
                       );
                     })}
