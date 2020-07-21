@@ -81,3 +81,43 @@ body,
     background-color: #006400;
   }
 }
+
+input[type="checkbox"] {
+  display: none;
+}
+
+label {
+  margin: 0px 10px 0px 0px;
+  cursor: pointer;
+  width: 45px;
+  height: 20px;
+  background: grey;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+}
+
+label:after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 5px;
+  transition: 0.4s;
+}
+
+input:checked + label {
+  background: #2ebc2e;
+}
+
+input:checked + label:after {
+  left: calc(100% - 5px);
+  transform: translateX(-100%);
+}
+
+label:active:after {
+  width: 25px;
+}
