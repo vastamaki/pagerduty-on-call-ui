@@ -14,7 +14,7 @@ export default class GetView extends PureComponent {
 
     this.state = {
       offset: 0,
-      loading: false
+      loading: false,
     };
   }
 
@@ -84,7 +84,7 @@ export default class GetView extends PureComponent {
       offset:
         incidents.offset === 0
           ? 99
-          : 100 + (incidents.total - incidents.offset)
+          : 100 + (incidents.total - incidents.offset),
     });
     this.saveIncidents(incidents.more, incidents.incidents);
   };
@@ -99,12 +99,6 @@ export default class GetView extends PureComponent {
     getIncidents(sorted_incidents, weekdays)(dispatch);
     this.setState({
       loading: false,
-    });
-  };
-
-  closeNotification = () => {
-    this.setState({
-      notification: { hidden: true },
     });
   };
 
