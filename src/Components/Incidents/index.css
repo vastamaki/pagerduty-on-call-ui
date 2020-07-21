@@ -21,6 +21,11 @@ ul {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.incident-summary {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .incident-status {
   float: left;
   width: 25px;

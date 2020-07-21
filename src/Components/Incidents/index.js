@@ -110,12 +110,15 @@ class Incidents extends PureComponent {
                             )}
                           </h3>
                           {cardContent.summary && (
-                            <a
+                            <h4
+                              className="incident-summary"
                               title={incident.summary}
-                              href={incident.html_url}
+                              onClick={() => window.open(incident.html_url, "_blank")}
                             >
-                              {incident.summary.substr(0, 50) + "..."}
-                            </a>
+                              {incident.summary.length > 50
+                                ? incident.summary.substr(0, 50) + "..."
+                                : incident.summary}
+                            </h4>
                           )}
                           {cardContent.createdAt && (
                             <h4>Created: {incident.created_at}</h4>
