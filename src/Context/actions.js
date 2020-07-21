@@ -44,6 +44,12 @@ export const markHour = (incident) => (dispatch) => {
   });
 };
 
+export const changeModalState = (modal) => (dispatch) => {
+  dispatch({
+    type: "TOGGLE_MODAL",
+    payload: modal,
+  });
+};
 export const getIncidents = (incidents, weekdays) => (dispatch) => {
   dispatch({
     type: "GET_INCIDENTS",
