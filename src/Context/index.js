@@ -52,6 +52,13 @@ const reducer = (state, action) => {
           success: action.payload.success,
         },
       };
+    case "TOGGLE_MODAL":
+      return {
+        ...state,
+        openModals: {
+          [action.payload.modal]: action.payload.state,
+        },
+      };
     default:
       return state;
   }
@@ -72,6 +79,12 @@ export class Provider extends Component {
     },
     showIncidents: false,
     weekdays: [],
+    openModals: {
+      settings: false,
+      filters: false,
+      teams: false,
+      cards: false,
+    },
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 

@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { Context } from "../../Context";
-import { setFilters } from "../../Context/actions";
+import { setFilters, changeModalState } from "../../Context/actions";
 import "./index.css";
 
 class Filters extends PureComponent {
@@ -31,11 +31,15 @@ class Filters extends PureComponent {
     const { dispatch } = this.context;
     localStorage.setItem("filters", JSON.stringify(this.state.filters));
     setFilters("exclude", this.state.filters.exclude)(dispatch);
-    this.props.close();
+    changeModalState({
+      modal: "filters",
+      state: false,
+    })(dispatch);
   };
 
   render() {
-    return (
+    const { openModals } = this.context;
+    return openModals.filters ? (
       <div className="settings-wrapper">
         <div className="settings">
           <h1 className="title">Filters</h1>
@@ -54,7 +58,7 @@ class Filters extends PureComponent {
           />
         </div>
       </div>
-    );
+    ) : null;
   }
 }
 
