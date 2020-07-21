@@ -7,6 +7,7 @@
 }
 
 .context-menu > ul {
+  list-style-type: none;
   display: block;
   padding: 0px;
   margin: 0px;
@@ -15,4 +16,8 @@
 .context-menu > ul > li {
   padding: 0px;
   cursor: pointer;
+}
+
+.context-menu > ul > li:hover {
+  color: green;
 }
