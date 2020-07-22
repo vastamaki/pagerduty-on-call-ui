@@ -39,8 +39,8 @@ class Cards extends PureComponent {
   componentDidMount = () => {
     const cardContent = JSON.parse(localStorage.getItem("cardContent"));
     
-    cardContent && this.setState({
-      cardContent: cardContent,
+    this.setState({
+      cardContent: cardContent || this.context.cardContent,
     });
   };
 
