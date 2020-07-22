@@ -106,7 +106,7 @@ export class Provider extends Component {
     this.setState({
       filters: filters || this.state.filters,
       hoursMarked: hoursMarked || this.state.hoursMarked,
-      cardContent: cardContent,
+      cardContent: cardContent || this.state.cardContent,
     });
   };
 
