@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import GetView from "./GetView";
+import PrivateRoute from "./Components/Auth"
 import { Provider } from "./Context";
 import Notification from "./Components/Notification/";
 import Settings from "./Components/Settings/index"
@@ -19,7 +20,7 @@ const routes = (
     <Filters />
     <Router>
       <Switch>
-        <Route exact path="/" component={GetView} />
+        <PrivateRoute exact path="/" component={GetView} />
       </Switch>
     </Router>
   </Provider>

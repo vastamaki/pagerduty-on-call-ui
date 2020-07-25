@@ -37,35 +37,22 @@ export default class GetView extends PureComponent {
       method: "GET",
       headers: {
         Accept: "application/vnd.pagerduty+json;version=2",
-        Authorization: "Token token=" + localStorage.getItem("token"),
+        Authorization: "Bearer " + localStorage.getItem("access_token"),
       },
     };
 
-    try {
-      var response = await fetch(
-        encodeURI(
-          `https://api.pagerduty.com/incidents?since=${
-            startDate || this.state.startDate
-          }&until=${
-            endDate || this.state.endDate
-          }&team_ids[]=${localStorage.getItem(
-            "teamID"
-          )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
-        ),
-        params
-      );
-    } catch (err) {
-      this.setState({
-        loading: false,
-        notification: {
-          success: false,
-          message: "Failed to fetch data! Check that your token is valid!",
-          hidden: false,
-        },
-      });
-      return;
-    }
-
+    const response = await fetch(
+      encodeURI(
+        `https://api.pagerduty.com/incidents?since=${
+          startDate || this.state.startDate
+        }&until=${
+          endDate || this.state.endDate
+        }&team_ids[]=${localStorage.getItem(
+          "teamID"
+        )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`
+      ),
+      params
+    );
     const incidents = await response.json();
 
     if (!incidents.incidents || incidents.error) {
