@@ -35,6 +35,16 @@ class Header extends PureComponent {
             <p
               onClick={() => {
                 changeModalState({
+                  modal: "sorting",
+                  state: true,
+                })(dispatch);
+              }}
+            >
+              Sorting
+            </p>
+            <p
+              onClick={() => {
+                changeModalState({
                   modal: "settings",
                   state: true,
                 })(dispatch);

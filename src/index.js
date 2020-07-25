@@ -7,7 +7,8 @@ import Notification from "./Components/Notification/";
 import Settings from "./Components/Settings/index"
 import Cards from "./Components/Settings/Cards"
 import Teams from "./Components/Settings/Teams"
-import Filters from "./Components/Filters"
+import Filters from "./Components/Settings/Filters"
+import Sorting from "./Components/Settings/Sorting"
 import "./index.css";
 
 const routes = (
@@ -17,6 +18,7 @@ const routes = (
     <Cards />
     <Teams />
     <Filters />
+    <Sorting />
     <Router>
       <Switch>
         <Route exact path="/" component={GetView} />

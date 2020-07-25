@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import { Context } from "../../Context";
-import { setFilters, changeModalState } from "../../Context/actions";
+import { Context } from "../../../Context";
+import { setFilters, changeModalState } from "../../../Context/actions";
 import "./index.css";
 
 class Filters extends PureComponent {
