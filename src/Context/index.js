@@ -91,6 +91,7 @@ export class Provider extends Component {
       filters: false,
       teams: false,
       cards: false,
+      sorting: false
     },
     cardContent: {
       summary: true,
