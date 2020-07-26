@@ -1,21 +1,17 @@
-import React, { PureComponent } from "react";
-import { changeModalState, updateCardContent } from "../../../Context/actions";
-import { Context } from "../../../Context";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { changeModalState, updateCardContent } from '../../../Context/actions';
+import { Context } from '../../../Context';
+import './index.css';
 
 class Cards extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      cardContent: {
-        summary: false,
-        createdAt: false,
-        latestChange: false,
-        changedBy: false,
-      },
-    };
-  }
+  state = {
+    cardContent: {
+      summary: false,
+      createdAt: false,
+      latestChange: false,
+      changedBy: false,
+    },
+  };
 
   handleCheckboxChange = (e, name) => {
     this.setState({
@@ -28,26 +24,27 @@ class Cards extends PureComponent {
 
   handleSave = () => {
     const { dispatch } = this.context;
-    localStorage.setItem("cardContent", JSON.stringify(this.state.cardContent));
+
+    localStorage.setItem('cardContent', JSON.stringify(this.state.cardContent));
+
     updateCardContent(this.state.cardContent)(dispatch);
+
     changeModalState({
-      modal: "cardSettings",
+      modal: 'cardSettings',
       state: false,
     })(dispatch);
   };
 
   componentDidMount = () => {
-    const cardContent = JSON.parse(localStorage.getItem("cardContent"));
-    
+    const cardContent = JSON.parse(localStorage.getItem('cardContent'));
+
     this.setState({
       cardContent: cardContent || this.context.cardContent,
     });
   };
 
   render() {
-    const { openModals } = this.context;
-
-    return openModals.cardSettings ? (
+    return (
       <div className="card-settings-wrapper">
         <div className="card-settings">
           <h2>Card content</h2>
@@ -57,10 +54,10 @@ class Cards extends PureComponent {
                 <input
                   type="checkbox"
                   id="switch1"
-                  onChange={(e) => this.handleCheckboxChange(e, "summary")}
+                  onChange={(e) => this.handleCheckboxChange(e, 'summary')}
                   checked={this.state.cardContent.summary}
                 />
-                <label for="switch1" />
+                <label htmlFor="switch1"/>
                 Show incident summary
               </p>
             </li>
@@ -69,10 +66,10 @@ class Cards extends PureComponent {
                 <input
                   type="checkbox"
                   id="switch2"
-                  onChange={(e) => this.handleCheckboxChange(e, "createdAt")}
+                  onChange={(e) => this.handleCheckboxChange(e, 'createdAt')}
                   checked={this.state.cardContent.createdAt}
                 />
-                <label for="switch2" />
+                <label htmlFor="switch2"/>
                 Show incident created at
               </p>
             </li>
@@ -81,10 +78,10 @@ class Cards extends PureComponent {
                 <input
                   type="checkbox"
                   id="switch3"
-                  onChange={(e) => this.handleCheckboxChange(e, "latestChange")}
+                  onChange={(e) => this.handleCheckboxChange(e, 'latestChange')}
                   checked={this.state.cardContent.latestChange}
                 />
-                <label for="switch3" />
+                <label htmlFor="switch3"/>
                 Show incident latest change
               </p>
             </li>
@@ -93,10 +90,10 @@ class Cards extends PureComponent {
                 <input
                   type="checkbox"
                   id="switch4"
-                  onChange={(e) => this.handleCheckboxChange(e, "changedBy")}
+                  onChange={(e) => this.handleCheckboxChange(e, 'changedBy')}
                   checked={this.state.cardContent.changedBy}
                 />
-                <label for="switch4" />
+                <label htmlFor="switch4"/>
                 Show incident latest change by
               </p>
             </li>
@@ -109,8 +106,9 @@ class Cards extends PureComponent {
           />
         </div>
       </div>
-    ) : null;
+    );
   }
 }
+
 Cards.contextType = Context;
 export default Cards;

@@ -1,19 +1,16 @@
-import React, { PureComponent } from "react";
-import { Context } from "../../Context";
-import { setFilters, changeModalState } from "../../Context/actions";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { Context } from '../../../Context';
+import { setFilters, changeModalState } from '../../../Context/actions';
+import './index.css';
 
 class Filters extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      filters: {},
-    };
-  }
+  state = {
+    filters: {},
+  };
 
   componentDidMount = () => {
     const { filters } = this.context;
+
     this.setState({
       filters,
     });
@@ -29,24 +26,26 @@ class Filters extends PureComponent {
 
   setFilters = () => {
     const { dispatch } = this.context;
-    localStorage.setItem("filters", JSON.stringify(this.state.filters));
-    setFilters("exclude", this.state.filters.exclude)(dispatch);
+
+    localStorage.setItem('filters', JSON.stringify(this.state.filters));
+
+    setFilters('exclude', this.state.filters.exclude)(dispatch);
+
     changeModalState({
-      modal: "filters",
+      modal: 'filters',
       state: false,
     })(dispatch);
   };
 
   render() {
-    const { openModals } = this.context;
-    return openModals.filters ? (
+    return (
       <div className="settings-wrapper">
         <div className="settings">
           <h1 className="title">Filters</h1>
           <h4>Exclude (use comma to separate)</h4>
           <input
             placeholder="Service names to filter out"
-            onChange={(e) => this.onFilterChange("exclude", e)}
+            onChange={(e) => this.onFilterChange('exclude', e)}
             className="input"
             value={this.state.filters.exclude}
           />
@@ -58,7 +57,7 @@ class Filters extends PureComponent {
           />
         </div>
       </div>
-    ) : null;
+    );
   }
 }
 

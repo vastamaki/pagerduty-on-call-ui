@@ -1,23 +1,17 @@
-import React, { PureComponent } from "react";
-import { clearIncidents, changeModalState } from "../../Context/actions";
-import { Context } from "../../Context";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { clearIncidents, changeModalState } from '../../Context/actions';
+import { Context } from '../../Context';
+import './index.css';
 
 class Header extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
   render() {
     const { dispatch } = this.context;
     return (
       <React.Fragment>
         <div className="header">
           <div className="menu-left">
-            <p title={localStorage.getItem("teamID")}>
-              {localStorage.getItem("teamName")}
+            <p title={localStorage.getItem('teamID')}>
+              {localStorage.getItem('teamName')}
             </p>
           </div>
           <div className="menu-right">
@@ -25,7 +19,7 @@ class Header extends PureComponent {
             <p
               onClick={() => {
                 changeModalState({
-                  modal: "filters",
+                  modal: 'filters',
                   state: true,
                 })(dispatch);
               }}
@@ -35,7 +29,7 @@ class Header extends PureComponent {
             <p
               onClick={() => {
                 changeModalState({
-                  modal: "settings",
+                  modal: 'settings',
                   state: true,
                 })(dispatch);
               }}
