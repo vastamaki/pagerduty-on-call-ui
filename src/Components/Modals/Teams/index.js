@@ -84,8 +84,8 @@ class Teams extends PureComponent {
   };
 
   render() {
-    const { dispatch, openModals } = this.context;
-    return openModals.teams ? (
+    const { dispatch } = this.context;
+    return  (
       <div className="teams-settings-wrapper">
         <div className="teams-settings">
           <h4>Pagerduty token</h4>
@@ -119,7 +119,7 @@ class Teams extends PureComponent {
           </p>
         </div>
       </div>
-    ) : null;
+    );
   }
 }
 Teams.contextType = Context;
