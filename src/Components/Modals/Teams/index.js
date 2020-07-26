@@ -1,30 +1,27 @@
-import React, { PureComponent } from "react";
-import { getTeams, changeModalState } from "../../../Context/actions";
-import { Context } from "../../../Context";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { getTeams, changeModalState } from '../../../Context/actions';
+import { Context } from '../../../Context';
+import './index.css';
 
 class Teams extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      token: "",
-      loading: false,
-      showTeams: false,
-    };
-  }
+  state = {
+    token: '',
+    loading: false,
+    showTeams: false,
+  };
 
   componentDidMount = async () => {
     const { dispatch } = this.context;
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
+
     if (token) {
       this.setState({
         token,
-      });
-      this.setState({
         loading: true,
       });
+
       await getTeams()(dispatch);
+
       this.setState({
         token,
         loading: false,
@@ -36,33 +33,38 @@ class Teams extends PureComponent {
   changeTeamID = (e) => {
     const teamName = e.target[e.target.selectedIndex].text;
     const teamID = e.target[e.target.selectedIndex].value;
-    localStorage.setItem("teamID", teamID);
-    localStorage.setItem("teamName", teamName);
+
+    localStorage.setItem('teamID', teamID);
+    localStorage.setItem('teamName', teamName);
   };
 
   onTokenChange = (e) => {
     this.setState({
       token: e.target.value,
-      showTeams: false
+      showTeams: false,
     });
-    localStorage.setItem("token", e.target.value);
+
+    localStorage.setItem('token', e.target.value);
   };
 
   setToken = async () => {
     this.setState({
       loading: true,
     });
+
     const { dispatch } = this.context;
-    localStorage.setItem("token", this.state.token);
+
+    localStorage.setItem('token', this.state.token);
+
     await getTeams()(dispatch);
+
     this.setState({
       loading: false,
-      showTeams: true
+      showTeams: true,
     });
   };
 
-  renderTeams = () => {
-    return (
+  renderTeams = () => (
       <React.Fragment>
         <h4>Pagerduty team ID</h4>
         <select
@@ -71,21 +73,18 @@ class Teams extends PureComponent {
           name="teams"
           id="teams"
         >
-          {this.context.teams.map((team, index) => {
-            return (
+          {this.context.teams.map((team, index) => (
               <option key={index} value={team.id} name={team.name}>
                 {team.name}
               </option>
-            );
-          })}
+          ))}
         </select>
       </React.Fragment>
-    );
-  };
+  );
 
   render() {
     const { dispatch } = this.context;
-    return  (
+    return (
       <div className="teams-settings-wrapper">
         <div className="teams-settings">
           <h4>Pagerduty token</h4>
@@ -99,20 +98,19 @@ class Teams extends PureComponent {
           {this.state.loading ? <div className="loading-spinner" /> : null}
           {this.state.showTeams ? this.renderTeams() : null}
           <input
-            onClick={() =>
-              this.state.showTeams
-                ? changeModalState({
-                    modal: "teams",
-                    state: false,
-                  })(dispatch)
-                : this.setToken()
+            onClick={() => (this.state.showTeams
+              ? changeModalState({
+                modal: 'teams',
+                state: false,
+              })(dispatch)
+              : this.setToken())
             }
             className="submit"
             type="submit"
-            value={this.state.showTeams ? "Save" : "Get teams"}
+            value={this.state.showTeams ? 'Save' : 'Get teams'}
           />
           <p>
-            Don't have a{" "}
+            Don&apos;t have a{' '}
             <a href=" https://support.pagerduty.com/docs/generating-api-keys#generating-a-personal-rest-api-key">
               token?
             </a>

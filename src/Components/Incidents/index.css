@@ -8,7 +8,7 @@ h4 {
 }
 
 ul {
-  padding: 0px;
+  padding: 0;
 }
 
 .incident {
@@ -41,6 +41,7 @@ ul {
   background-repeat: no-repeat;
   background-image: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZmlsbD0iIzM3ZTI4OCIgZD0iTTI1LjE3MSw1MS43OWExLjUsMS41LDAsMCwxLTEuMTkyLS41ODlMOC44LDMxLjM0NmExLjUsMS41LDAsMCwxLC4yOC0yLjFsNi42MzUtNS4wNzRhMS41LDEuNSwwLDAsMSwyLjEuMjgxbDguMTA4LDEwLjZMNDYuODEyLDEyLjY4NmExLjUsMS41LDAsMCwxLDIuMTItLjA3M2w2LjEsNS43YTEuNSwxLjUsMCwwLDEsLjA3MywyLjEyTDMxLjk1NCw0NS4yMjVhMS41LDEuNSwwLDAsMS0yLjE5My0yLjA0N0w1MS44OTMsMTkuNDgzLDQ3Ljk4LDE1LjgyOSwyNi45LDM4LjRhMS41LDEuNSwwLDAsMS0yLjI4OC0uMTEzTDE2LjM0MiwyNy40NjMsMTIuMDksMzAuNzE1LDI2LjM2MSw0OS4zNzlhMS41LDEuNSwwLDAsMS0xLjE5LDIuNDExWiIgZGF0YS1uYW1lPSJDaGVjayBNYXJrIi8+PC9zdmc+)
 }
+
 .no-hour-mark {
   float: right;
   width: 25px;

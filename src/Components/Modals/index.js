@@ -1,17 +1,11 @@
-import React, { PureComponent } from "react";
-import { Context } from "../../Context/";
-import Cards from "./Cards";
-import Filters from "./Filters";
-import Settings from "./Settings";
-import Teams from "./Teams";
+import React, { PureComponent } from 'react';
+import { Context } from '../../Context';
+import Cards from './Cards';
+import Filters from './Filters';
+import Settings from './Settings';
+import Teams from './Teams';
 
 class Modals extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
   render() {
     const { openModals } = this.context;
     if (openModals.teams) {

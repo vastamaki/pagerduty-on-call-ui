@@ -1,21 +1,17 @@
-import React, { PureComponent } from "react";
-import { Context } from "../../Context";
-import ContextMenu from "../ContextMenu";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { Context } from '../../Context';
+import ContextMenu from '../ContextMenu';
+import './index.css';
 
 class Incidents extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      collapsedTables: [],
-      showContextMenu: false,
-      cursorPosition: {
-        x: 0,
-        y: 0,
-      },
-    };
-  }
+  state = {
+    collapsedTables: [],
+    showContextMenu: false,
+    cursorPosition: {
+      x: 0,
+      y: 0,
+    },
+  };
 
   onContextMenu = (e, incident) => {
     e.preventDefault();
@@ -39,13 +35,14 @@ class Incidents extends PureComponent {
 
   incidentStatusToColor = (incident) => {
     if (incident.alert_counts.triggered > 0 && incident.acknowledgements[0]) {
-      return "#f59331";
+      return '#f59331';
     }
+
     if (incident.alert_counts.triggered > 0 && !incident.acknowledgements[0]) {
-      return "#ff0000";
-    } else if (incident.alert_counts.resolved === incident.alert_counts.all) {
-      return "#00a600";
+      return '#ff0000';
     }
+
+    return '#00a600';
   };
 
   closeContextMenu = () => {
@@ -57,7 +54,9 @@ class Incidents extends PureComponent {
   };
 
   render() {
-    const { incidents, filters, weekdays, cardContent } = this.context;
+    const {
+      incidents, filters, weekdays, cardContent,
+    } = this.context;
     return (
       <React.Fragment>
         {this.state.showContextMenu && (
@@ -68,80 +67,77 @@ class Incidents extends PureComponent {
           />
         )}
         <div className="columns">
-          {incidents.map((day, index) => {
-            return (
-              <div className="day" key={index}>
-                <h1 onClick={() => this.toggleDay(index)}>
-                  {weekdays[index]} ({day.length})
-                </h1>
-                {!this.state.collapsedTables[index] && (
-                  <ul id={index}>
-                    {day.map((incident) => {
-                      const filteredOut = filters.exclude
-                        .split(",")
-                        .some(
-                          (filter) =>
-                            filter && incident.service.summary.includes(filter)
-                        );
-                      if (filteredOut) return null;
-                      return (
-                        <li
-                          className="incident"
-                          key={incident.incident_number}
-                          onContextMenu={(e) => this.onContextMenu(e, incident)}
-                        >
-                          <h3 className="summary">
-                            <p
-                              style={{
-                                backgroundColor: this.incidentStatusToColor(
-                                  incident
-                                ),
-                              }}
-                              className="incident-status"
-                            ></p>
-                            {incident.service.summary}{" "}
-                            {this.context.hoursMarked[incident.day] &&
-                            this.context.hoursMarked[incident.day].includes(
-                              incident.incident_number
-                            ) ? (
-                              <p className="hour-mark" />
-                            ) : (
-                              <p className="no-hour-mark" />
-                            )}
-                          </h3>
-                          {cardContent.summary && (
-                            <h4
-                              className="incident-summary"
-                              title={incident.summary}
-                              onClick={() => window.open(incident.html_url, "_blank")}
-                            >
-                              {incident.summary.length > 50
-                                ? incident.summary.substr(0, 50) + "..."
-                                : incident.summary}
-                            </h4>
-                          )}
-                          {cardContent.createdAt && (
-                            <h4>Created: {incident.created_at}</h4>
-                          )}
-                          {cardContent.latestChange && (
-                            <h4>
-                              Latest change: {incident.last_status_change_at}
-                            </h4>
-                          )}
-                          {cardContent.changedBy && (
-                            <h4>
-                              Last status change by:{" "}
-                              {incident.last_status_change_by.summary}
-                            </h4>
-                          )}
-                        </li>
+          {incidents.map((day, index) => (
+            <div className="day" key={index}>
+              <h1 onClick={() => this.toggleDay(index)}>
+                {weekdays[index]} ({day.length})
+              </h1>
+              {!this.state.collapsedTables[index] && (
+                <ul id={index}>
+                  {day.map((incident) => {
+                    const filteredOut = filters.exclude
+                      .split(',')
+                      .some(
+                        (filter) => filter && incident.service.summary.includes(filter),
                       );
-                    })}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
+                    if (filteredOut) return null;
+                    return (
+                      <li
+                        className="incident"
+                        key={incident.incident_number}
+                        onContextMenu={(e) => this.onContextMenu(e, incident)}
+                      >
+                        <h3 className="summary">
+                          <p
+                            style={{
+                              backgroundColor: this.incidentStatusToColor(
+                                incident,
+                              ),
+                            }}
+                            className="incident-status"
+                          ></p>
+                          {incident.service.summary}{' '}
+                          {this.context.hoursMarked[incident.day]
+                          && this.context.hoursMarked[incident.day].includes(
+                            incident.incident_number,
+                          ) ? (
+                            <p className="hour-mark"/>
+                            ) : (
+                            <p className="no-hour-mark"/>
+                            )}
+                        </h3>
+                        {cardContent.summary && (
+                          <h4
+                            className="incident-summary"
+                            title={incident.summary}
+                            onClick={() => window.open(incident.html_url, '_blank')}
+                          >
+                            {incident.summary.length > 50
+                              ? `${incident.summary.substr(0, 50)}...`
+                              : incident.summary}
+                          </h4>
+                        )}
+                        {cardContent.createdAt && (
+                          <h4>Created: {incident.created_at}</h4>
+                        )}
+                        {cardContent.latestChange && (
+                          <h4>
+                            Latest change: {incident.last_status_change_at}
+                          </h4>
+                        )}
+                        {cardContent.changedBy && (
+                          <h4>
+                            Last status change by:{' '}
+                            {incident.last_status_change_by.summary}
+                          </h4>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          ))}
         </div>
       </React.Fragment>
     );
