@@ -1,38 +1,44 @@
-import React, { PureComponent } from "react";
-import { markHour, toggleNotification } from "../../Context/actions";
-import { Context } from "../../Context";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import * as PropTypes from 'prop-types';
+import { markHour, toggleNotification } from '../../Context/actions';
+import { Context } from '../../Context';
+import './index.css';
 
 class ContextMenu extends PureComponent {
-  constructor(props) {
-    super(props);
+  state = {
+    visibleTimeout: 0,
+  };
 
-    this.state = {};
-  }
-
-  showIncident = () => {};
+  showIncident = () => {
+  };
 
   copySummary = () => {
     const { dispatch } = this.context;
+
     navigator.clipboard.writeText(this.props.incident.summary);
+
     toggleNotification({
       hidden: false,
       success: true,
-      message: "Summary copied to clipboard!",
+      message: 'Summary copied to clipboard!',
     })(dispatch);
+
     setTimeout(() => {
       toggleNotification({
         hidden: true,
-        message: "",
-        success: "true",
+        message: '',
+        success: 'true',
       })(dispatch);
     }, 3000);
+
     markHour(this.props.incident)(dispatch);
+
     this.props.closeContextMenu();
   };
 
-  opneIncidentInPagerduty = () => {
-    window.open(this.props.incident.html_url, "_blank");
+  openIncidentInPagerduty = () => {
+    window.open(this.props.incident.html_url, '_blank');
+
     this.props.closeContextMenu();
   };
 
@@ -64,7 +70,7 @@ class ContextMenu extends PureComponent {
         <ul>
           <li onClick={() => this.showIncident()}>Show incident</li>
           <li onClick={() => this.copySummary()}>Copy summary</li>
-          <li onClick={() => this.opneIncidentInPagerduty()}>
+          <li onClick={() => this.openIncidentInPagerduty()}>
             Show in pagerduty
           </li>
         </ul>
@@ -74,4 +80,9 @@ class ContextMenu extends PureComponent {
 }
 
 ContextMenu.contextType = Context;
+ContextMenu.propTypes = {
+  closeContextMenu: PropTypes.func,
+  cursorPosition: PropTypes.object,
+  incident: PropTypes.object,
+};
 export default ContextMenu;
