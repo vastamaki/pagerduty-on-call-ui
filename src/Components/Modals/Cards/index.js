@@ -38,16 +38,14 @@ class Cards extends PureComponent {
 
   componentDidMount = () => {
     const cardContent = JSON.parse(localStorage.getItem("cardContent"));
-    
+
     this.setState({
       cardContent: cardContent || this.context.cardContent,
     });
   };
 
   render() {
-    const { openModals } = this.context;
-
-    return openModals.cardSettings ? (
+    return (
       <div className="card-settings-wrapper">
         <div className="card-settings">
           <h2>Card content</h2>
@@ -109,7 +107,7 @@ class Cards extends PureComponent {
           />
         </div>
       </div>
-    ) : null;
+    );
   }
 }
 Cards.contextType = Context;

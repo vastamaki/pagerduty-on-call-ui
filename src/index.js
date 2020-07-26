@@ -4,19 +4,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import GetView from "./GetView";
 import { Provider } from "./Context";
 import Notification from "./Components/Notification/";
-import Settings from "./Components/Settings/index"
-import Cards from "./Components/Settings/Cards"
-import Teams from "./Components/Settings/Teams"
-import Filters from "./Components/Filters"
+import Modals from "./Components/Modals"
 import "./index.css";
 
 const routes = (
   <Provider>
     <Notification />
-    <Settings />
-    <Cards />
-    <Teams />
-    <Filters />
+    <Modals />
     <Router>
       <Switch>
         <Route exact path="/" component={GetView} />

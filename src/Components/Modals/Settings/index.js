@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import { Context } from "../../Context";
-import { changeModalState } from "../../Context/actions";
+import { Context } from "../../../Context";
+import { changeModalState } from "../../../Context/actions";
 import "./index.css";
 
 class Settings extends PureComponent {
@@ -11,8 +11,8 @@ class Settings extends PureComponent {
   }
 
   render() {
-    const { dispatch, openModals } = this.context;
-    return openModals.settings ? (
+    const { dispatch } = this.context;
+    return (
       <React.Fragment>
         <div className="settings-wrapper">
           <div className="settings">
@@ -42,7 +42,7 @@ class Settings extends PureComponent {
           </div>
         </div>
       </React.Fragment>
-    ) : null;
+    );
   }
 }
 Settings.contextType = Context;
