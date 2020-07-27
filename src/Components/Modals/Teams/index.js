@@ -87,16 +87,19 @@ class Teams extends PureComponent {
     return (
       <div className="teams-settings-wrapper">
         <div className="teams-settings">
-          <h4>Pagerduty token</h4>
-          <input
-            placeholder="Pagerduty token"
-            onChange={(e) => this.onTokenChange(e)}
+          <h4>Pagerduty team ID</h4>
+          <select
+            onChange={(e) => this.changeTeamID(e)}
             className="input"
-            value={this.state.token}
-            type="password"
-          />
-          {this.state.loading ? <div className="loading-spinner" /> : null}
-          {this.state.showTeams ? this.renderTeams() : null}
+            name="teams"
+            id="teams"
+          >
+            {this.context.teams.map((team, index) => (
+                <option key={index} value={team.id} name={team.name}>
+                  {team.name}
+                </option>
+            ))}
+          </select>
           <input
             onClick={() => (this.state.showTeams
               ? changeModalState({

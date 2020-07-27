@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import GetView from './GetView';
 import { Provider } from './Context';
 import Notification from './Components/Notification';
 import Modals from './Components/Modals';
+import { PrivateRoute } from './Components/Auth';
 import './index.css';
 
 const routes = (
@@ -13,7 +14,7 @@ const routes = (
     <Modals/>
     <Router>
       <Switch>
-        <Route exact path="/" component={GetView}/>
+        <PrivateRoute exact path="/" component={GetView} />
       </Switch>
     </Router>
   </Provider>

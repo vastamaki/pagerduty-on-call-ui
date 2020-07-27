@@ -36,7 +36,7 @@ export default class GetView extends PureComponent {
       method: 'GET',
       headers: {
         Accept: 'application/vnd.pagerduty+json;version=2',
-        Authorization: `Token token=${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
     };
 
