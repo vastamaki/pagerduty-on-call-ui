@@ -29,7 +29,7 @@ class Header extends PureComponent {
             <p
               onClick={() => {
                 changeModalState({
-                  modal: "sorting",
+                  modal: 'sorting',
                   state: true,
                 })(dispatch);
               }}
@@ -39,7 +39,7 @@ class Header extends PureComponent {
             <p
               onClick={() => {
                 changeModalState({
-                  modal: "settings",
+                  modal: 'settings',
                   state: true,
                 })(dispatch);
               }}
