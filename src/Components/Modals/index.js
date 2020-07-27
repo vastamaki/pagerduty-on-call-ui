@@ -4,6 +4,7 @@ import Cards from './Cards';
 import Filters from './Filters';
 import Settings from './Settings';
 import Teams from './Teams';
+import Sorting from './Sorting';
 
 class Modals extends PureComponent {
   render() {
@@ -16,6 +17,9 @@ class Modals extends PureComponent {
     }
     if (openModals.filters) {
       return <Filters />;
+    }
+    if (openModals.sorting) {
+      return <Sorting />;
     }
     if (openModals.settings) {
       return <Settings />;

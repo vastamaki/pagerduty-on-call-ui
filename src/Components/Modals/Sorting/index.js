@@ -1,7 +1,7 @@
-import React, { PureComponent } from "react";
-import { changeModalState } from "../../../Context/actions";
-import { Context } from "../../../Context";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { changeModalState } from '../../../Context/actions';
+import { Context } from '../../../Context';
+import './index.css';
 
 class Sorting extends PureComponent {
   constructor(props) {
@@ -26,7 +26,7 @@ class Sorting extends PureComponent {
   handleSave = () => {
     const { dispatch } = this.context;
     changeModalState({
-      modal: "sorting",
+      modal: 'sorting',
       state: false,
     })(dispatch);
   };
@@ -46,10 +46,10 @@ class Sorting extends PureComponent {
                 <input
                   type="checkbox"
                   id="switch1"
-                  onChange={(e) => this.handleCheckboxChange(e, "createdAt")}
+                  onChange={(e) => this.handleCheckboxChange(e, 'createdAt')}
                   checked={this.state.sortBy.createdAt}
                 />
-                <label for="switch1" />
+                <label htmlFor="switch1" />
                 Sort by created at
               </p>
             </li>
@@ -58,10 +58,10 @@ class Sorting extends PureComponent {
                 <input
                   type="checkbox"
                   id="switch2"
-                  onChange={(e) => this.handleCheckboxChange(e, "updatedAt")}
+                  onChange={(e) => this.handleCheckboxChange(e, 'updatedAt')}
                   checked={this.state.sortBy.updatedAt}
                 />
-                <label for="switch2" />
+                <label htmlFor="switch2" />
                 Sort by last status change
               </p>
             </li>
