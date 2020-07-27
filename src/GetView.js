@@ -91,12 +91,12 @@ export default class GetView extends PureComponent {
   };
 
   saveIncidents = (isMore, incidents) => {
-    const { dispatch } = this.context;
+    const { dispatch, sortBy } = this.context;
     if (isMore) {
       this.getIncidents();
     }
     const weekdays = getWeekDays(incidents);
-    const sortedIncidents = mapIncidentToDay(weekdays, incidents);
+    const sortedIncidents = mapIncidentToDay(weekdays, incidents, sortBy);
     getIncidents(sortedIncidents, weekdays)(dispatch);
     this.setState({
       loading: false,
