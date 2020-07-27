@@ -1,3 +1,5 @@
+import fetch from '../Components/Fetch';
+
 export const getTeams = () => async (dispatch) => {
   const params = {
     method: 'GET',
@@ -7,16 +9,21 @@ export const getTeams = () => async (dispatch) => {
     },
   };
 
-  const response = await fetch(
-    encodeURI('https://api.pagerduty.com/teams'),
-    params,
-  );
+  let response;
+
+  try {
+    response = await fetch(
+      encodeURI('https://api.pagerduty.com/teams'),
+      params,
+    );
+  } catch (err) {
+    throw new Error(err);
+  }
 
   if (response) {
-    const teams = await response.json();
     dispatch({
       type: 'GET_TEAMS',
-      payload: teams.teams,
+      payload: response.teams,
     });
   }
 };

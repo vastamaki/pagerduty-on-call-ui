@@ -40,22 +40,21 @@ export default class GetView extends PureComponent {
       },
     };
 
-    let response;
-
-    try {
-      response = await fetch(
-        encodeURI(
-          `https://api.pagerduty.com/incidents?since=${
-            startDate || this.state.startDate
-          }&until=${
-            endDate || this.state.endDate
-          }&team_ids[]=${localStorage.getItem(
-            'teamID',
-          )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`,
-        ),
-        params,
-      );
-    } catch (err) {
+    const response = await fetch(
+      encodeURI(
+        `https://api.pagerduty.com/incidents?since=${
+          startDate || this.state.startDate
+        }&until=${
+          endDate || this.state.endDate
+        }&team_ids[]=${localStorage.getItem(
+          'teamID',
+        )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`,
+      ),
+      params,
+    );
+    if (response.statusCode === 401) {
+      window.location.href = 'https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=http://localhost:3000&response_type=code&code_challenge_method=S256&code_challenge';
+    } else if (!response.ok) {
       this.setState({
         loading: false,
         notification: {
@@ -64,7 +63,6 @@ export default class GetView extends PureComponent {
           hidden: false,
         },
       });
-      return;
     }
 
     const incidents = await response.json();

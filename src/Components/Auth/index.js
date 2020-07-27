@@ -20,17 +20,15 @@ const checkToken = async (rest) => {
       },
     };
 
-    let response;
+    const response = await fetch(
+      encodeURI(
+        `https://app.pagerduty.com/oauth/token?grant_type=authorization_code&client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=http://localhost:3000&code=${authorizationCode}&code_verifier`,
+      ),
+      params,
+    );
 
-    try {
-      response = await fetch(
-        encodeURI(
-          `https://app.pagerduty.com/oauth/token?grant_type=authorization_code&client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=http://localhost:3000&code=${authorizationCode}&code_verifier`,
-        ),
-        params,
-      );
-    } catch (error) {
-      return false;
+    if (!response.ok) {
+      window.location.href = 'https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=http://localhost:3000&response_type=code&code_challenge_method=S256&code_challenge';
     }
 
     const authResponse = await response.json();

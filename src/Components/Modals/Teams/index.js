@@ -5,29 +5,21 @@ import './index.css';
 
 class Teams extends PureComponent {
   state = {
-    token: '',
     loading: false,
-    showTeams: false,
   };
 
   componentDidMount = async () => {
     const { dispatch } = this.context;
-    const token = localStorage.getItem('token');
 
-    if (token) {
-      this.setState({
-        token,
-        loading: true,
-      });
+    this.setState({
+      loading: true,
+    });
 
-      await getTeams()(dispatch);
+    await getTeams()(dispatch);
 
-      this.setState({
-        token,
-        loading: false,
-        showTeams: true,
-      });
-    }
+    this.setState({
+      loading: false,
+    });
   };
 
   changeTeamID = (e) => {
@@ -38,48 +30,22 @@ class Teams extends PureComponent {
     localStorage.setItem('teamName', teamName);
   };
 
-  onTokenChange = (e) => {
-    this.setState({
-      token: e.target.value,
-      showTeams: false,
-    });
-
-    localStorage.setItem('token', e.target.value);
-  };
-
-  setToken = async () => {
-    this.setState({
-      loading: true,
-    });
-
-    const { dispatch } = this.context;
-
-    localStorage.setItem('token', this.state.token);
-
-    await getTeams()(dispatch);
-
-    this.setState({
-      loading: false,
-      showTeams: true,
-    });
-  };
-
   renderTeams = () => (
-      <React.Fragment>
-        <h4>Pagerduty team ID</h4>
-        <select
-          onChange={(e) => this.changeTeamID(e)}
-          className="input"
-          name="teams"
-          id="teams"
-        >
-          {this.context.teams.map((team, index) => (
-              <option key={index} value={team.id} name={team.name}>
-                {team.name}
-              </option>
-          ))}
-        </select>
-      </React.Fragment>
+    <React.Fragment>
+      <h4>Pagerduty team ID</h4>
+      <select
+        onChange={(e) => this.changeTeamID(e)}
+        className="input"
+        name="teams"
+        id="teams"
+      >
+        {this.context.teams.map((team, index) => (
+          <option key={index} value={team.id} name={team.name}>
+            {team.name}
+          </option>
+        ))}
+      </select>
+    </React.Fragment>
   );
 
   render() {
@@ -88,6 +54,9 @@ class Teams extends PureComponent {
       <div className="teams-settings-wrapper">
         <div className="teams-settings">
           <h4>Pagerduty team ID</h4>
+          {this.state.loading ? (
+              <div className="loading-spinner" />
+          ) : (
           <select
             onChange={(e) => this.changeTeamID(e)}
             className="input"
@@ -95,29 +64,22 @@ class Teams extends PureComponent {
             id="teams"
           >
             {this.context.teams.map((team, index) => (
-                <option key={index} value={team.id} name={team.name}>
-                  {team.name}
-                </option>
+              <option key={index} value={team.id} name={team.name}>
+                {team.name}
+              </option>
             ))}
           </select>
+          )}
           <input
-            onClick={() => (this.state.showTeams
-              ? changeModalState({
-                modal: 'teams',
-                state: false,
-              })(dispatch)
-              : this.setToken())
+            onClick={() => changeModalState({
+              modal: 'teams',
+              state: false,
+            })(dispatch)
             }
             className="submit"
             type="submit"
-            value={this.state.showTeams ? 'Save' : 'Get teams'}
+            value="Save"
           />
-          <p>
-            Don&apos;t have a{' '}
-            <a href=" https://support.pagerduty.com/docs/generating-api-keys#generating-a-personal-rest-api-key">
-              token?
-            </a>
-          </p>
         </div>
       </div>
     );

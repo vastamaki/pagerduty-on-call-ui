@@ -20,7 +20,7 @@ class Settings extends PureComponent {
               }
               className="submit"
               type="submit"
-              value="Select team/Change token"
+              value="Select team"
             />
             <input
               onClick={() => changeModalState({
