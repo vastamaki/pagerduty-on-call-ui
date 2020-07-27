@@ -12,7 +12,7 @@ class Modals extends PureComponent {
     if (openModals.teams) {
       return <Teams />;
     }
-    if (openModals.cards) {
+    if (openModals.cardSettings) {
       return <Cards />;
     }
     if (openModals.filters) {

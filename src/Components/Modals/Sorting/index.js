@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import { changeModalState } from '../../../Context/actions';
+import { changeModalState, changeSorting } from '../../../Context/actions';
 import { Context } from '../../../Context';
-import './index.css';
 
 class Sorting extends PureComponent {
   constructor(props) {
@@ -9,7 +8,7 @@ class Sorting extends PureComponent {
 
     this.state = {
       sortBy: {
-        createdAt: false,
+        createdAt: true,
         updatedAt: false,
       },
     };
@@ -29,9 +28,19 @@ class Sorting extends PureComponent {
       modal: 'sorting',
       state: false,
     })(dispatch);
+    changeSorting(
+      this.state.sortBy.createdAt ? 'createdAt' : 'updatedAt',
+    )(dispatch);
   };
 
-  componentDidMount = () => {};
+  componentDidMount = () => {
+    const sortBy = localStorage.getItem('sortBy');
+    if (sortBy) {
+      this.setState({
+        sortBy: JSON.parse(sortBy),
+      });
+    }
+  };
 
   render() {
     const { openModals } = this.context;
@@ -44,24 +53,24 @@ class Sorting extends PureComponent {
             <li>
               <p>
                 <input
-                  type="checkbox"
+                  type="radio"
                   id="switch1"
                   onChange={(e) => this.handleCheckboxChange(e, 'createdAt')}
-                  checked={this.state.sortBy.createdAt}
+                  checked={this.state.sortBy.createdAt || false}
                 />
-                <label htmlFor="switch1" />
+                <label className="radio-label" htmlFor="switch1" />
                 Sort by created at
               </p>
             </li>
             <li>
               <p>
                 <input
-                  type="checkbox"
+                  type="radio"
                   id="switch2"
                   onChange={(e) => this.handleCheckboxChange(e, 'updatedAt')}
-                  checked={this.state.sortBy.updatedAt}
+                  checked={this.state.sortBy.updatedAt || false}
                 />
-                <label htmlFor="switch2" />
+                <label className="radio-label" htmlFor="switch2" />
                 Sort by last status change
               </p>
             </li>

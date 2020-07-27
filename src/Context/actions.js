@@ -31,6 +31,16 @@ export const setFilters = (name, value) => async (dispatch) => {
   });
 };
 
+export const changeSorting = (sortBy) => async (dispatch) => {
+  localStorage.setItem('sortBy', JSON.stringify({
+    [sortBy]: true,
+  }));
+  dispatch({
+    type: 'CHANGE_SORTING',
+    payload: sortBy,
+  });
+};
+
 export const clearIncidents = () => (dispatch) => {
   dispatch({
     type: 'CLEAR_INCIDENTS',

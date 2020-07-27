@@ -66,6 +66,11 @@ const reducer = (state, action) => {
         ...state,
         cardContent: action.payload,
       };
+    case 'CHANGE_SORTING':
+      return {
+        ...state,
+        sortBy: action.payload,
+      };
     default:
       return state;
   }
@@ -99,6 +104,7 @@ export class Provider extends Component {
       latestChange: true,
       changedBy: true,
     },
+    sortBy: 'createdAt',
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 
@@ -106,10 +112,12 @@ export class Provider extends Component {
     const filters = JSON.parse(localStorage.getItem('filters'));
     const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
     const cardContent = JSON.parse(localStorage.getItem('cardContent'));
+    const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
     this.setState({
       filters: filters || this.state.filters,
       hoursMarked: hoursMarked || this.state.hoursMarked,
       cardContent: cardContent || this.state.cardContent,
+      sortBy: sortBy.createdAt ? 'createdAt' : 'updatedAt',
     });
   };
 

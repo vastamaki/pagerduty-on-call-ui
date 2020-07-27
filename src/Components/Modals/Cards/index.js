@@ -57,7 +57,7 @@ class Cards extends PureComponent {
                   onChange={(e) => this.handleCheckboxChange(e, 'summary')}
                   checked={this.state.cardContent.summary}
                 />
-                <label htmlFor="switch1"/>
+                <label className="checkbox-label" htmlFor="switch1"/>
                 Show incident summary
               </p>
             </li>
@@ -69,7 +69,7 @@ class Cards extends PureComponent {
                   onChange={(e) => this.handleCheckboxChange(e, 'createdAt')}
                   checked={this.state.cardContent.createdAt}
                 />
-                <label htmlFor="switch2"/>
+                <label className="checkbox-label" htmlFor="switch2"/>
                 Show incident created at
               </p>
             </li>
@@ -81,7 +81,7 @@ class Cards extends PureComponent {
                   onChange={(e) => this.handleCheckboxChange(e, 'latestChange')}
                   checked={this.state.cardContent.latestChange}
                 />
-                <label htmlFor="switch3"/>
+                <label className="checkbox-label" htmlFor="switch3"/>
                 Show incident latest change
               </p>
             </li>
@@ -93,7 +93,7 @@ class Cards extends PureComponent {
                   onChange={(e) => this.handleCheckboxChange(e, 'changedBy')}
                   checked={this.state.cardContent.changedBy}
                 />
-                <label htmlFor="switch4"/>
+                <label className="checkbox-label" htmlFor="switch4"/>
                 Show incident latest change by
               </p>
             </li>
