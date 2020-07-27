@@ -2,8 +2,8 @@ export const getTeams = () => async (dispatch) => {
   const params = {
     method: 'GET',
     headers: {
-      Accept: "application/vnd.pagerduty+json;version=2",
-      Authorization: "Bearer " + localStorage.getItem("access_token"),
+      Accept: 'application/vnd.pagerduty+json;version=2',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   };
 

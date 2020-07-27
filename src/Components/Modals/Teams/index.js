@@ -94,13 +94,11 @@ class Teams extends PureComponent {
             name="teams"
             id="teams"
           >
-            {this.context.teams.map((team, index) => {
-              return (
+            {this.context.teams.map((team, index) => (
                 <option key={index} value={team.id} name={team.name}>
                   {team.name}
                 </option>
-              );
-            })}
+            ))}
           </select>
           <input
             onClick={() => (this.state.showTeams

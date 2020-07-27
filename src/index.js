@@ -5,7 +5,7 @@ import GetView from './GetView';
 import { Provider } from './Context';
 import Notification from './Components/Notification';
 import Modals from './Components/Modals';
-import PrivateRoute from './Components/Auth'
+import { PrivateRoute } from './Components/Auth';
 import './index.css';
 
 const routes = (

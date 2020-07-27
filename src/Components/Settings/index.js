@@ -1,7 +1,6 @@
-import React, { PureComponent } from "react";
-import { Context } from "../../Context";
-import { changeModalState } from "../../Context/actions";
-import "./index.css";
+import React, { PureComponent } from 'react';
+import { Context } from '../../Context';
+import { changeModalState } from '../../Context/actions';
 
 class Settings extends PureComponent {
   constructor(props) {
@@ -18,22 +17,20 @@ class Settings extends PureComponent {
           <div className="settings">
             <h2>Settings</h2>
             <input
-              onClick={() =>
-                changeModalState({
-                  modal: "teams",
-                  state: true,
-                })(dispatch)
+              onClick={() => changeModalState({
+                modal: 'teams',
+                state: true,
+              })(dispatch)
               }
               className="submit"
               type="submit"
               value="Select team"
             />
             <input
-              onClick={() =>
-                changeModalState({
-                  modal: "cardSettings",
-                  state: true,
-                })(dispatch)
+              onClick={() => changeModalState({
+                modal: 'cardSettings',
+                state: true,
+              })(dispatch)
               }
               className="submit"
               type="submit"
