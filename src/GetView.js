@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import TimeSelect from './Components/TimeSelect';
 import Incidents from './Components/Incidents';
 import Header from './Components/Header';
+import fetch from './Components/Fetch';
 import { getWeekDays, mapIncidentToDay } from './helpers';
 import { getIncidents } from './Context/actions';
 import { Context } from './Context';
@@ -52,27 +53,13 @@ export default class GetView extends PureComponent {
       ),
       params,
     );
-    if (response.statusCode === 401) {
-      window.location.href = 'https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=http://localhost:3000&response_type=code&code_challenge_method=S256&code_challenge';
-    } else if (!response.ok) {
+
+    if (!response.incidents || response.error) {
       this.setState({
         loading: false,
         notification: {
           success: false,
-          message: 'Failed to fetch data! Check that your token is valid!',
-          hidden: false,
-        },
-      });
-    }
-
-    const incidents = await response.json();
-
-    if (!incidents.incidents || incidents.error) {
-      this.setState({
-        loading: false,
-        notification: {
-          success: false,
-          message: incidents.error.errors[0],
+          message: response.error.errors[0],
           hidden: false,
         },
       });
@@ -81,11 +68,11 @@ export default class GetView extends PureComponent {
 
     this.setState({
       offset:
-        incidents.offset === 0
+        response.offset === 0
           ? 99
-          : 100 + (incidents.total - incidents.offset),
+          : 100 + (response.total - response.offset),
     });
-    this.saveIncidents(incidents.more, incidents.incidents);
+    this.saveIncidents(response.more, response.incidents);
   };
 
   saveIncidents = (isMore, incidents) => {

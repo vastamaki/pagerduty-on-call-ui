@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import * as PropTypes from 'prop-types';
+import fetch from '../Fetch';
 
 const checkToken = async (rest) => {
   const token = localStorage.getItem('access_token');
@@ -31,11 +32,9 @@ const checkToken = async (rest) => {
       window.location.href = 'https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=http://localhost:3000&response_type=code&code_challenge_method=S256&code_challenge';
     }
 
-    const authResponse = await response.json();
-
-    if (authResponse && (authResponse.access_token && authResponse.refresh_token)) {
-      localStorage.setItem('access_token', authResponse.access_token);
-      localStorage.setItem('refresh_token', authResponse.refresh_token);
+    if (response && (response.access_token && response.refresh_token)) {
+      localStorage.setItem('access_token', response.access_token);
+      localStorage.setItem('refresh_token', response.refresh_token);
       return true;
     }
   }
