@@ -2,13 +2,6 @@
   font-family: "Titillium Web", sans-serif;
 }
 
-hr {
-  width: auto;
-  height: 1px;
-  border: none;
-  background-color: #000000;
-}
-
 html,
 body,
 #root {
@@ -46,7 +39,7 @@ body,
   color: #1d1d1d;
   text-align: center;
   font-size: 22px;
-  margin: 10px;
+  margin: 10px 0px 10px 0px;
   padding: 3px;
 }
 

@@ -62,7 +62,6 @@ class Filters extends PureComponent {
                 value={this.state.filters.exclude}
               />
             </li>
-            <hr />
             <li>
               <p>
                 <input
