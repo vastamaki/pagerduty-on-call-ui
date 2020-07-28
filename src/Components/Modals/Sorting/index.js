@@ -43,11 +43,8 @@ class Sorting extends PureComponent {
   };
 
   render() {
-    const { openModals } = this.context;
-
-    return openModals.sorting ? (
-      <div className="card-settings-wrapper">
-        <div className="card-settings">
+    return (
+      <React.Fragment>
           <h2>Incident sorting</h2>
           <ul>
             <li>
@@ -81,9 +78,8 @@ class Sorting extends PureComponent {
             type="submit"
             value="Save"
           />
-        </div>
-      </div>
-    ) : null;
+        </React.Fragment>
+    );
   }
 }
 Sorting.contextType = Context;

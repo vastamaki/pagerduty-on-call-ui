@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
 import {
-  getTeams, changeModalState, setSelectedTeam, setDefaultTeams,
+  getTeams,
+  changeModalState,
+  setSelectedTeam,
+  setDefaultTeams,
 } from '../../../Context/actions';
 import { Context } from '../../../Context';
-import './index.css';
 
 class Teams extends PureComponent {
   state = {
@@ -49,40 +51,42 @@ class Teams extends PureComponent {
       modal: 'teams',
       state: false,
     })(dispatch);
-  }
+  };
 
   render() {
     return (
-      <div className="teams-settings-wrapper">
-        <div className="teams-settings">
-          <h4>Pagerduty team ID</h4>
-          {this.state.loading ? (
-              <div className="loading-spinner" />
-          ) : (
+      <React.Fragment>
+        <h2>Pagerduty team ID</h2>
+        {this.state.loading ? (
+          <div className="loading-spinner" />
+        ) : (
           <select
             onChange={(e) => this.changeTeamID(e)}
             className="input"
             name="teams"
             id="teams"
           >
-            <option key={'default'} value={'default'} name={'All current user teams'}>
-          All current user teams
-        </option>
+            <option
+              key={'default'}
+              value={'default'}
+              name={'All current user teams'}
+            >
+              All current user teams
+            </option>
             {this.context.teams.map((team, index) => (
               <option key={index} value={team.id} name={team.name}>
                 {team.name}
               </option>
             ))}
           </select>
-          )}
-          <input
-            onClick={() => this.closeModal()}
-            className="submit"
-            type="submit"
-            value="Save"
-          />
-        </div>
-      </div>
+        )}
+        <input
+          onClick={() => this.closeModal()}
+          className="submit"
+          type="submit"
+          value="Save"
+        />
+      </React.Fragment>
     );
   }
 }

@@ -23,14 +23,6 @@ class ContextMenu extends PureComponent {
       message: 'Summary copied to clipboard!',
     })(dispatch);
 
-    setTimeout(() => {
-      toggleNotification({
-        hidden: true,
-        message: '',
-        success: 'true',
-      })(dispatch);
-    }, 3000);
-
     markHour(this.props.incident)(dispatch);
 
     this.props.closeContextMenu();

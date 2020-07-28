@@ -12,12 +12,8 @@ li {
   width: 100%;
 }
 
-h1 {
+.day > h1 {
   color: #ffffff;
-}
-
-h2 {
-  margin: 0px;
 }
 
 .datepicker {
@@ -44,7 +40,7 @@ h2 {
   justify-content: center;
 }
 
-.wrapper {
+.App-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;

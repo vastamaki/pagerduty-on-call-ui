@@ -3,7 +3,7 @@ h3 {
   margin: 0;
 }
 
-.card-settings-wrapper {
+.modal-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,7 +16,7 @@ h3 {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.card-settings {
+.modal {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,18 +28,24 @@ h3 {
   min-width: 300px;
 }
 
-.card-settings > ul {
-  list-style-type: none;
+.modal > h2 {
+  margin: 0px;
 }
 
-.card-settings > ul > li {
+.modal > ul {
+  list-style-type: none;
+  margin: 0;
+}
+
+.modal > ul > li {
   margin: 5px;
   padding: 5px;
   justify-content: left;
   display: flex;
+  flex-direction: column;
 }
 
-.card-settings > ul > li > p {
+.modal > ul > li > p {
   display: flex;
   align-items: center;
 }
@@ -48,4 +54,8 @@ p,
 a {
   margin: 0;
   color: #000000;
+}
+.title {
+  color: #000000;
+  margin: 0;
 }
