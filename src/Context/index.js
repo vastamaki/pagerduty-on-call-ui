@@ -19,6 +19,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         filters: {
+          ...state.filters,
           [action.payload.name]: action.payload.value,
         },
       };
@@ -81,13 +82,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         selectedTeam: action.payload,
-        selectedTeamName: 'All current user teams',
+        selectedTeamName: `${state.currentUser.name} | All current user teams`,
       };
     case 'SET_SELECTED_TEAM':
       return {
         ...state,
         selectedTeam: action.payload.teamID,
-        selectedTeamName: action.payload.teamName,
+        selectedTeamName: `${state.currentUser.name} | ${action.payload.teamName}`,
       };
     default:
       return state;
@@ -101,6 +102,7 @@ export class Provider extends Component {
     hoursMarked: {},
     filters: {
       exclude: '',
+      showOnlyOwnIncidents: false,
     },
     notification: {
       hidden: true,
