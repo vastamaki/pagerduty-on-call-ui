@@ -28,6 +28,7 @@ class Filters extends PureComponent {
   handleCheckboxChange = (e, name) => {
     this.setState({
       filters: {
+        ...this.state.filters,
         [name]: e.target.checked,
       },
     });
@@ -38,8 +39,7 @@ class Filters extends PureComponent {
 
     localStorage.setItem('filters', JSON.stringify(this.state.filters));
 
-    setFilters('exclude', this.state.filters.exclude)(dispatch);
-    setFilters('showOnlyOwnIncidents', this.state.filters.showOnlyOwnIncidents)(dispatch);
+    setFilters(this.state.filters)(dispatch);
 
     changeModalState({
       modal: 'filters',

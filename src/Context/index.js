@@ -18,10 +18,7 @@ const reducer = (state, action) => {
     case 'SET_FILTERS':
       return {
         ...state,
-        filters: {
-          ...state.filters,
-          [action.payload.name]: action.payload.value,
-        },
+        filters: action.payload,
       };
     case 'SET_HOUR_MARK': {
       const hours = {

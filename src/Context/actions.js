@@ -50,13 +50,10 @@ export const getTeams = () => async (dispatch) => {
   }
 };
 
-export const setFilters = (name, value) => async (dispatch) => {
+export const setFilters = (filters) => async (dispatch) => {
   dispatch({
     type: 'SET_FILTERS',
-    payload: {
-      name,
-      value,
-    },
+    payload: filters,
   });
 };
 
