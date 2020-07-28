@@ -47,9 +47,7 @@ export default class GetView extends PureComponent {
           startDate || this.state.startDate
         }&until=${
           endDate || this.state.endDate
-        }&team_ids[]=${localStorage.getItem(
-          'teamID',
-        )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`,
+        }&team_ids[]=${this.context.selectedTeam}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`,
       ),
       params,
     );

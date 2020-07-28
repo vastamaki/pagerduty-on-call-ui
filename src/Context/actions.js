@@ -1,5 +1,27 @@
 import fetch from '../Components/Fetch';
 
+export const setCurrentUser = () => async (dispatch) => {
+  const params = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/vnd.pagerduty+json;version=2',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  };
+
+  const response = await fetch(
+    encodeURI('https://api.pagerduty.com/users/me'),
+    params,
+  );
+
+  if (response) {
+    dispatch({
+      type: 'SET_CURRENT_USER',
+      payload: response.user,
+    });
+  }
+};
+
 export const getTeams = () => async (dispatch) => {
   const params = {
     method: 'GET',
@@ -39,9 +61,12 @@ export const setFilters = (name, value) => async (dispatch) => {
 };
 
 export const changeSorting = (sortBy) => async (dispatch) => {
-  localStorage.setItem('sortBy', JSON.stringify({
-    [sortBy]: true,
-  }));
+  localStorage.setItem(
+    'sortBy',
+    JSON.stringify({
+      [sortBy]: true,
+    }),
+  );
   dispatch({
     type: 'CHANGE_SORTING',
     payload: sortBy,
@@ -89,6 +114,24 @@ export const toggleNotification = (notification) => (dispatch) => {
       hidden: notification.hidden,
       message: notification.message,
       success: notification.success,
+    },
+  });
+};
+
+export const setDefaultTeams = (currentUser) => (dispatch) => {
+  const teamIDs = currentUser.teams.map((team) => team.id);
+  dispatch({
+    type: 'SET_DEFAULT_TEAMS',
+    payload: teamIDs.join(','),
+  });
+};
+
+export const setSelectedTeam = (teamID, teamName) => (dispatch) => {
+  dispatch({
+    type: 'SET_SELECTED_TEAM',
+    payload: {
+      teamID,
+      teamName,
     },
   });
 };

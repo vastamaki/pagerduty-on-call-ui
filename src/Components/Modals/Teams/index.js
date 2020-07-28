@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
-import { getTeams, changeModalState } from '../../../Context/actions';
+import {
+  getTeams, changeModalState, setSelectedTeam, setDefaultTeams,
+} from '../../../Context/actions';
 import { Context } from '../../../Context';
 import './index.css';
 
 class Teams extends PureComponent {
   state = {
     loading: false,
+    teamChanged: false,
   };
 
   componentDidMount = async () => {
@@ -22,34 +25,33 @@ class Teams extends PureComponent {
     });
   };
 
-  changeTeamID = (e) => {
+  changeTeamID = async (e) => {
+    this.setState({
+      teamChanged: true,
+    });
+    const { dispatch, currentUser } = this.context;
     const teamName = e.target[e.target.selectedIndex].text;
     const teamID = e.target[e.target.selectedIndex].value;
 
-    localStorage.setItem('teamID', teamID);
-    localStorage.setItem('teamName', teamName);
+    if (teamID === 'default') {
+      return setDefaultTeams(currentUser)(dispatch);
+    }
+
+    return setSelectedTeam(teamID, teamName)(dispatch);
   };
 
-  renderTeams = () => (
-    <React.Fragment>
-      <h4>Pagerduty team ID</h4>
-      <select
-        onChange={(e) => this.changeTeamID(e)}
-        className="input"
-        name="teams"
-        id="teams"
-      >
-        {this.context.teams.map((team, index) => (
-          <option key={index} value={team.id} name={team.name}>
-            {team.name}
-          </option>
-        ))}
-      </select>
-    </React.Fragment>
-  );
+  closeModal = async () => {
+    const { currentUser, dispatch } = this.context;
+    if (!this.state.teamChanged) {
+      setDefaultTeams(currentUser)(dispatch);
+    }
+    changeModalState({
+      modal: 'teams',
+      state: false,
+    })(dispatch);
+  }
 
   render() {
-    const { dispatch } = this.context;
     return (
       <div className="teams-settings-wrapper">
         <div className="teams-settings">
@@ -63,6 +65,9 @@ class Teams extends PureComponent {
             name="teams"
             id="teams"
           >
+            <option key={'default'} value={'default'} name={'All current user teams'}>
+          All current user teams
+        </option>
             {this.context.teams.map((team, index) => (
               <option key={index} value={team.id} name={team.name}>
                 {team.name}
@@ -71,11 +76,7 @@ class Teams extends PureComponent {
           </select>
           )}
           <input
-            onClick={() => changeModalState({
-              modal: 'teams',
-              state: false,
-            })(dispatch)
-            }
+            onClick={() => this.closeModal()}
             className="submit"
             type="submit"
             value="Save"

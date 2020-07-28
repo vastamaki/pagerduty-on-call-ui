@@ -10,8 +10,8 @@ class Header extends PureComponent {
       <React.Fragment>
         <div className="header">
           <div className="menu-left">
-            <p title={localStorage.getItem('teamID')}>
-              {localStorage.getItem('teamName')}
+            <p title={this.context.selectedTeamName}>
+              {this.context.selectedTeamName}
             </p>
           </div>
           <div className="menu-right">

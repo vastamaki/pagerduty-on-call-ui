@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
+import { setCurrentUser, setDefaultTeams } from './actions';
 
 export const Context = React.createContext({});
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'SET_CURRENT_USER':
+      return {
+        ...state,
+        currentUser: action.payload,
+      };
     case 'GET_TEAMS':
       return {
         ...state,
@@ -71,6 +77,18 @@ const reducer = (state, action) => {
         ...state,
         sortBy: action.payload,
       };
+    case 'SET_DEFAULT_TEAMS':
+      return {
+        ...state,
+        selectedTeam: action.payload,
+        selectedTeamName: 'All current user teams',
+      };
+    case 'SET_SELECTED_TEAM':
+      return {
+        ...state,
+        selectedTeam: action.payload.teamID,
+        selectedTeamName: action.payload.teamName,
+      };
     default:
       return state;
   }
@@ -105,14 +123,18 @@ export class Provider extends Component {
       changedBy: true,
     },
     sortBy: 'createdAt',
+    currentUser: {},
+    selectedTeamName: 'All current user teams',
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const filters = JSON.parse(localStorage.getItem('filters'));
     const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
     const cardContent = JSON.parse(localStorage.getItem('cardContent'));
     const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
+    await setCurrentUser()(this.state.dispatch);
+    await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
     this.setState({
       filters: filters || this.state.filters,
       hoursMarked: hoursMarked || this.state.hoursMarked,
