@@ -132,14 +132,19 @@ export class Provider extends Component {
     const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
     const cardContent = JSON.parse(localStorage.getItem('cardContent'));
     const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
-    await setCurrentUser()(this.state.dispatch);
-    await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
     this.setState({
       filters: filters || this.state.filters,
       hoursMarked: hoursMarked || this.state.hoursMarked,
       cardContent: cardContent || this.state.cardContent,
       sortBy: sortBy.createdAt ? 'createdAt' : 'updatedAt',
     });
+
+    try {
+      await setCurrentUser()(this.state.dispatch);
+      await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   render() {

@@ -9,9 +9,6 @@ class ContextMenu extends PureComponent {
     visibleTimeout: 0,
   };
 
-  showIncident = () => {
-  };
-
   copySummary = () => {
     const { dispatch } = this.context;
 
@@ -60,7 +57,6 @@ class ContextMenu extends PureComponent {
         className="context-menu"
       >
         <ul>
-          <li onClick={() => this.showIncident()}>Show incident</li>
           <li onClick={() => this.copySummary()}>Copy summary</li>
           <li onClick={() => this.openIncidentInPagerduty()}>
             Show in pagerduty

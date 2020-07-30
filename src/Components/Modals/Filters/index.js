@@ -65,8 +65,7 @@ class Filters extends PureComponent {
               <input
                 type="checkbox"
                 id="switch1"
-                onChange={(e) => this.handleCheckboxChange(e, 'showOnlyOwnIncidents')
-                }
+                onChange={(e) => this.handleCheckboxChange(e, 'showOnlyOwnIncidents')}
                 checked={this.state.filters.showOnlyOwnIncidents}
               />
               <label className="checkbox-label" htmlFor="switch1" />

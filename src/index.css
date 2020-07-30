@@ -39,7 +39,7 @@ body,
   color: #1d1d1d;
   text-align: center;
   font-size: 22px;
-  margin: 10px 0px 10px 0px;
+  margin: 10px 0 10px 0;
   padding: 3px;
 }
 
@@ -48,8 +48,9 @@ body,
   background-color: #2ebc2e;
   padding: 10px;
   border: none;
-  border-radius: 15px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 0px 1px 2px #000000;
 }
 
 @keyframes loading-spinner {

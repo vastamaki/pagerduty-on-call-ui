@@ -18,7 +18,7 @@ li {
 
 .datepicker {
   margin: 5px;
-  padding: 0px;
+  padding: 0;
   text-align: center;
 }
 
@@ -47,6 +47,6 @@ li {
   text-align: center;
   box-shadow: 0 0 3px #000000;
   background-color: #ffffff;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
 }

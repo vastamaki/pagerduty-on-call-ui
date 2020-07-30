@@ -11,6 +11,10 @@
   margin: 5px;
 }
 
+.day > h1 {
+  cursor: pointer;
+}
+
 .day > ul {
   list-style-type: none;
   display: grid;

@@ -9,26 +9,32 @@ class Settings extends PureComponent {
     return (
       <React.Fragment>
         <h2>Settings</h2>
-        <input
-          onClick={() => changeModalState({
-            modal: 'teams',
-            state: true,
-          })(dispatch)
-          }
-          className="submit"
-          type="submit"
-          value="Select team"
-        />
-        <input
-          onClick={() => changeModalState({
-            modal: 'cardSettings',
-            state: true,
-          })(dispatch)
-          }
-          className="submit"
-          type="submit"
-          value="Edit card content"
-        />
+        <ul>
+          <li>
+            <input
+              onClick={() => changeModalState({
+                modal: 'teams',
+                state: true,
+              })(dispatch)
+              }
+              className="submit"
+              type="submit"
+              value="Select team"
+            />
+          </li>
+          <li>
+            <input
+              onClick={() => changeModalState({
+                modal: 'cardSettings',
+                state: true,
+              })(dispatch)
+              }
+              className="submit"
+              type="submit"
+              value="Edit card content"
+            />
+          </li>
+        </ul>
       </React.Fragment>
     );
   }

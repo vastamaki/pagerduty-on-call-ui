@@ -9,16 +9,17 @@ export const setCurrentUser = () => async (dispatch) => {
     },
   };
 
-  const response = await fetch(
-    encodeURI('https://api.pagerduty.com/users/me'),
-    params,
-  );
-
-  if (response) {
+  try {
+    const response = await fetch(
+      encodeURI('https://api.pagerduty.com/users/me'),
+      params,
+    );
     dispatch({
       type: 'SET_CURRENT_USER',
       payload: response.user,
     });
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
@@ -31,22 +32,18 @@ export const getTeams = () => async (dispatch) => {
     },
   };
 
-  let response;
-
   try {
-    response = await fetch(
+    const response = await fetch(
       encodeURI('https://api.pagerduty.com/teams'),
       params,
     );
-  } catch (err) {
-    throw new Error(err);
-  }
 
-  if (response) {
     dispatch({
       type: 'GET_TEAMS',
       payload: response.teams,
     });
+  } catch (err) {
+    throw new Error(err);
   }
 };
 
