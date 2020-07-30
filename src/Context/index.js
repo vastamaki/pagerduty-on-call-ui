@@ -138,7 +138,7 @@ export class Provider extends Component {
       return false;
     }
 
-    if (!token && authorizationCode) {
+    if (authorizationCode) {
       const params = {
         method: 'POST',
         headers: {
@@ -159,14 +159,21 @@ export class Provider extends Component {
         if (response && response.access_token && response.refresh_token) {
           localStorage.setItem('access_token', response.access_token);
           localStorage.setItem('refresh_token', response.refresh_token);
+          window.location.search = '';
           return true;
         }
       } catch (err) {
         return false;
       }
     }
-    return false;
+    return true;
   };
+
+  redirectToLogin = () => {
+    window.location.href = `https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
+      window.location.origin,
+    )}&response_type=code&code_challenge_method=S256&code_challenge`;
+  }
 
   componentDidMount = async () => {
     const isTokenValid = await this.checkToken();
@@ -184,15 +191,12 @@ export class Provider extends Component {
 
       try {
         await setCurrentUser()(this.state.dispatch);
-        await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
+        return await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
       } catch (err) {
-        throw new Error(err);
+        return this.redirectToLogin();
       }
-    } else {
-      window.location.href = `https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
-        window.location.origin,
-      )}&response_type=code&code_challenge_method=S256&code_challenge`;
     }
+    return this.redirectToLogin();
   };
 
   render() {
