@@ -2,8 +2,13 @@ import React, { PureComponent } from 'react';
 import TimeSelect from './Components/TimeSelect';
 import Incidents from './Components/Incidents';
 import Header from './Components/Header';
+import fetch from './Components/Fetch';
 import { getWeekDays, mapIncidentToDay } from './helpers';
-import { getIncidents } from './Context/actions';
+import {
+  saveIncidents,
+  clearIncidents,
+  toggleNotification,
+} from './Context/actions';
 import { Context } from './Context';
 import 'react-datepicker/dist/react-datepicker.css';
 import './GetView.css';
@@ -14,19 +19,8 @@ export default class GetView extends PureComponent {
     loading: false,
   };
 
-  getIncidents = async (startDate, endDate, clicked) => {
-    if (clicked) {
-      await this.setState({
-        offset: 0,
-      });
-    }
-
-    if (startDate && endDate) {
-      this.setState({
-        startDate,
-        endDate,
-      });
-    }
+  fetchIncidents = async (startDate, endDate) => {
+    const { dispatch, sortBy } = this.context;
 
     this.setState({
       loading: true,
@@ -40,65 +34,43 @@ export default class GetView extends PureComponent {
       },
     };
 
+    const incidents = [];
+    let offset = 0;
     let response;
-
-    try {
+    do {
+      /* eslint-disable no-await-in-loop */
       response = await fetch(
         encodeURI(
           `https://api.pagerduty.com/incidents?since=${
-            startDate || this.state.startDate
-          }&until=${
-            endDate || this.state.endDate
-          }&team_ids[]=${localStorage.getItem(
-            'teamID',
-          )}&time_zone=UTC&total=true&limit=100&offset=${this.state.offset}`,
+            startDate
+          }&until=${endDate}&team_ids[]=${
+            this.context.selectedTeam
+          }&time_zone=UTC&total=true&limit=100&offset=${offset}`,
         ),
         params,
       );
-    } catch (err) {
-      this.setState({
-        loading: false,
-        notification: {
-          success: false,
-          message: 'Failed to fetch data! Check that your token is valid!',
+
+      if (!response.incidents[0] || response.error) {
+        this.setState({
+          loading: false,
+        });
+        toggleNotification({
           hidden: false,
-        },
-      });
-      return;
-    }
-
-    const incidents = await response.json();
-
-    if (!incidents.incidents || incidents.error) {
-      this.setState({
-        loading: false,
-        notification: {
           success: false,
-          message: incidents.error.errors[0],
-          hidden: false,
-        },
+          message: 'No incidents found!',
+        })(dispatch);
+        return clearIncidents()(dispatch);
+      }
+      offset += 99;
+      response.incidents.forEach((incident) => {
+        incidents.push(incident);
       });
-      return;
-    }
+    } while (response.more);
 
-    this.setState({
-      offset:
-        incidents.offset === 0
-          ? 99
-          : 100 + (incidents.total - incidents.offset),
-    });
-    this.saveIncidents(incidents.more, incidents.incidents);
-  };
-
-  saveIncidents = (isMore, incidents) => {
-    const { dispatch, sortBy } = this.context;
-    if (isMore) {
-      this.getIncidents();
-    }
     const weekdays = getWeekDays(incidents);
     const sortedIncidents = mapIncidentToDay(weekdays, incidents, sortBy);
-    getIncidents(sortedIncidents, weekdays)(dispatch);
-    this.setState({
+    saveIncidents(sortedIncidents, weekdays)(dispatch);
+    return this.setState({
       loading: false,
     });
   };
@@ -108,17 +80,14 @@ export default class GetView extends PureComponent {
 
     return (
       <React.Fragment>
-        <Header/>
+        <Header />
         <div className="App">
           <div className="App-header">
-            {this.state.loading && <div className="loading-spinner"/>}
-            {
-              !this.state.loading && showIncidents ? (
-                <Incidents/>
-              ) : (
-                <TimeSelect getIncidents={this.getIncidents}/>
-              )
-            }
+            {!this.state.loading && showIncidents ? (
+              <Incidents />
+            ) : (
+              <TimeSelect loading={this.state.loading} fetchIncidents={this.fetchIncidents} />
+            )}
           </div>
         </div>
       </React.Fragment>

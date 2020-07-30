@@ -1,125 +1,92 @@
 import React, { PureComponent } from 'react';
-import { getTeams, changeModalState } from '../../../Context/actions';
+import {
+  getTeams,
+  changeModalState,
+  setSelectedTeam,
+  setDefaultTeams,
+} from '../../../Context/actions';
 import { Context } from '../../../Context';
-import './index.css';
 
 class Teams extends PureComponent {
   state = {
-    token: '',
     loading: false,
-    showTeams: false,
+    teamChanged: false,
   };
 
   componentDidMount = async () => {
     const { dispatch } = this.context;
-    const token = localStorage.getItem('token');
 
-    if (token) {
-      this.setState({
-        token,
-        loading: true,
-      });
-
-      await getTeams()(dispatch);
-
-      this.setState({
-        token,
-        loading: false,
-        showTeams: true,
-      });
-    }
-  };
-
-  changeTeamID = (e) => {
-    const teamName = e.target[e.target.selectedIndex].text;
-    const teamID = e.target[e.target.selectedIndex].value;
-
-    localStorage.setItem('teamID', teamID);
-    localStorage.setItem('teamName', teamName);
-  };
-
-  onTokenChange = (e) => {
-    this.setState({
-      token: e.target.value,
-      showTeams: false,
-    });
-
-    localStorage.setItem('token', e.target.value);
-  };
-
-  setToken = async () => {
     this.setState({
       loading: true,
     });
-
-    const { dispatch } = this.context;
-
-    localStorage.setItem('token', this.state.token);
 
     await getTeams()(dispatch);
 
     this.setState({
       loading: false,
-      showTeams: true,
     });
   };
 
-  renderTeams = () => (
-      <React.Fragment>
-        <h4>Pagerduty team ID</h4>
-        <select
-          onChange={(e) => this.changeTeamID(e)}
-          className="input"
-          name="teams"
-          id="teams"
-        >
-          {this.context.teams.map((team, index) => (
-              <option key={index} value={team.id} name={team.name}>
-                {team.name}
-              </option>
-          ))}
-        </select>
-      </React.Fragment>
-  );
+  changeTeamID = async (e) => {
+    this.setState({
+      teamChanged: true,
+    });
+    const { dispatch, currentUser } = this.context;
+    const teamName = e.target[e.target.selectedIndex].text;
+    const teamID = e.target[e.target.selectedIndex].value;
+
+    if (teamID === 'default') {
+      return setDefaultTeams(currentUser)(dispatch);
+    }
+
+    return setSelectedTeam(teamID, teamName)(dispatch);
+  };
+
+  closeModal = async () => {
+    const { currentUser, dispatch } = this.context;
+    if (!this.state.teamChanged) {
+      setDefaultTeams(currentUser)(dispatch);
+    }
+    changeModalState({
+      modal: 'teams',
+      state: false,
+    })(dispatch);
+  };
 
   render() {
-    const { dispatch } = this.context;
     return (
-      <div className="teams-settings-wrapper">
-        <div className="teams-settings">
-          <h4>Pagerduty team ID</h4>
+      <React.Fragment>
+        <h2>Pagerduty team ID</h2>
+        {this.state.loading ? (
+          <div className="loading-spinner" />
+        ) : (
           <select
             onChange={(e) => this.changeTeamID(e)}
             className="input"
             name="teams"
             id="teams"
           >
+            <option
+              key={'default'}
+              value={'default'}
+              name={'All current user teams'}
+            >
+              All current user teams
+            </option>
             {this.context.teams.map((team, index) => (
-                <option key={index} value={team.id} name={team.name}>
-                  {team.name}
-                </option>
+              <option key={index} value={team.id} name={team.name}>
+                {team.name}
+              </option>
             ))}
           </select>
-          <input
-            onClick={() => (this.state.showTeams
-              ? changeModalState({
-                modal: 'teams',
-                state: false,
-              })(dispatch)
-              : this.setToken())
-            }
-            className="submit"
-            type="submit"
-            value={this.state.showTeams ? 'Save' : 'Get teams'}
-          />
-          <p>
-            Don&apos;t have a{' '}
-            <a href=" https://support.pagerduty.com/docs/generating-api-keys#generating-a-personal-rest-api-key">
-              token?
-            </a>
-          </p>
-        </div>
-      </div>
+        )}
+        <input
+          onClick={() => this.closeModal()}
+          className="submit"
+          type="submit"
+          value="Save"
+        />
+      </React.Fragment>
     );
   }
 }

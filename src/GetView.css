@@ -12,18 +12,13 @@ li {
   width: 100%;
 }
 
-h1 {
+.day > h1 {
   color: #ffffff;
-  cursor: pointer;
-}
-
-h2 {
-  margin: 0px;
 }
 
 .datepicker {
   margin: 5px;
-  padding: 0px;
+  padding: 0;
   text-align: center;
 }
 
@@ -45,13 +40,13 @@ h2 {
   justify-content: center;
 }
 
-.wrapper {
+.App-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   box-shadow: 0 0 3px #000000;
   background-color: #ffffff;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
 }

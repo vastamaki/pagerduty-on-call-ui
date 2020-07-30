@@ -3,22 +3,23 @@
   align-items: center;
 }
 
-h4 {
+.incident {
+  box-shadow: 2px 2px 2px #000000;
+}
+
+.incident > h4 {
   margin: 5px;
 }
 
-ul {
-  padding: 0;
-}
-
-.incident {
-  box-shadow: 2px 2px 2px #000000;
+.day > h1 {
+  cursor: pointer;
 }
 
 .day > ul {
   list-style-type: none;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  padding: 0;
 }
 
 .incident-summary {

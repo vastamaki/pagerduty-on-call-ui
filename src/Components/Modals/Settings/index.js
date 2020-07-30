@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Context } from '../../../Context';
 import { changeModalState } from '../../../Context/actions';
-import './index.css';
 
 class Settings extends PureComponent {
   render() {
@@ -9,9 +8,9 @@ class Settings extends PureComponent {
 
     return (
       <React.Fragment>
-        <div className="settings-wrapper">
-          <div className="settings">
-            <h2>Settings</h2>
+        <h2>Settings</h2>
+        <ul>
+          <li>
             <input
               onClick={() => changeModalState({
                 modal: 'teams',
@@ -20,8 +19,10 @@ class Settings extends PureComponent {
               }
               className="submit"
               type="submit"
-              value="Select team/Change token"
+              value="Select team"
             />
+          </li>
+          <li>
             <input
               onClick={() => changeModalState({
                 modal: 'cardSettings',
@@ -32,8 +33,8 @@ class Settings extends PureComponent {
               type="submit"
               value="Edit card content"
             />
-          </div>
-        </div>
+          </li>
+        </ul>
       </React.Fragment>
     );
   }

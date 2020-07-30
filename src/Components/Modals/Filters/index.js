@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Context } from '../../../Context';
 import { setFilters, changeModalState } from '../../../Context/actions';
-import './index.css';
 
 class Filters extends PureComponent {
   state = {
@@ -19,7 +18,17 @@ class Filters extends PureComponent {
   onFilterChange = async (filter, e) => {
     this.setState({
       filters: {
+        ...this.state.filters,
         [filter]: e.target.value,
+      },
+    });
+  };
+
+  handleCheckboxChange = (e, name) => {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        [name]: e.target.checked,
       },
     });
   };
@@ -29,7 +38,7 @@ class Filters extends PureComponent {
 
     localStorage.setItem('filters', JSON.stringify(this.state.filters));
 
-    setFilters('exclude', this.state.filters.exclude)(dispatch);
+    setFilters(this.state.filters)(dispatch);
 
     changeModalState({
       modal: 'filters',
@@ -39,24 +48,38 @@ class Filters extends PureComponent {
 
   render() {
     return (
-      <div className="settings-wrapper">
-        <div className="settings">
-          <h1 className="title">Filters</h1>
-          <h4>Exclude (use comma to separate)</h4>
-          <input
-            placeholder="Service names to filter out"
-            onChange={(e) => this.onFilterChange('exclude', e)}
-            className="input"
-            value={this.state.filters.exclude}
-          />
-          <input
-            onClick={() => this.setFilters()}
-            className="submit"
-            type="submit"
-            value="Save"
-          />
-        </div>
-      </div>
+      <React.Fragment>
+        <h1 className="title">Filters</h1>
+        <ul>
+          <li>
+            <h4>Exclude (use comma to separate)</h4>
+            <input
+              placeholder="Service names to filter out"
+              onChange={(e) => this.onFilterChange('exclude', e)}
+              className="input"
+              value={this.state.filters.exclude}
+            />
+          </li>
+          <li>
+            <p>
+              <input
+                type="checkbox"
+                id="switch1"
+                onChange={(e) => this.handleCheckboxChange(e, 'showOnlyOwnIncidents')}
+                checked={this.state.filters.showOnlyOwnIncidents}
+              />
+              <label className="checkbox-label" htmlFor="switch1" />
+              Show only own incidents
+            </p>
+          </li>
+        </ul>
+        <input
+          onClick={() => this.setFilters()}
+          className="submit"
+          type="submit"
+          value="Save"
+        />
+      </React.Fragment>
     );
   }
 }

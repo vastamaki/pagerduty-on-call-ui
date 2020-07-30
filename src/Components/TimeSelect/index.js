@@ -28,8 +28,8 @@ class TimeSelect extends PureComponent {
   };
 
   render() {
-    return (
-      <div className="wrapper">
+    return this.props.loading ? <div className="loading-spinner" /> : (
+      <div className="App-wrapper">
         <h3>Start time</h3>
         <DatePicker
           className="input"
@@ -45,7 +45,7 @@ class TimeSelect extends PureComponent {
           onChange={(e) => this.handleDayChange(e, 'endDate')}
         />
         <input
-          onClick={() => this.props.getIncidents(this.state.startDate, this.state.endDate, true)}
+          onClick={() => this.props.fetchIncidents(this.state.startDate, this.state.endDate)}
           className="submit"
           type="submit"
           value="Get Incidents"
@@ -56,7 +56,8 @@ class TimeSelect extends PureComponent {
 }
 
 TimeSelect.propTypes = {
-  getIncidents: PropTypes.func,
+  fetchIncidents: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
 export default TimeSelect;
