@@ -1,13 +1,17 @@
-import React, { PureComponent } from "react";
-import { Context } from "../../Context";
-import "./notification.css";
+import React, { PureComponent } from 'react';
+import { Context } from '../../Context';
+import { toggleNotification } from '../../Context/actions';
+import './index.css';
 
 class Notification extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
+  componentDidMount = () => {
+    const { dispatch } = this.context;
+    setTimeout(() => {
+      toggleNotification({
+        hidden: true,
+      })(dispatch);
+    }, 3000);
+  };
 
   render() {
     const { notification } = this.context;
@@ -15,10 +19,10 @@ class Notification extends PureComponent {
       !notification.hidden && (
         <div
           className={`notification ${
-            notification.success ? "success" : "error"
+            notification.success ? 'success' : 'error'
           }`}
         >
-          <p>{notification.success ? "Success!" : "Error!"}</p>
+          <p>{notification.success ? 'Success!' : 'Error!'}</p>
           <p>{notification.message}</p>
         </div>
       )

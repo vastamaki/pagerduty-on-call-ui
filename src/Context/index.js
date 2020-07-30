@@ -1,49 +1,56 @@
-import React, { Component } from "react";
-export const Context = React.createContext();
+import React, { Component } from 'react';
+import { setCurrentUser, setDefaultTeams } from './actions';
+import fetch from '../Components/Fetch';
+
+export const Context = React.createContext({});
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "GET_TEAMS":
+    case 'SET_CURRENT_USER':
+      return {
+        ...state,
+        currentUser: action.payload,
+      };
+    case 'GET_TEAMS':
       return {
         ...state,
         teams: action.payload,
       };
-    case "SET_FILTERS":
+    case 'SET_FILTERS':
       return {
         ...state,
-        filters: {
-          [action.payload.name]: action.payload.value,
-        },
+        filters: action.payload,
       };
-    case "SET_HOUR_MARK":
+    case 'SET_HOUR_MARK': {
       const hours = {
         hoursMarked: {
           ...state.hoursMarked,
           [action.payload.day]: state.hoursMarked[action.payload.day]
             ? [
-                ...state.hoursMarked[action.payload.day],
-                action.payload.incident_number,
-              ]
+              ...state.hoursMarked[action.payload.day],
+              action.payload.incident_number,
+            ]
             : [action.payload.incident_number],
         },
       };
-      localStorage.setItem("hoursMarked", JSON.stringify(hours.hoursMarked));
+      localStorage.setItem('hoursMarked', JSON.stringify(hours.hoursMarked));
       return hours;
-    case "GET_INCIDENTS":
+    }
+    case 'GET_INCIDENTS':
       return {
         ...state,
         incidents: [...state.incidents, ...action.payload.incidents],
         weekdays: [...state.weekdays, ...action.payload.weekdays],
         showIncidents: true,
       };
-    case "CLEAR_INCIDENTS":
+    case 'CLEAR_INCIDENTS':
       return {
         ...state,
         incidents: [],
         weekdays: [],
         showIncidents: false,
       };
-    case "TOGGLE_NOTIFICATION":
+    case 'TOGGLE_NOTIFICATION':
       return {
         ...state,
         notification: {
@@ -52,18 +59,35 @@ const reducer = (state, action) => {
           success: action.payload.success,
         },
       };
-    case "TOGGLE_MODAL":
+    case 'TOGGLE_MODAL':
       return {
         ...state,
         openModals: {
           [action.payload.modal]: action.payload.state,
         },
       };
-    case "UPDATE_CARD_CONTENT":
+    case 'UPDATE_CARD_CONTENT':
       return {
         ...state,
-        cardContent: action.payload
-      }
+        cardContent: action.payload,
+      };
+    case 'CHANGE_SORTING':
+      return {
+        ...state,
+        sortBy: action.payload,
+      };
+    case 'SET_DEFAULT_TEAMS':
+      return {
+        ...state,
+        selectedTeam: action.payload,
+        selectedTeamName: `${state.currentUser.name} | All current user teams`,
+      };
+    case 'SET_SELECTED_TEAM':
+      return {
+        ...state,
+        selectedTeam: action.payload.teamID,
+        selectedTeamName: `${state.currentUser.name} | ${action.payload.teamName}`,
+      };
     default:
       return state;
   }
@@ -75,11 +99,12 @@ export class Provider extends Component {
     incidents: [],
     hoursMarked: {},
     filters: {
-      exclude: "",
+      exclude: '',
+      showOnlyOwnIncidents: false,
     },
     notification: {
       hidden: true,
-      message: "",
+      message: '',
       success: true,
     },
     showIncidents: false,
@@ -89,6 +114,7 @@ export class Provider extends Component {
       filters: false,
       teams: false,
       cards: false,
+      sorting: false,
     },
     cardContent: {
       summary: true,
@@ -96,18 +122,77 @@ export class Provider extends Component {
       latestChange: true,
       changedBy: true,
     },
+    sortBy: 'createdAt',
+    currentUser: {},
+    selectedTeamName: 'All current user teams',
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 
-  componentDidMount = () => {
-    const filters = JSON.parse(localStorage.getItem("filters"));
-    const hoursMarked = JSON.parse(localStorage.getItem("hoursMarked"));
-    const cardContent = JSON.parse(localStorage.getItem("cardContent"));
-    this.setState({
-      filters: filters || this.state.filters,
-      hoursMarked: hoursMarked || this.state.hoursMarked,
-      cardContent: cardContent || this.state.cardContent,
-    });
+  checkToken = async () => {
+    const token = localStorage.getItem('access_token');
+    const { search } = window.location;
+    const queryParams = new URLSearchParams(search);
+    const authorizationCode = queryParams.get('code');
+
+    if (!token && !authorizationCode) {
+      return false;
+    }
+
+    if (!token && authorizationCode) {
+      const params = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/vnd.pagerduty+json;version=2',
+        },
+      };
+
+      try {
+        const response = await fetch(
+          encodeURI(
+            `https://app.pagerduty.com/oauth/token?grant_type=authorization_code&client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
+              window.location.origin,
+            )}&code=${authorizationCode}&code_verifier`,
+          ),
+          params,
+        );
+
+        if (response && response.access_token && response.refresh_token) {
+          localStorage.setItem('access_token', response.access_token);
+          localStorage.setItem('refresh_token', response.refresh_token);
+          return true;
+        }
+      } catch (err) {
+        return false;
+      }
+    }
+    return false;
+  };
+
+  componentDidMount = async () => {
+    const isTokenValid = await this.checkToken();
+    if (isTokenValid) {
+      const filters = JSON.parse(localStorage.getItem('filters'));
+      const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
+      const cardContent = JSON.parse(localStorage.getItem('cardContent'));
+      const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
+      this.setState({
+        filters: filters || this.state.filters,
+        hoursMarked: hoursMarked || this.state.hoursMarked,
+        cardContent: cardContent || this.state.cardContent,
+        sortBy: sortBy.createdAt ? 'createdAt' : 'updatedAt',
+      });
+
+      try {
+        await setCurrentUser()(this.state.dispatch);
+        await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
+      } catch (err) {
+        throw new Error(err);
+      }
+    } else {
+      window.location.href = `https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
+        window.location.origin,
+      )}&response_type=code&code_challenge_method=S256&code_challenge`;
+    }
   };
 
   render() {
@@ -118,3 +203,7 @@ export class Provider extends Component {
     );
   }
 }
+
+Provider.propTypes = {
+  children: Component,
+};

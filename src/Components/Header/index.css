@@ -7,14 +7,14 @@
   justify-content: left;
 }
 
-.menu > .menu-left {
+.header > .menu > .menu-left {
   justify-content: left;
 }
 
-.menu-right {
+.header > .menu-right {
   position: absolute;
   right: 0;
-  padding: 0px 15px 0px 15px;
+  padding: 0 15px 0 15px;
   align-items: center;
   justify-content: right;
   display: flex;
@@ -23,8 +23,8 @@
   border-radius: 8px;
 }
 
-.menu-right > p,
-.menu-left > p {
+.header > .menu-right > p,
+.header > .menu-left > p {
   padding: 15px;
   color: #ffffff;
 }

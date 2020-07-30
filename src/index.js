@@ -1,22 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import GetView from "./GetView";
-import { Provider } from "./Context";
-import Notification from "./Components/Notification/";
-import Settings from "./Components/Settings/index"
-import Cards from "./Components/Settings/Cards"
-import Teams from "./Components/Settings/Teams"
-import Filters from "./Components/Filters"
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import GetView from './GetView';
+import { Provider } from './Context';
+import Notification from './Components/Notification';
+import Modals from './Components/Modals';
+import './index.css';
 
 const routes = (
   <Provider>
-    <Notification />
-    <Settings />
-    <Cards />
-    <Teams />
-    <Filters />
+    <Notification/>
+    <Modals/>
     <Router>
       <Switch>
         <Route exact path="/" component={GetView} />
@@ -25,4 +19,4 @@ const routes = (
   </Provider>
 );
 
-ReactDOM.render(routes, document.getElementById("root"));
+ReactDOM.render(routes, document.getElementById('root'));
