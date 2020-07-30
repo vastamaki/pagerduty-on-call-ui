@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { setCurrentUser, setDefaultTeams } from './actions';
+import fetch from '../Components/Fetch';
 
 export const Context = React.createContext({});
 
@@ -127,23 +128,70 @@ export class Provider extends Component {
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 
-  componentDidMount = async () => {
-    const filters = JSON.parse(localStorage.getItem('filters'));
-    const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
-    const cardContent = JSON.parse(localStorage.getItem('cardContent'));
-    const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
-    this.setState({
-      filters: filters || this.state.filters,
-      hoursMarked: hoursMarked || this.state.hoursMarked,
-      cardContent: cardContent || this.state.cardContent,
-      sortBy: sortBy.createdAt ? 'createdAt' : 'updatedAt',
-    });
+  checkToken = async () => {
+    const token = localStorage.getItem('access_token');
+    const { search } = window.location;
+    const queryParams = new URLSearchParams(search);
+    const authorizationCode = queryParams.get('code');
 
-    try {
-      await setCurrentUser()(this.state.dispatch);
-      await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
-    } catch (err) {
-      throw new Error(err);
+    if (!token && !authorizationCode) {
+      return false;
+    }
+
+    if (!token && authorizationCode) {
+      const params = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/vnd.pagerduty+json;version=2',
+        },
+      };
+
+      try {
+        const response = await fetch(
+          encodeURI(
+            `https://app.pagerduty.com/oauth/token?grant_type=authorization_code&client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
+              window.location.origin,
+            )}&code=${authorizationCode}&code_verifier`,
+          ),
+          params,
+        );
+
+        if (response && response.access_token && response.refresh_token) {
+          localStorage.setItem('access_token', response.access_token);
+          localStorage.setItem('refresh_token', response.refresh_token);
+          return true;
+        }
+      } catch (err) {
+        return false;
+      }
+    }
+    return false;
+  };
+
+  componentDidMount = async () => {
+    const isTokenValid = await this.checkToken();
+    if (isTokenValid) {
+      const filters = JSON.parse(localStorage.getItem('filters'));
+      const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
+      const cardContent = JSON.parse(localStorage.getItem('cardContent'));
+      const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
+      this.setState({
+        filters: filters || this.state.filters,
+        hoursMarked: hoursMarked || this.state.hoursMarked,
+        cardContent: cardContent || this.state.cardContent,
+        sortBy: sortBy.createdAt ? 'createdAt' : 'updatedAt',
+      });
+
+      try {
+        await setCurrentUser()(this.state.dispatch);
+        await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
+      } catch (err) {
+        throw new Error(err);
+      }
+    } else {
+      window.location.href = `https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
+        window.location.origin,
+      )}&response_type=code&code_challenge_method=S256&code_challenge`;
     }
   };
 
