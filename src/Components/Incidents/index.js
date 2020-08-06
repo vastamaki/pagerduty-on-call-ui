@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import format from 'date-fns/format';
 import { Context } from '../../Context';
 import ContextMenu from '../ContextMenu';
 import './index.css';
@@ -104,9 +105,9 @@ class Incidents extends PureComponent {
               : incident.summary}
           </h4>
         )}
-        {cardContent.createdAt && <h4>Created: {incident.created_at}</h4>}
+        {cardContent.createdAt && <h4>Created: {format(new Date(incident.created_at), 'dd/MM/yy HH:mm:ss')}</h4>}
         {cardContent.latestChange && (
-          <h4>Latest change: {incident.last_status_change_at}</h4>
+          <h4>Latest change: {format(new Date(incident.last_status_change_at), 'dd/MM/yyyy HH:mm:ss')}</h4>
         )}
         {cardContent.changedBy && (
           <h4>
