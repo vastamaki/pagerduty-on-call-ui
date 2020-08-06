@@ -39,15 +39,13 @@ const reducer = (state, action) => {
     case 'GET_INCIDENTS':
       return {
         ...state,
-        incidents: [...state.incidents, ...action.payload.incidents],
-        weekdays: [...state.weekdays, ...action.payload.weekdays],
+        incidents: action.payload,
         showIncidents: true,
       };
     case 'CLEAR_INCIDENTS':
       return {
         ...state,
         incidents: [],
-        weekdays: [],
         showIncidents: false,
       };
     case 'TOGGLE_NOTIFICATION':
@@ -108,7 +106,6 @@ export class Provider extends Component {
       success: true,
     },
     showIncidents: false,
-    weekdays: [],
     openModals: {
       settings: false,
       filters: false,

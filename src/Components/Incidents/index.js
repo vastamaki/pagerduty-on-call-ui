@@ -59,15 +59,18 @@ class Incidents extends PureComponent {
       const excluded = filters.exclude
         .split(',')
         .some((filter) => incident.service.summary.includes(filter));
-      if (excluded) return false;
+      if (excluded) return true;
     }
-    return !(
+    return (
       filters.showOnlyOwnIncidents
       && incident.last_status_change_by.summary !== this.context.currentUser.name
     );
   };
 
-  renderCardHeader = (incident) => (
+  renderCardHeader = (incident) => {
+    const isHoursMarked = this.context.hoursMarked[incident.day]
+      && this.context.hoursMarked[incident.day].includes(incident.incident_number);
+    return (
       <h3 className="summary">
         <p
           style={{
@@ -77,16 +80,14 @@ class Incidents extends PureComponent {
           title="Incident status"
         />
         {incident.service.summary}
-        {this.context.hoursMarked[incident.day]
-        && this.context.hoursMarked[incident.day].includes(
-          incident.incident_number,
-        ) ? (
+        {isHoursMarked ? (
           <p className="hour-mark" />
-          ) : (
+        ) : (
           <p className="no-hour-mark" />
-          )}
+        )}
       </h3>
-  );
+    );
+  };
 
   renderCardContent = (incident) => {
     const { cardContent } = this.context;
@@ -117,7 +118,8 @@ class Incidents extends PureComponent {
   };
 
   render() {
-    const { incidents, weekdays } = this.context;
+    const { incidents } = this.context;
+
     return (
       <React.Fragment>
         {this.state.showContextMenu && (
@@ -128,29 +130,36 @@ class Incidents extends PureComponent {
           />
         )}
         <div className="columns">
-          {incidents.map((day, index) => (
-            <div className="day" key={index}>
-              <h1 onClick={() => this.toggleDay(index)}>
-                {weekdays[index]} ({day.length})
-              </h1>
-              {!this.state.collapsedTables[index] && (
-                <ul id={index}>
-                  {day.map(
-                    (incident) => this.isFilteredOut(incident) && (
-                        <li
-                          className="incident"
-                          key={incident.incident_number}
-                          onContextMenu={(e) => this.onContextMenu(e, incident)}
-                        >
-                          {this.renderCardHeader(incident)}
-                          {this.renderCardContent(incident)}
-                        </li>
-                    ),
-                  )}
-                </ul>
-              )}
-            </div>
-          ))}
+          {Object.keys(incidents).map((day, index) => {
+            const totalIncidentsOfDay = incidents[day].length;
+            const isTableCollapsed = this.state.collapsedTables[index];
+
+            return (
+              <div className="day" key={index}>
+                <h1 className="day-header" onClick={() => this.toggleDay(index)}>
+                  {day} ({totalIncidentsOfDay})
+                <hr />
+                </h1>
+                {!isTableCollapsed && (
+                  <ul id={day}>
+                    {incidents[day].map(
+                      (incident) => !this.isFilteredOut(incident) && (
+                          <li
+                            className="incident"
+                            key={incident.incident_number}
+                            onContextMenu={(e) => this.onContextMenu(e, incident)
+                            }
+                          >
+                            {this.renderCardHeader(incident)}
+                            {this.renderCardContent(incident)}
+                          </li>
+                      ),
+                    )}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
         </div>
       </React.Fragment>
     );

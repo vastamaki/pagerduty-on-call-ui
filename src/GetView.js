@@ -3,7 +3,7 @@ import TimeSelect from './Components/TimeSelect';
 import Incidents from './Components/Incidents';
 import Header from './Components/Header';
 import fetch from './Components/Fetch';
-import { getWeekDays, mapIncidentToDay } from './helpers';
+import mapIncidentToDay from './helpers';
 import {
   saveIncidents,
   clearIncidents,
@@ -34,7 +34,7 @@ export default class GetView extends PureComponent {
       },
     };
 
-    const incidents = [];
+    let incidents = [];
     let offset = 0;
     let response;
     do {
@@ -61,15 +61,12 @@ export default class GetView extends PureComponent {
         })(dispatch);
         return clearIncidents()(dispatch);
       }
-      offset += 99;
-      response.incidents.forEach((incident) => {
-        incidents.push(incident);
-      });
+      offset += 100;
+      incidents = incidents.concat(response.incidents);
     } while (response.more);
 
-    const weekdays = getWeekDays(incidents);
-    const sortedIncidents = mapIncidentToDay(weekdays, incidents, sortBy);
-    saveIncidents(sortedIncidents, weekdays)(dispatch);
+    const sortedIncidents = mapIncidentToDay(incidents, sortBy);
+    saveIncidents(sortedIncidents)(dispatch);
     return this.setState({
       loading: false,
     });
