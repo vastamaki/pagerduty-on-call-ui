@@ -94,10 +94,10 @@ export const updateCardContent = (cardContent) => (dispatch) => {
   });
 };
 
-export const saveIncidents = (incidents, weekdays) => (dispatch) => {
+export const saveIncidents = (incidents) => (dispatch) => {
   dispatch({
     type: 'GET_INCIDENTS',
-    payload: { incidents, weekdays },
+    payload: incidents,
   });
 };
 

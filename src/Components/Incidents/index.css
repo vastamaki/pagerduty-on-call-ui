@@ -15,6 +15,13 @@
   cursor: pointer;
 }
 
+.day > .day-header > hr {
+  border: solid 1px #ffffff;
+  width: 33%;
+  padding: 0;
+  margin-top: 0;
+}
+
 .day > ul {
   list-style-type: none;
   display: grid;
