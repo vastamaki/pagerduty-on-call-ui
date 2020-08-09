@@ -54,16 +54,10 @@ export const setFilters = (filters) => async (dispatch) => {
   });
 };
 
-export const changeSorting = (sortBy) => async (dispatch) => {
-  localStorage.setItem(
-    'sortBy',
-    JSON.stringify({
-      [sortBy]: true,
-    }),
-  );
+export const changeSorting = (sorting) => async (dispatch) => {
   dispatch({
     type: 'CHANGE_SORTING',
-    payload: sortBy,
+    payload: sorting,
   });
 };
 

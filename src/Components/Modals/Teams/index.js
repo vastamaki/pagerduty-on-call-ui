@@ -60,25 +60,27 @@ class Teams extends PureComponent {
         {this.state.loading ? (
           <div className="loading-spinner" />
         ) : (
-          <select
-            onChange={(e) => this.changeTeamID(e)}
-            className="input"
-            name="teams"
-            id="teams"
-          >
-            <option
-              key={'default'}
-              value={'default'}
-              name={'All current user teams'}
+          <div className="dropdown">
+            <select
+              onChange={(e) => this.changeTeamID(e)}
+              className="input"
+              name="teams"
+              id="teams"
             >
-              All current user teams
-            </option>
-            {this.context.teams.map((team, index) => (
-              <option key={index} value={team.id} name={team.name}>
-                {team.name}
+              <option
+                key={'default'}
+                value={'default'}
+                name={'All current user teams'}
+              >
+                All current user teams
               </option>
-            ))}
-          </select>
+              {this.context.teams.map((team, index) => (
+                <option key={index} value={team.id} name={team.name}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
         <input
           onClick={() => this.closeModal()}
