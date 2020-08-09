@@ -97,11 +97,19 @@ export const saveIncidents = (incidents) => (dispatch) => {
 
 export const toggleNotification = (notification) => (dispatch) => {
   dispatch({
+    type: 'HIDE_NOTIFICATION',
+  });
+  dispatch({
     type: 'TOGGLE_NOTIFICATION',
     payload: {
       hidden: notification.hidden,
       message: notification.message,
       success: notification.success,
+      timeout: setTimeout(() => {
+        dispatch({
+          type: 'HIDE_NOTIFICATION',
+        });
+      }, notification.timeout),
     },
   });
 };

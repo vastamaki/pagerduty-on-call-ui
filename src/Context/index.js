@@ -56,6 +56,15 @@ const reducer = (state, action) => {
           hidden: action.payload.hidden,
           message: action.payload.message,
           success: action.payload.success,
+          timeout: action.payload.timeout,
+        },
+      };
+    case 'HIDE_NOTIFICATION':
+      return {
+        ...state,
+        notification: {
+          hidden: true,
+          timeout: clearTimeout(state.notification.timeout),
         },
       };
     case 'TOGGLE_MODAL':
