@@ -54,6 +54,7 @@ export default class GetView extends PureComponent {
           hidden: false,
           success: false,
           message: 'No incidents found!',
+          timeout: 3000,
         })(dispatch);
         return clearIncidents()(dispatch);
       }
@@ -70,6 +71,7 @@ export default class GetView extends PureComponent {
 
   render() {
     const { showIncidents } = this.context;
+    const { loading } = this.state;
 
     return (
       <React.Fragment>

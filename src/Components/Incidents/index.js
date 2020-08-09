@@ -149,9 +149,12 @@ class Incidents extends PureComponent {
 
             return (
               <div className="day" key={index}>
-                <h1 className="day-header" onClick={() => this.toggleDay(index)}>
+                <h1
+                  className="day-header"
+                  onClick={() => this.toggleDay(index)}
+                >
                   {day} ({totalIncidentsOfDay})
-                <hr />
+                  <hr />
                 </h1>
                 {!isTableCollapsed && (
                   <ul id={day}>

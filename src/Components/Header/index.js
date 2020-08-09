@@ -8,13 +8,13 @@ class Header extends PureComponent {
     const { dispatch, selectedTeamName } = this.context;
     return (
       <React.Fragment>
-        <div className="header">
-          <div className="menu-left">
-            <p title={this.context.selectedTeamName}>
-              {this.context.selectedTeamName}
+        <div className='header'>
+          <div className='menu-left'>
+            <p title={selectedTeamName}>
+              {selectedTeamName}
             </p>
           </div>
-          <div className="menu-right">
+          <div className='menu-right'>
             <p onClick={() => clearIncidents()(dispatch)}>Select time</p>
             <p
               onClick={() => {

@@ -208,7 +208,7 @@ export class Provider extends Component {
 
       try {
         await setCurrentUser()(this.state.dispatch);
-        return await setDefaultTeams(this.state.currentUser)(
+        return setDefaultTeams(this.state.currentUser)(
           this.state.dispatch,
         );
       } catch (err) {
