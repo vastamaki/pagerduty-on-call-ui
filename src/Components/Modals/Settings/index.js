@@ -15,11 +15,10 @@ class Settings extends PureComponent {
               onClick={() => changeModalState({
                 modal: 'teams',
                 state: true,
-              })(dispatch)
-              }
-              className="submit"
-              type="submit"
-              value="Select team"
+              })(dispatch)}
+              className='submit'
+              type='submit'
+              value='Select team'
             />
           </li>
           <li>
@@ -27,11 +26,10 @@ class Settings extends PureComponent {
               onClick={() => changeModalState({
                 modal: 'cardSettings',
                 state: true,
-              })(dispatch)
-              }
-              className="submit"
-              type="submit"
-              value="Edit card content"
+              })(dispatch)}
+              className='submit'
+              type='submit'
+              value='Edit card content'
             />
           </li>
         </ul>

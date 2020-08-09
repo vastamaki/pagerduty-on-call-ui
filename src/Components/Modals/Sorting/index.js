@@ -64,20 +64,24 @@ class Sorting extends PureComponent {
     return this.state.sorting.names.direction;
   };
 
-  handleSave = () => {
+  handleSave = async () => {
     const { dispatch } = this.context;
+    if (
+      JSON.stringify(this.state.sorting) !== localStorage.getItem('sorting')
+    ) {
+      await changeSorting(this.state.sorting)(dispatch);
+    }
     localStorage.setItem('sorting', JSON.stringify(this.state.sorting));
     changeModalState({
       modal: 'sorting',
       state: false,
     })(dispatch);
-    changeSorting(this.state.sorting)(dispatch);
   };
 
   componentDidMount = () => {
-    const savedSorting = JSON.parse(localStorage.getItem('sorting'));
+    const { sorting } = this.context;
     this.setState({
-      sorting: savedSorting || this.context.sorting,
+      sorting,
     });
   };
 
@@ -114,7 +118,7 @@ class Sorting extends PureComponent {
           </li>
           <hr id="sorting" />
           <li>
-            Sort by service name
+            <h4>Sort by service name</h4>
             <div className="dropdown">
               <select
                 onChange={(e) => this.changeNameSorting(e)}

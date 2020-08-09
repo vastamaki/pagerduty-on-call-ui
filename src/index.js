@@ -5,17 +5,19 @@ import GetView from './GetView';
 import { Provider } from './Context';
 import Notification from './Components/Notification';
 import Modals from './Components/Modals';
+import Footer from './Components/Footer';
 import './index.css';
 
 const routes = (
   <Provider>
-    <Notification/>
-    <Modals/>
+    <Notification />
+    <Modals />
     <Router>
       <Switch>
-        <Route exact path="/" component={GetView} />
+        <Route exact path='/' component={GetView} />
       </Switch>
     </Router>
+    <Footer />
   </Provider>
 );
 

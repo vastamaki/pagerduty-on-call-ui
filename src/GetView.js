@@ -20,7 +20,7 @@ export default class GetView extends PureComponent {
   };
 
   fetchIncidents = async (startDate, endDate) => {
-    const { dispatch, sorting } = this.context;
+    const { dispatch, sorting, selectedTeam } = this.context;
 
     this.setState({
       loading: true,
@@ -41,11 +41,7 @@ export default class GetView extends PureComponent {
       /* eslint-disable no-await-in-loop */
       response = await fetch(
         encodeURI(
-          `https://api.pagerduty.com/incidents?since=${
-            startDate
-          }&until=${endDate}&team_ids[]=${
-            this.context.selectedTeam
-          }&time_zone=UTC&total=true&limit=100&offset=${offset}`,
+          `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&team_ids[]=${selectedTeam}&time_zone=UTC&total=true&limit=100&offset=${offset}`,
         ),
         params,
       );
@@ -58,6 +54,7 @@ export default class GetView extends PureComponent {
           hidden: false,
           success: false,
           message: 'No incidents found!',
+          timeout: 3000,
         })(dispatch);
         return clearIncidents()(dispatch);
       }
@@ -74,16 +71,20 @@ export default class GetView extends PureComponent {
 
   render() {
     const { showIncidents } = this.context;
+    const { loading } = this.state;
 
     return (
       <React.Fragment>
         <Header />
         <div className="App">
           <div className="App-header">
-            {!this.state.loading && showIncidents ? (
+            {!loading && showIncidents ? (
               <Incidents />
             ) : (
-              <TimeSelect loading={this.state.loading} fetchIncidents={this.fetchIncidents} />
+              <TimeSelect
+                loading={loading}
+                fetchIncidents={this.fetchIncidents}
+              />
             )}
           </div>
         </div>

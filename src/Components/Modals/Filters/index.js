@@ -47,6 +47,7 @@ class Filters extends PureComponent {
   };
 
   render() {
+    const { filters } = this.state;
     return (
       <React.Fragment>
         <h1 className="title">Filters</h1>
@@ -57,7 +58,7 @@ class Filters extends PureComponent {
               placeholder="Service names to filter out"
               onChange={(e) => this.onFilterChange('exclude', e)}
               className="input"
-              value={this.state.filters.exclude}
+              value={filters.exclude}
             />
           </li>
           <li>
@@ -66,7 +67,7 @@ class Filters extends PureComponent {
                 type="checkbox"
                 id="switch1"
                 onChange={(e) => this.handleCheckboxChange(e, 'showOnlyOwnIncidents')}
-                checked={this.state.filters.showOnlyOwnIncidents}
+                checked={filters.showOnlyOwnIncidents}
               />
               <label className="checkbox-label" htmlFor="switch1" />
               Show only own incidents
