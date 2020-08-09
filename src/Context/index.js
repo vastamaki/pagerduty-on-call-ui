@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { setCurrentUser, setDefaultTeams } from './actions';
+import { sortIncidents } from '../helpers';
 import fetch from '../Components/Fetch';
 
 export const Context = React.createContext({});
@@ -72,7 +73,8 @@ const reducer = (state, action) => {
     case 'CHANGE_SORTING':
       return {
         ...state,
-        sortBy: action.payload,
+        sorting: action.payload,
+        incidents: sortIncidents(state.incidents, action.payload),
       };
     case 'SET_DEFAULT_TEAMS':
       return {
@@ -90,11 +92,10 @@ const reducer = (state, action) => {
       return state;
   }
 };
-
 export class Provider extends Component {
   state = {
     teams: [],
-    incidents: [],
+    incidents: {},
     hoursMarked: {},
     filters: {
       exclude: '',
@@ -119,7 +120,17 @@ export class Provider extends Component {
       latestChange: true,
       changedBy: true,
     },
-    sortBy: 'createdAt',
+    sorting: {
+      times: {
+        createdAt: true,
+        latestChange: false,
+        direction: 'asc',
+      },
+      names: {
+        serviceName: false,
+        direction: 'asc',
+      },
+    },
     currentUser: {},
     selectedTeamName: 'All current user teams',
     dispatch: (action) => this.setState((state) => reducer(state, action)),
@@ -170,7 +181,7 @@ export class Provider extends Component {
     window.location.href = `https://app.pagerduty.com/oauth/authorize?client_id=ba65171a721befb7fc2b3ceece703a6b38c1da83c14954039f81a7115bb2058e&redirect_uri=${encodeURI(
       window.location.origin,
     )}&response_type=code&code_challenge_method=S256&code_challenge`;
-  }
+  };
 
   componentDidMount = async () => {
     const isTokenValid = await this.checkToken();
@@ -178,17 +189,19 @@ export class Provider extends Component {
       const filters = JSON.parse(localStorage.getItem('filters'));
       const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
       const cardContent = JSON.parse(localStorage.getItem('cardContent'));
-      const sortBy = JSON.parse(localStorage.getItem('sortBy')) || {};
+      const savedSortings = JSON.parse(localStorage.getItem('sorting')) || {};
       this.setState({
         filters: filters || this.state.filters,
         hoursMarked: hoursMarked || this.state.hoursMarked,
         cardContent: cardContent || this.state.cardContent,
-        sortBy: sortBy.createdAt ? 'createdAt' : 'updatedAt',
+        sorting: savedSortings.sorting || this.state.sorting,
       });
 
       try {
         await setCurrentUser()(this.state.dispatch);
-        return await setDefaultTeams(this.state.currentUser)(this.state.dispatch);
+        return await setDefaultTeams(this.state.currentUser)(
+          this.state.dispatch,
+        );
       } catch (err) {
         return this.redirectToLogin();
       }
