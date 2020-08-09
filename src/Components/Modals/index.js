@@ -11,8 +11,8 @@ class Modals extends PureComponent {
   render() {
     const { openModals } = this.context;
     return Object.values(openModals).some((key) => key === true) && (
-      <div className="modal-wrapper">
-        <div className="modal">
+      <div className='modal-wrapper'>
+        <div className='modal'>
           {openModals.teams && <Teams />}
           {openModals.cardSettings && <Cards />}
           {openModals.filters && <Filters />}

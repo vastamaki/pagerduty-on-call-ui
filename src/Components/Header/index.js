@@ -5,16 +5,16 @@ import './index.css';
 
 class Header extends PureComponent {
   render() {
-    const { dispatch } = this.context;
+    const { dispatch, selectedTeamName } = this.context;
     return (
       <React.Fragment>
-        <div className="header">
-          <div className="menu-left">
-            <p title={this.context.selectedTeamName}>
-              {this.context.selectedTeamName}
+        <div className='header'>
+          <div className='menu-left'>
+            <p title={selectedTeamName}>
+              {selectedTeamName}
             </p>
           </div>
-          <div className="menu-right">
+          <div className='menu-right'>
             <p onClick={() => clearIncidents()(dispatch)}>Select time</p>
             <p
               onClick={() => {

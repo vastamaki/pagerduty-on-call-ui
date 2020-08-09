@@ -72,11 +72,10 @@ const mapIncidentToDay = (incidents, sorting) => {
           html_url,
           last_status_change_at,
           last_status_change_by,
-          alert_counts,
+          status,
         } = incident;
         sortedIncidents[day].push({
           acknowledgements,
-          alert_counts,
           incident_number,
           created_at,
           service,
@@ -85,6 +84,7 @@ const mapIncidentToDay = (incidents, sorting) => {
           last_status_change_at,
           last_status_change_by,
           day,
+          status,
         });
       });
   });

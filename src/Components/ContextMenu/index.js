@@ -18,6 +18,7 @@ class ContextMenu extends PureComponent {
       hidden: false,
       success: true,
       message: 'Summary copied to clipboard!',
+      timeout: 3000,
     })(dispatch);
 
     markHour(this.props.incident)(dispatch);

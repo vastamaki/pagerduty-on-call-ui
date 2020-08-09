@@ -34,12 +34,12 @@ class Incidents extends PureComponent {
     });
   };
 
-  incidentStatusToColor = (incident) => {
-    if (incident.alert_counts.triggered > 0 && incident.acknowledgements[0]) {
+  incidentStatusToColor = (status) => {
+    if (status === 'acknowledged') {
       return '#f59331';
     }
 
-    if (incident.alert_counts.triggered > 0 && !incident.acknowledgements[0]) {
+    if (status === 'triggered') {
       return '#ff0000';
     }
 
@@ -56,31 +56,35 @@ class Incidents extends PureComponent {
 
   isFilteredOut = (incident) => {
     const { filters } = this.context;
+    const { last_status_change_by: lastStatusChangeBy, service } = incident;
     if (filters.exclude) {
       const excluded = filters.exclude
         .split(',')
-        .some((filter) => incident.service.summary.includes(filter));
+        .some((filter) => service.summary.includes(filter));
       if (excluded) return true;
     }
     return (
       filters.showOnlyOwnIncidents
-      && incident.last_status_change_by.summary !== this.context.currentUser.name
+      && lastStatusChangeBy.summary !== this.context.currentUser.name
     );
   };
 
   renderCardHeader = (incident) => {
-    const isHoursMarked = this.context.hoursMarked[incident.day]
-      && this.context.hoursMarked[incident.day].includes(incident.incident_number);
+    const {
+      day, incident_number: incidentNumber, status, service,
+    } = incident;
+    const isHoursMarked = this.context.hoursMarked[day]
+      && this.context.hoursMarked[day].includes(incidentNumber);
     return (
       <h3 className="summary">
         <p
           style={{
-            backgroundColor: this.incidentStatusToColor(incident),
+            backgroundColor: this.incidentStatusToColor(status),
           }}
           className="incident-status"
           title="Incident status"
         />
-        {incident.service.summary}
+        {service.summary}
         {isHoursMarked ? (
           <p className="hour-mark" />
         ) : (
@@ -91,28 +95,36 @@ class Incidents extends PureComponent {
   };
 
   renderCardContent = (incident) => {
+    const {
+      summary,
+      html_url: htmlUrl,
+      created_at: createdAt,
+      last_status_change_at: lastStatusChangeAt,
+      last_status_change_by: lastStatusChangeBy,
+    } = incident;
     const { cardContent } = this.context;
     return (
       <React.Fragment>
         {cardContent.summary && (
           <h4
             className="incident-summary"
-            title={incident.summary}
-            onClick={() => window.open(incident.html_url, '_blank')}
+            title={summary}
+            onClick={() => window.open(htmlUrl, '_blank')}
           >
-            {incident.summary.length > 50
-              ? `${incident.summary.substr(0, 50)}...`
-              : incident.summary}
+            {summary.length > 50 ? `${summary.substr(0, 50)}...` : summary}
           </h4>
         )}
-        {cardContent.createdAt && <h4>Created: {format(new Date(incident.created_at), 'dd/MM/yy HH:mm:ss')}</h4>}
+        {cardContent.createdAt && (
+          <h4>Created: {format(new Date(createdAt), 'dd/MM/yy HH:mm:ss')}</h4>
+        )}
         {cardContent.latestChange && (
-          <h4>Latest change: {format(new Date(incident.last_status_change_at), 'dd/MM/yyyy HH:mm:ss')}</h4>
+          <h4>
+            Latest change:{' '}
+            {format(new Date(lastStatusChangeAt), 'dd/MM/yyyy HH:mm:ss')}
+          </h4>
         )}
         {cardContent.changedBy && (
-          <h4>
-            Last status change by: {incident.last_status_change_by.summary}
-          </h4>
+          <h4>Last status change by: {lastStatusChangeBy.summary}</h4>
         )}
       </React.Fragment>
     );
@@ -137,9 +149,12 @@ class Incidents extends PureComponent {
 
             return (
               <div className="day" key={index}>
-                <h1 className="day-header" onClick={() => this.toggleDay(index)}>
+                <h1
+                  className="day-header"
+                  onClick={() => this.toggleDay(index)}
+                >
                   {day} ({totalIncidentsOfDay})
-                <hr />
+                  <hr />
                 </h1>
                 {!isTableCollapsed && (
                   <ul id={day}>
@@ -147,7 +162,7 @@ class Incidents extends PureComponent {
                       (incident) => !this.isFilteredOut(incident) && (
                           <li
                             className="incident"
-                            key={incident.incident_number}
+                            key={incident.incidentNumber}
                             onContextMenu={(e) => this.onContextMenu(e, incident)
                             }
                           >

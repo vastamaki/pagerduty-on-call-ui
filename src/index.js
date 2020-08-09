@@ -9,11 +9,11 @@ import './index.css';
 
 const routes = (
   <Provider>
-    <Notification/>
-    <Modals/>
+    <Notification />
+    <Modals />
     <Router>
       <Switch>
-        <Route exact path="/" component={GetView} />
+        <Route exact path='/' component={GetView} />
       </Switch>
     </Router>
   </Provider>
