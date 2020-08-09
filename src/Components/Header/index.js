@@ -5,7 +5,7 @@ import './index.css';
 
 class Header extends PureComponent {
   render() {
-    const { dispatch } = this.context;
+    const { dispatch, selectedTeamName } = this.context;
     return (
       <React.Fragment>
         <div className="header">

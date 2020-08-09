@@ -28,24 +28,25 @@ class TimeSelect extends PureComponent {
   };
 
   render() {
+    const { startDate, endDate } = this.state;
     return this.props.loading ? <div className="loading-spinner" /> : (
       <div className="App-wrapper">
         <h3>Start time</h3>
         <DatePicker
           className="input"
           locale={language}
-          selected={this.state.startDate}
+          selected={startDate}
           onChange={(e) => this.handleDayChange(e, 'startDate')}
         />
         <h3>End time</h3>
         <DatePicker
           className="input"
           locale={language}
-          selected={this.state.endDate}
+          selected={endDate}
           onChange={(e) => this.handleDayChange(e, 'endDate')}
         />
         <input
-          onClick={() => this.props.fetchIncidents(this.state.startDate, this.state.endDate)}
+          onClick={() => this.props.fetchIncidents(startDate, endDate)}
           className="submit"
           type="submit"
           value="Get Incidents"

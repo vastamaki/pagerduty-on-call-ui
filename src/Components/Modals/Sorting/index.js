@@ -75,9 +75,9 @@ class Sorting extends PureComponent {
   };
 
   componentDidMount = () => {
-    const savedSorting = JSON.parse(localStorage.getItem('sorting'));
+    const { sorting } = this.context;
     this.setState({
-      sorting: savedSorting || this.context.sorting,
+      sorting,
     });
   };
 

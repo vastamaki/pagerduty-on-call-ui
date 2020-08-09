@@ -35,14 +35,15 @@ class Cards extends PureComponent {
   };
 
   componentDidMount = () => {
-    const cardContent = JSON.parse(localStorage.getItem('cardContent'));
+    const { cardContent } = this.context;
 
     this.setState({
-      cardContent: cardContent || this.context.cardContent,
+      cardContent,
     });
   };
 
   render() {
+    const { cardContent } = this.state;
     return (
       <React.Fragment>
         <h2>Card content</h2>
@@ -53,7 +54,7 @@ class Cards extends PureComponent {
                 type="checkbox"
                 id="switch1"
                 onChange={(e) => this.handleCheckboxChange(e, 'summary')}
-                checked={this.state.cardContent.summary}
+                checked={cardContent.summary}
               />
               <label className="checkbox-label" htmlFor="switch1" />
               Show incident summary
@@ -65,7 +66,7 @@ class Cards extends PureComponent {
                 type="checkbox"
                 id="switch2"
                 onChange={(e) => this.handleCheckboxChange(e, 'createdAt')}
-                checked={this.state.cardContent.createdAt}
+                checked={cardContent.createdAt}
               />
               <label className="checkbox-label" htmlFor="switch2" />
               Show incident created at
@@ -77,7 +78,7 @@ class Cards extends PureComponent {
                 type="checkbox"
                 id="switch3"
                 onChange={(e) => this.handleCheckboxChange(e, 'latestChange')}
-                checked={this.state.cardContent.latestChange}
+                checked={cardContent.latestChange}
               />
               <label className="checkbox-label" htmlFor="switch3" />
               Show incident latest change
@@ -89,7 +90,7 @@ class Cards extends PureComponent {
                 type="checkbox"
                 id="switch4"
                 onChange={(e) => this.handleCheckboxChange(e, 'changedBy')}
-                checked={this.state.cardContent.changedBy}
+                checked={cardContent.changedBy}
               />
               <label className="checkbox-label" htmlFor="switch4" />
               Show incident latest change by
