@@ -118,7 +118,7 @@ class Sorting extends PureComponent {
           </li>
           <hr id="sorting" />
           <li>
-            Sort by service name
+            <h4>Sort by service name</h4>
             <div className="dropdown">
               <select
                 onChange={(e) => this.changeNameSorting(e)}
