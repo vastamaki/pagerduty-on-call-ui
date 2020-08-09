@@ -1,84 +1,148 @@
 import React, { PureComponent } from 'react';
 import { changeModalState, changeSorting } from '../../../Context/actions';
 import { Context } from '../../../Context';
+import './index.css';
 
 class Sorting extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      sortBy: {
-        createdAt: true,
-        updatedAt: false,
+      sorting: {
+        names: {
+          serviceName: false,
+          direction: 'asc',
+        },
+        times: {
+          createdAt: true,
+          updatedAt: false,
+          direction: 'asc',
+        },
       },
     };
   }
 
-  handleCheckboxChange = (e, name) => {
+  handleCheckboxChange = (e, name, type) => {
     this.setState({
-      sortBy: {
-        [name]: e.target.checked,
+      sorting: {
+        ...this.state.sorting,
+        [type]: {
+          [name]: e.target.checked,
+        },
       },
     });
   };
 
+  changeNameSorting = (e) => {
+    const state = e.target[e.target.selectedIndex].value;
+    if (state === 'disabled') {
+      this.setState({
+        sorting: {
+          ...this.state.sorting,
+          names: {
+            ...this.state.sorting.names,
+            serviceName: false,
+          },
+        },
+      });
+    } else {
+      this.setState({
+        sorting: {
+          ...this.state.sorting,
+          names: {
+            ...this.state.sorting.names,
+            serviceName: true,
+            direction: state,
+          },
+        },
+      });
+    }
+  };
+
+  getNameSortingSelection = () => {
+    if (!this.state.sorting.names.serviceName) return false;
+    return this.state.sorting.names.direction;
+  };
+
   handleSave = () => {
     const { dispatch } = this.context;
+    localStorage.setItem('sorting', JSON.stringify(this.state.sorting));
     changeModalState({
       modal: 'sorting',
       state: false,
     })(dispatch);
-    changeSorting(
-      this.state.sortBy.createdAt ? 'createdAt' : 'updatedAt',
-    )(dispatch);
+    changeSorting(this.state.sorting)(dispatch);
   };
 
   componentDidMount = () => {
-    const sortBy = localStorage.getItem('sortBy');
-    if (sortBy) {
-      this.setState({
-        sortBy: JSON.parse(sortBy),
-      });
-    }
+    const savedSorting = JSON.parse(localStorage.getItem('sorting'));
+    this.setState({
+      sorting: savedSorting || this.context.sorting,
+    });
   };
 
   render() {
     return (
       <React.Fragment>
-          <h2>Incident sorting</h2>
-          <ul>
-            <li>
-              <p>
-                <input
-                  type="radio"
-                  id="switch1"
-                  onChange={(e) => this.handleCheckboxChange(e, 'createdAt')}
-                  checked={this.state.sortBy.createdAt || false}
-                />
-                <label className="radio-label" htmlFor="switch1" />
-                Sort by created at
-              </p>
-            </li>
-            <li>
-              <p>
-                <input
-                  type="radio"
-                  id="switch2"
-                  onChange={(e) => this.handleCheckboxChange(e, 'updatedAt')}
-                  checked={this.state.sortBy.updatedAt || false}
-                />
-                <label className="radio-label" htmlFor="switch2" />
-                Sort by last status change
-              </p>
-            </li>
-          </ul>
-          <input
-            onClick={() => this.handleSave()}
-            className="submit"
-            type="submit"
-            value="Save"
-          />
-        </React.Fragment>
+        <h2>Incident sorting</h2>
+        <ul>
+          <li>
+            <p>
+              <input
+                type="radio"
+                id="switch1"
+                onChange={(e) => this.handleCheckboxChange(e, 'createdAt', 'times')
+                }
+                checked={this.state.sorting.times.createdAt || false}
+              />
+              <label className="radio-label" htmlFor="switch1" />
+              Sort by created at
+            </p>
+          </li>
+          <li>
+            <p>
+              <input
+                type="radio"
+                id="switch2"
+                onChange={(e) => this.handleCheckboxChange(e, 'updatedAt', 'times')
+                }
+                checked={this.state.sorting.times.updatedAt || false}
+              />
+              <label className="radio-label" htmlFor="switch2" />
+              Sort by last status change
+            </p>
+          </li>
+          <hr id="sorting" />
+          <li>
+            Sort by service name
+            <div className="dropdown">
+              <select
+                onChange={(e) => this.changeNameSorting(e)}
+                className="input"
+                name="sort-by-name"
+                id="sort-by-name"
+                value={this.getNameSortingSelection()}
+              >
+                <option value={'disabled'} name={'disabled'}>
+                  Disabled
+                </option>
+                <option value={'asc'} name={'asc'}>
+                  Ascending
+                </option>
+                <option value={'desc'} name={'desc'}>
+                  Descending
+                </option>
+              </select>
+            </div>
+          </li>
+        </ul>
+        <input
+          onClick={() => this.handleSave()}
+          className="submit"
+          type="submit"
+          value="Save"
+        />
+      </React.Fragment>
     );
   }
 }

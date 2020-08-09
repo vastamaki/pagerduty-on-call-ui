@@ -20,7 +20,7 @@ export default class GetView extends PureComponent {
   };
 
   fetchIncidents = async (startDate, endDate) => {
-    const { dispatch, sortBy } = this.context;
+    const { dispatch, sorting } = this.context;
 
     this.setState({
       loading: true,
@@ -65,7 +65,7 @@ export default class GetView extends PureComponent {
       incidents = incidents.concat(response.incidents);
     } while (response.more);
 
-    const sortedIncidents = mapIncidentToDay(incidents, sortBy);
+    const sortedIncidents = mapIncidentToDay(incidents, sorting);
     saveIncidents(sortedIncidents)(dispatch);
     return this.setState({
       loading: false,
