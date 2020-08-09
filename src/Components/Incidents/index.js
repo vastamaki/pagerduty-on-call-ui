@@ -34,12 +34,12 @@ class Incidents extends PureComponent {
     });
   };
 
-  incidentStatusToColor = (incident) => {
-    if (incident.alert_counts.triggered > 0 && incident.acknowledgements[0]) {
+  incidentStatusToColor = (status) => {
+    if (status === 'acknowledged') {
       return '#f59331';
     }
 
-    if (incident.alert_counts.triggered > 0 && !incident.acknowledgements[0]) {
+    if (status === 'triggered') {
       return '#ff0000';
     }
 
