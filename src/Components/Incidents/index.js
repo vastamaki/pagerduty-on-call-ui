@@ -100,7 +100,7 @@ class Incidents extends PureComponent {
       html_url: htmlUrl,
       created_at: createdAt,
       last_status_change_at: lastStatusChangeAt,
-      lastStatusChangeBy,
+      last_status_change_by: lastStatusChangeBy,
     } = incident;
     const { cardContent } = this.context;
     return (
