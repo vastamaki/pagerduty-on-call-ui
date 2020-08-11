@@ -11,6 +11,7 @@
   align-items: center;
   background-position: 15px center;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .notification > p {

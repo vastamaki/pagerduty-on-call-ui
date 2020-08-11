@@ -162,7 +162,7 @@ class Incidents extends PureComponent {
                       (incident) => !this.isFilteredOut(incident) && (
                           <li
                             className="incident"
-                            key={incident.incidentNumber}
+                            key={incident.summary}
                             onContextMenu={(e) => this.onContextMenu(e, incident)
                             }
                           >
