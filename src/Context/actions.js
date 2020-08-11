@@ -74,13 +74,6 @@ export const markHour = (incident) => (dispatch) => {
   });
 };
 
-export const changeModalState = (modal) => (dispatch) => {
-  dispatch({
-    type: 'TOGGLE_MODAL',
-    payload: modal,
-  });
-};
-
 export const updateCardContent = (cardContent) => (dispatch) => {
   dispatch({
     type: 'UPDATE_CARD_CONTENT',
@@ -112,6 +105,22 @@ export const toggleNotification = (notification) => (dispatch) => {
       }, notification.timeout),
     },
   });
+};
+
+export const changeModalState = (modal) => (dispatch) => {
+  dispatch({
+    type: 'TOGGLE_MODAL',
+    payload: modal,
+  });
+
+  if (modal.state === false) {
+    toggleNotification({
+      hidden: false,
+      success: true,
+      message: 'Settings saved successfully!',
+      timeout: 3000,
+    })(dispatch);
+  }
 };
 
 export const setDefaultTeams = (currentUser) => (dispatch) => {

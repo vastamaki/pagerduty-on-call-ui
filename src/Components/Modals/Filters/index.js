@@ -4,7 +4,10 @@ import { setFilters, changeModalState } from '../../../Context/actions';
 
 class Filters extends PureComponent {
   state = {
-    filters: {},
+    filters: {
+      exclude: '',
+      showOnlyOwnIncidents: false,
+    },
   };
 
   componentDidMount = () => {
