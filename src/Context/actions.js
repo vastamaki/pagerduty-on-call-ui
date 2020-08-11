@@ -88,6 +88,11 @@ export const saveIncidents = (incidents) => (dispatch) => {
   });
 };
 
+export const hideNotification = () => (dispatch) => {
+  dispatch({
+    type: 'HIDE_NOTIFICATION',
+  });
+};
 export const toggleNotification = (notification) => (dispatch) => {
   dispatch({
     type: 'HIDE_NOTIFICATION',
