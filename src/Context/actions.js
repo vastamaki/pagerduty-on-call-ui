@@ -118,7 +118,7 @@ export const setDefaultTeams = (currentUser) => (dispatch) => {
   const teamIDs = currentUser.teams.map((team) => team.id);
   dispatch({
     type: 'SET_DEFAULT_TEAMS',
-    payload: teamIDs.join(','),
+    payload: teamIDs,
   });
 };
 
