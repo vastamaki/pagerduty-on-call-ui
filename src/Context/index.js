@@ -94,7 +94,7 @@ const reducer = (state, action) => {
     case 'SET_SELECTED_TEAM':
       return {
         ...state,
-        selectedTeam: action.payload.teamID,
+        selectedTeam: [action.payload.teamID],
         selectedTeamName: `${state.currentUser.name} | ${action.payload.teamName}`,
       };
     default:

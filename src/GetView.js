@@ -34,6 +34,8 @@ export default class GetView extends PureComponent {
       },
     };
 
+    const teams = selectedTeam.map((team) => `&team_ids[]=${team}`).join('');
+
     let incidents = [];
     let offset = 0;
     let response;
@@ -41,7 +43,7 @@ export default class GetView extends PureComponent {
       /* eslint-disable no-await-in-loop */
       response = await fetch(
         encodeURI(
-          `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&team_ids[]=${selectedTeam}&time_zone=UTC&total=true&limit=100&offset=${offset}`,
+          `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&time_zone=UTC&total=true&limit=100&offset=${offset}&${teams}`,
         ),
         params,
       );
