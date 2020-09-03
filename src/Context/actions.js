@@ -145,3 +145,16 @@ export const setSelectedTeam = (teamID, teamName) => (dispatch) => {
     },
   });
 };
+
+export const selectIncident = (incident) => (dispatch) => {
+  dispatch({
+    type: 'SELECT_INCIDENT',
+    payload: incident.incident_number,
+  });
+};
+
+export const clearSelectedIncident = () => (dispatch) => {
+  dispatch({
+    type: 'CLEAR_SELECTED_INCIDENTS',
+  });
+};

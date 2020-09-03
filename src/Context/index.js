@@ -97,6 +97,16 @@ const reducer = (state, action) => {
         selectedTeam: [action.payload.teamID],
         selectedTeamName: `${state.currentUser.name} | ${action.payload.teamName}`,
       };
+    case 'SELECT_INCIDENT':
+      return {
+        ...state,
+        selectedIncidents: [...state.selectedIncidents, action.payload],
+      };
+    case 'CLEAR_SELECTED_INCIDENTS':
+      return {
+        ...state,
+        selectedIncidents: [],
+      };
     default:
       return state;
   }
@@ -110,6 +120,7 @@ export class Provider extends Component {
       exclude: '',
       showOnlyOwnIncidents: false,
     },
+    selectedIncidents: [],
     notification: {
       hidden: true,
       message: '',
