@@ -10,9 +10,18 @@ class ContextMenu extends PureComponent {
   };
 
   copySummary = () => {
-    const { dispatch } = this.context;
+    const { dispatch, selectedIncidents } = this.context;
 
-    navigator.clipboard.writeText(this.props.incident.summary);
+    if (selectedIncidents.length >= 1) {
+      let text = '';
+      selectedIncidents.forEach((incident) => {
+        text += ` [#${incident}]`;
+      });
+      text += this.props.incident.summary;
+      navigator.clipboard.writeText(text);
+    } else {
+      navigator.clipboard.writeText(this.props.incident.summary);
+    }
 
     toggleNotification({
       hidden: false,
