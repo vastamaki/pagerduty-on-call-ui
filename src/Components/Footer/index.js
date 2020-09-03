@@ -4,7 +4,7 @@ import './index.css';
 
 const Footer = () => (
     <div className="footer">
-      <p>v1.5.5</p>
+      <p>v1.6.0</p>
     </div>
 );
 
