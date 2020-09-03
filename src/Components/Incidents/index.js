@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import format from 'date-fns/format';
 import { Context } from '../../Context';
+import { selectIncident, clearSelectedIncident } from '../../Context/actions';
 import ContextMenu from '../ContextMenu';
+import checkMark from '../../Icons/checkMark.svg';
 import './index.css';
 
 class Incidents extends PureComponent {
@@ -26,6 +28,24 @@ class Incidents extends PureComponent {
     });
   };
 
+  onClick = (e, incident) => {
+    if (e.ctrlKey) {
+      const { dispatch } = this.context;
+      selectIncident(incident)(dispatch);
+    }
+  };
+
+  keyDown = (e) => {
+    if (e.keyCode === 27) {
+      const { dispatch } = this.context;
+      clearSelectedIncident()(dispatch);
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.keyDown);
+  }
+
   toggleDay = (index) => {
     const collapsedTables = [...this.state.collapsedTables];
     collapsedTables[index] = !collapsedTables[index];
@@ -35,15 +55,14 @@ class Incidents extends PureComponent {
   };
 
   incidentStatusToColor = (status) => {
-    if (status === 'acknowledged') {
-      return '#f59331';
+    switch (status) {
+      case 'acknowledged':
+        return '#f59331';
+      case 'triggered':
+        return '#ff0000';
+      default:
+        return '#00a600';
     }
-
-    if (status === 'triggered') {
-      return '#ff0000';
-    }
-
-    return '#00a600';
   };
 
   closeContextMenu = () => {
@@ -69,27 +88,38 @@ class Incidents extends PureComponent {
     );
   };
 
+  hoursMarked = (incidentNumber, day) => {
+    const isHoursMarked = this.context.hoursMarked[day]
+      && this.context.hoursMarked[day].includes(incidentNumber);
+    if (isHoursMarked) {
+      return <p className="hour-mark" />;
+    }
+    return <p className="no-hour-mark" />;
+  };
+
   renderCardHeader = (incident) => {
     const {
       day, incident_number: incidentNumber, status, service,
     } = incident;
-    const isHoursMarked = this.context.hoursMarked[day]
-      && this.context.hoursMarked[day].includes(incidentNumber);
+
     return (
       <h3 className="summary">
-        <p
-          style={{
-            backgroundColor: this.incidentStatusToColor(status),
-          }}
-          className="incident-status"
-          title="Incident status"
-        />
-        {service.summary}
-        {isHoursMarked ? (
-          <p className="hour-mark" />
+        {!this.context.selectedIncidents.includes(incidentNumber) ? (
+          <p
+            style={{
+              backgroundColor: this.incidentStatusToColor(
+                status,
+                incidentNumber,
+              ),
+            }}
+            className="incident-status"
+            title="Incident status"
+          />
         ) : (
-          <p className="no-hour-mark" />
+          <img className="incident-status" src={checkMark} />
         )}
+        {service.summary}
+        {this.hoursMarked(incidentNumber, day)}
       </h3>
     );
   };
@@ -109,7 +139,7 @@ class Incidents extends PureComponent {
           <h4
             className="incident-summary"
             title={summary}
-            onClick={() => window.open(htmlUrl, '_blank')}
+            onClick={(e) => !e.ctrlKey && window.open(htmlUrl, '_blank')}
           >
             {summary.length > 50 ? `${summary.substr(0, 50)}...` : summary}
           </h4>
@@ -165,6 +195,7 @@ class Incidents extends PureComponent {
                             key={incident.summary}
                             onContextMenu={(e) => this.onContextMenu(e, incident)
                             }
+                            onClick={(e) => this.onClick(e, incident)}
                           >
                             {this.renderCardHeader(incident)}
                             {this.renderCardContent(incident)}
