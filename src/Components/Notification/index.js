@@ -15,7 +15,7 @@ class Notification extends PureComponent {
             notification.success ? 'success' : 'error'
           }`}
         >
-          <p>{notification.success ? 'Success!' : 'Error!'}</p>
+          <p>{notification.success ? 'Success!' : 'Oops.. :('}</p>
           <p>{notification.message}</p>
         </div>
       )

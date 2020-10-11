@@ -1,6 +1,6 @@
 .context-menu {
   position: absolute;
-  background-color: #ffffff;
+  background-color: #2a2e32;
   border-radius: 8px;
   box-shadow: 0 0 3px #000000;
   text-align: center;
@@ -16,8 +16,9 @@
 .context-menu > ul > li {
   padding: 0;
   cursor: pointer;
+  background: transparent
 }
 
 .context-menu > ul > li:hover {
-  color: green;
+  color: #5fb15f;
 }

@@ -22,7 +22,7 @@ const mapIncidentToDay = (incidents, sorting) => {
 
     incidents
       .sort((a, b) => {
-        if (sorting.names.serviceName) {
+        if (sorting.names.by === 'serviceName') {
           if (sorting.names.direction === 'asc') {
             if (a.service.summary < b.service.summary) return -1;
             if (a.service.summary > b.service.summary) return 1;
@@ -31,7 +31,7 @@ const mapIncidentToDay = (incidents, sorting) => {
             if (b.service.summary > a.service.summary) return 1;
           }
         }
-        if (sorting.times.createdAt) {
+        if (sorting.times.by === 'createdAt') {
           if (sorting.times.direction === 'asc') {
             if (a.summary < b.summary) return -1;
             if (a.summary > b.summary) return 1;
@@ -40,21 +40,22 @@ const mapIncidentToDay = (incidents, sorting) => {
             if (b.summary > a.summary) return 1;
           }
         }
-        if (sorting.times.updatedAt) {
+        if (sorting.times.by === 'latestChange') {
           if (sorting.times.direction === 'asc') {
-            if (a.last_status_change_at < b.last_status_change_at) return -1;
-            if (a.last_status_change_at > b.last_status_change_at) return 1;
+            if (a.lastStatusChangeAt < b.lastStatusChangeAt) return -1;
+            if (a.lastStatusChangeAt > b.lastStatusChangeAt) return 1;
           } else {
-            if (b.last_status_change_at < a.last_status_change_at) return -1;
-            if (b.last_status_change_at > a.last_status_change_at) return 1;
+            if (b.lastStatusChangeAt < a.lastStatusChangeAt) return -1;
+            if (b.lastStatusChangeAt > a.lastStatusChangeAt) return 1;
           }
         }
         return 0;
       })
       .filter((incident) => {
+        console.log(incident);
         const date = format(
           new Date(
-            sorting.times.createdAt
+            sorting.times.by === 'createdAt'
               ? incident.created_at
               : incident.last_status_change_at,
           ),
@@ -64,25 +65,25 @@ const mapIncidentToDay = (incidents, sorting) => {
       })
       .forEach((incident) => {
         const {
-          incident_number,
+          incident_number: incidentNumber,
           acknowledgements,
-          created_at,
+          created_at: createdAt,
           service,
           summary,
-          html_url,
-          last_status_change_at,
-          last_status_change_by,
+          html_url: htmlUrl,
+          last_status_change_at: lastStatusChangeAt,
+          last_status_change_by: lastStatusChangeBy,
           status,
         } = incident;
         sortedIncidents[day].push({
           acknowledgements,
-          incident_number,
-          created_at,
+          incidentNumber,
+          createdAt,
           service,
           summary,
-          html_url,
-          last_status_change_at,
-          last_status_change_by,
+          htmlUrl,
+          lastStatusChangeAt,
+          lastStatusChangeBy,
           day,
           status,
         });
