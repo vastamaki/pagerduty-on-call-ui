@@ -36,7 +36,7 @@ class ContextMenu extends PureComponent {
   };
 
   openIncidentInPagerduty = () => {
-    window.open(this.props.incident.html_url, '_blank');
+    window.open(this.props.incident.htmlUrl, '_blank');
 
     this.props.closeContextMenu();
   };
