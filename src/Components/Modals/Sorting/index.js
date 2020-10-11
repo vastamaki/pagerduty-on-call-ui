@@ -10,24 +10,25 @@ class Sorting extends PureComponent {
     this.state = {
       sorting: {
         names: {
-          serviceName: false,
+          by: 'serviceName',
           direction: 'asc',
         },
         times: {
-          createdAt: true,
-          updatedAt: false,
+          by: 'createdAt',
           direction: 'asc',
         },
       },
     };
   }
 
-  handleCheckboxChange = (e, name, type) => {
+  handleCheckboxChange = (e) => {
+    const { alt: type, name } = e.target;
     this.setState({
       sorting: {
         ...this.state.sorting,
         [type]: {
-          [name]: e.target.checked,
+          ...this.state.sorting[type],
+          by: name,
         },
       },
     });
@@ -41,7 +42,8 @@ class Sorting extends PureComponent {
           ...this.state.sorting,
           names: {
             ...this.state.sorting.names,
-            serviceName: false,
+            by: 'serviceName',
+            active: false,
           },
         },
       });
@@ -51,8 +53,9 @@ class Sorting extends PureComponent {
           ...this.state.sorting,
           names: {
             ...this.state.sorting.names,
-            serviceName: true,
+            by: 'serviceName',
             direction: state,
+            active: true,
           },
         },
       });
@@ -60,17 +63,13 @@ class Sorting extends PureComponent {
   };
 
   getNameSortingSelection = () => {
-    if (!this.state.sorting.names.serviceName) return false;
+    if (!this.state.sorting.names.active) return false;
     return this.state.sorting.names.direction;
   };
 
   handleSave = async () => {
     const { dispatch } = this.context;
-    if (
-      JSON.stringify(this.state.sorting) !== localStorage.getItem('sorting')
-    ) {
-      await changeSorting(this.state.sorting)(dispatch);
-    }
+    await changeSorting(this.state.sorting)(dispatch);
     localStorage.setItem('sorting', JSON.stringify(this.state.sorting));
     changeModalState({
       modal: 'sorting',
@@ -95,9 +94,11 @@ class Sorting extends PureComponent {
               <input
                 type="radio"
                 id="switch1"
-                onChange={(e) => this.handleCheckboxChange(e, 'createdAt', 'times')
+                name="createdAt"
+                alt="times"
+                onChange={(e) => this.handleCheckboxChange(e)
                 }
-                checked={this.state.sorting.times.createdAt || false}
+                checked={this.state.sorting.times.by === 'createdAt' || false}
               />
               <label className="radio-label" htmlFor="switch1" />
               Sort by created at
@@ -108,9 +109,11 @@ class Sorting extends PureComponent {
               <input
                 type="radio"
                 id="switch2"
-                onChange={(e) => this.handleCheckboxChange(e, 'updatedAt', 'times')
+                name="latestChange"
+                alt="times"
+                onChange={(e) => this.handleCheckboxChange(e)
                 }
-                checked={this.state.sorting.times.updatedAt || false}
+                checked={this.state.sorting.times.by === 'latestChange' || false}
               />
               <label className="radio-label" htmlFor="switch2" />
               Sort by last status change

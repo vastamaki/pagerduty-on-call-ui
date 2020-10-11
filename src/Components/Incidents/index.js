@@ -4,6 +4,8 @@ import { Context } from '../../Context';
 import { selectIncident, clearSelectedIncident } from '../../Context/actions';
 import ContextMenu from '../ContextMenu';
 import checkMark from '../../Icons/checkMark.svg';
+import hourMark from '../../Icons/hour-mark.svg';
+import noHourMark from '../../Icons/no-hour-mark.svg';
 import './index.css';
 
 class Incidents extends PureComponent {
@@ -57,11 +59,11 @@ class Incidents extends PureComponent {
   incidentStatusToColor = (status) => {
     switch (status) {
       case 'acknowledged':
-        return '#f59331';
+        return '#ffb347';
       case 'triggered':
-        return '#ff0000';
+        return '#ff6961';
       default:
-        return '#00a600';
+        return '#5fb15f';
     }
   };
 
@@ -75,7 +77,7 @@ class Incidents extends PureComponent {
 
   isFilteredOut = (incident) => {
     const { filters } = this.context;
-    const { last_status_change_by: lastStatusChangeBy, service } = incident;
+    const { lastStatusChangeBy, service } = incident;
     if (filters.exclude) {
       const excluded = filters.exclude
         .split(',')
@@ -92,14 +94,14 @@ class Incidents extends PureComponent {
     const isHoursMarked = this.context.hoursMarked[day]
       && this.context.hoursMarked[day].includes(incidentNumber);
     if (isHoursMarked) {
-      return <p className="hour-mark" />;
+      return <img alt="Hours marked" src={hourMark} className="hour-mark" />;
     }
-    return <p className="no-hour-mark" />;
+    return <img alt="Hours not marked" src={noHourMark} className="no-hour-mark" />;
   };
 
   renderCardHeader = (incident) => {
     const {
-      day, incident_number: incidentNumber, status, service,
+      day, incidentNumber, status, service,
     } = incident;
 
     return (
@@ -116,7 +118,7 @@ class Incidents extends PureComponent {
             title="Incident status"
           />
         ) : (
-          <img className="incident-status" src={checkMark} />
+          <img alt="Incident selected" className="incident-status" src={checkMark} />
         )}
         {service.summary}
         {this.hoursMarked(incidentNumber, day)}
@@ -127,10 +129,10 @@ class Incidents extends PureComponent {
   renderCardContent = (incident) => {
     const {
       summary,
-      html_url: htmlUrl,
-      created_at: createdAt,
-      last_status_change_at: lastStatusChangeAt,
-      last_status_change_by: lastStatusChangeBy,
+      htmlUrl,
+      createdAt,
+      lastStatusChangeAt,
+      lastStatusChangeBy,
     } = incident;
     const { cardContent } = this.context;
     return (

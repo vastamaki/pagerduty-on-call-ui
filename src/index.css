@@ -8,11 +8,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  animation-name: background;
-  animation-duration: 30s;
-  animation-iteration-count: infinite;
+  background-color: #212529;
 }
 
 .loading-spinner {
@@ -27,16 +23,16 @@ body,
   height: 50px;
   margin: 8px;
   border-radius: 50%;
-  border: 6px solid #000000;
-  border-color: #000000 transparent #000000 transparent;
+  border: 6px solid #f5f5f5;
+  border-color: #f5f5f5 transparent #f5f5f5 transparent;
   animation: loading-spinner 1.2s linear infinite;
 }
 
 .input {
-  background-color: #f0eef1;
+  background-color: #202427;
+  color: #f5f5f5;
   border-radius: 8px;
-  border: 1px solid #e7e7e7;
-  color: #1d1d1d;
+  border: none;
   text-align: center;
   font-size: 22px;
   margin: 10px 0 10px 0;
@@ -44,13 +40,13 @@ body,
 }
 
 .submit {
-  color: #ffffff;
-  background-color: #2ebc2e;
+  color: #f5f5f5;
+  background-color: #5FB15F;
   padding: 10px;
+  margin: 10px 0 0 0;;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0px 1px 2px #000000;
 }
 
 @keyframes loading-spinner {
@@ -59,24 +55,6 @@ body,
   }
   100% {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes background {
-  0% {
-    background-color: #006400;
-  }
-  25% {
-    background-color: #228b22;
-  }
-  50% {
-    background-color: rgb(17, 173, 17);
-  }
-  75% {
-    background-color: #009500;
-  }
-  100% {
-    background-color: #006400;
   }
 }
 
@@ -102,13 +80,13 @@ input[type="checkbox"] {
   left: 5px;
   width: 10px;
   height: 10px;
-  background: #ffffff;
+  background: #f5f5f5;
   border-radius: 5px;
   transition: 0.4s;
 }
 
 input[type="checkbox"]:checked + .checkbox-label {
-  background: #2ebc2e;
+  background: #5fb15f;
 }
 
 input[type="checkbox"]:checked + .checkbox-label:after {
@@ -142,13 +120,13 @@ input[type="radio"] {
   left: 5px;
   width: 10px;
   height: 10px;
-  background: #ffffff;
+  background: #f5f5f5;
   border-radius: 5px;
   transition: 0.4s;
 }
 
 input[type="radio"]:checked + .radio-label {
-  background: #2ebc2e;
+  background: #5fb15f;
 }
 
 .dropdown {
@@ -158,11 +136,11 @@ input[type="radio"]:checked + .radio-label {
 .dropdown:after {
   content: "<>";
   transform: rotate(90deg);
-  color: #000000;
   right: 5px;
   top: 17px;
   position: absolute;
   pointer-events: none;
+  color: #f5f5f5;
 }
 
 .dropdown select {
@@ -174,5 +152,7 @@ input[type="radio"]:checked + .radio-label {
   height: 50px;
   margin: 5px 0px;
   font-size: 16px;
-  border: 2px solid #e7e7e7;
+  color: #f5f5f5;
+  border: none;
+  background-color: #202427;
 }

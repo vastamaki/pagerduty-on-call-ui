@@ -1,6 +1,6 @@
 .header {
   width: 100%;
-  color: #ffffff;
+  color: #f5f5f5;
   align-items: center;
   display: flex;
   height: 60px;
@@ -26,5 +26,5 @@
 .header > .menu-right > p,
 .header > .menu-left > p {
   padding: 15px;
-  color: #ffffff;
+  color: #f5f5f5;
 }

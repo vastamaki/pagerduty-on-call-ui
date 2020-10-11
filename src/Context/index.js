@@ -29,9 +29,9 @@ const reducer = (state, action) => {
           [action.payload.day]: state.hoursMarked[action.payload.day]
             ? [
               ...state.hoursMarked[action.payload.day],
-              action.payload.incident_number,
+              action.payload.incidentNumber,
             ]
-            : [action.payload.incident_number],
+            : [action.payload.incidentNumber],
         },
       };
       localStorage.setItem('hoursMarked', JSON.stringify(hours.hoursMarked));
@@ -142,13 +142,13 @@ export class Provider extends Component {
     },
     sorting: {
       times: {
-        createdAt: true,
-        latestChange: false,
+        by: 'createdAt',
         direction: 'asc',
       },
       names: {
-        serviceName: false,
+        by: 'serviceName',
         direction: 'asc',
+        active: false,
       },
     },
     currentUser: {},

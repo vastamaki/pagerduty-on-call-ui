@@ -149,7 +149,7 @@ export const setSelectedTeam = (teamID, teamName) => (dispatch) => {
 export const selectIncident = (incident) => (dispatch) => {
   dispatch({
     type: 'SELECT_INCIDENT',
-    payload: incident.incident_number,
+    payload: incident.incidentNumber,
   });
 };
 
