@@ -1,27 +1,22 @@
-import React, { PureComponent } from 'react';
+import React, { useContext } from 'react';
 import { hideNotification } from '../../Context/actions';
 import { Context } from '../../Context';
-import './index.css';
+import './index.scss';
 
-class Notification extends PureComponent {
-  render() {
-    const { notification, dispatch } = this.context;
+const Notification = () => {
+  const { notification, dispatch } = useContext(Context);
 
-    return (
-      !notification.hidden && (
-        <div
+  return (
+    !notification.hidden && (
+      <div
         onClick={() => hideNotification()(dispatch)}
-          className={`notification ${
-            notification.success ? 'success' : 'error'
-          }`}
-        >
-          <p>{notification.success ? 'Success!' : 'Oops.. :('}</p>
-          <p>{notification.message}</p>
-        </div>
-      )
-    );
-  }
-}
+        className={`notification ${notification.success ? 'success' : 'error'}`}
+      >
+        <p>{notification.success ? 'Success!' : 'Oops.. :('}</p>
+        <p>{notification.message}</p>
+      </div>
+    )
+  );
+};
 
-Notification.contextType = Context;
 export default Notification;

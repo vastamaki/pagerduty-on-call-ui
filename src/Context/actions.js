@@ -1,4 +1,5 @@
 import fetch from '../Components/Fetch';
+import mapIncidentToDay, { asyncLocalStorage } from '../helpers';
 
 export const setCurrentUser = () => async (dispatch) => {
   const params = {
@@ -81,13 +82,6 @@ export const updateCardContent = (cardContent) => (dispatch) => {
   });
 };
 
-export const saveIncidents = (incidents) => (dispatch) => {
-  dispatch({
-    type: 'GET_INCIDENTS',
-    payload: incidents,
-  });
-};
-
 export const hideNotification = () => (dispatch) => {
   dispatch({
     type: 'HIDE_NOTIFICATION',
@@ -110,22 +104,6 @@ export const toggleNotification = (notification) => (dispatch) => {
       }, notification.timeout),
     },
   });
-};
-
-export const changeModalState = (modal) => (dispatch) => {
-  dispatch({
-    type: 'TOGGLE_MODAL',
-    payload: modal,
-  });
-
-  if (modal.state === false) {
-    toggleNotification({
-      hidden: false,
-      success: true,
-      message: 'Settings saved successfully!',
-      timeout: 3000,
-    })(dispatch);
-  }
 };
 
 export const setDefaultTeams = (currentUser) => (dispatch) => {
@@ -153,8 +131,67 @@ export const selectIncident = (incident) => (dispatch) => {
   });
 };
 
+export const setDateRange = (date, option) => (dispatch) => {
+  dispatch({
+    type: 'SET_DATE_RANGE',
+    payload: {
+      date,
+      option,
+    },
+  });
+};
+
 export const clearSelectedIncident = () => (dispatch) => {
   dispatch({
     type: 'CLEAR_SELECTED_INCIDENTS',
+  });
+};
+
+export const fetchIncidents = (options) => async (dispatch) => {
+  const {
+    selectedTeam, startDate, endDate, sorting,
+  } = options;
+  clearIncidents()(dispatch);
+  const params = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/vnd.pagerduty+json;version=2',
+      Authorization: `Bearer ${await asyncLocalStorage.getItem(
+        'access_token',
+      )}`,
+    },
+  };
+
+  const teams = selectedTeam.map((team) => `&team_ids[]=${team}`).join('');
+
+  let incidents = [];
+  let offset = 0;
+  let response;
+  do {
+    /* eslint-disable no-await-in-loop */
+    response = await fetch(
+      encodeURI(
+        `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&time_zone=UTC&total=true&limit=100&offset=${offset}&${teams}`,
+      ),
+      params,
+    );
+
+    if (!response.incidents[0] || response.error) {
+      toggleNotification({
+        hidden: false,
+        success: false,
+        message: 'No incidents found!',
+        timeout: 3000,
+      })(dispatch);
+      return clearIncidents()(dispatch);
+    }
+    offset += 100;
+    incidents = incidents.concat(response.incidents);
+  } while (response.more);
+
+  const sortedIncidents = await mapIncidentToDay(incidents, sorting);
+  return dispatch({
+    type: 'GET_INCIDENTS',
+    payload: sortedIncidents,
   });
 };

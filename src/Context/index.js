@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { setCurrentUser, setDefaultTeams } from './actions';
-import { sortIncidents } from '../helpers';
+import { startOfWeek, endOfWeek } from 'date-fns';
+import {
+  getTeams, setCurrentUser, setDefaultTeams, fetchIncidents,
+} from './actions';
+import { sortIncidents, asyncLocalStorage } from '../helpers';
 import fetch from '../Components/Fetch';
 
 export const Context = React.createContext({});
@@ -67,17 +70,13 @@ const reducer = (state, action) => {
           timeout: clearTimeout(state.notification.timeout),
         },
       };
-    case 'TOGGLE_MODAL':
-      return {
-        ...state,
-        openModals: {
-          [action.payload.modal]: action.payload.state,
-        },
-      };
     case 'UPDATE_CARD_CONTENT':
       return {
         ...state,
-        cardContent: action.payload,
+        cardContent: {
+          ...state.cardContent,
+          [action.payload.name]: action.payload.value,
+        },
       };
     case 'CHANGE_SORTING':
       return {
@@ -101,6 +100,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         selectedIncidents: [...state.selectedIncidents, action.payload],
+      };
+    case 'SET_DATE_RANGE':
+      return {
+        ...state,
+        [action.payload.option]: action.payload.date,
       };
     case 'CLEAR_SELECTED_INCIDENTS':
       return {
@@ -127,13 +131,6 @@ export class Provider extends Component {
       success: true,
     },
     showIncidents: false,
-    openModals: {
-      settings: false,
-      filters: false,
-      teams: false,
-      cards: false,
-      sorting: false,
-    },
     cardContent: {
       summary: true,
       createdAt: true,
@@ -151,8 +148,11 @@ export class Provider extends Component {
         active: false,
       },
     },
+    loading: true,
     currentUser: {},
     selectedTeamName: 'All current user teams',
+    startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
+    endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
     dispatch: (action) => this.setState((state) => reducer(state, action)),
   };
 
@@ -185,8 +185,14 @@ export class Provider extends Component {
         );
 
         if (response && response.access_token && response.refresh_token) {
-          localStorage.setItem('access_token', response.access_token);
-          localStorage.setItem('refresh_token', response.refresh_token);
+          await asyncLocalStorage.setItem(
+            'access_token',
+            response.access_token,
+          );
+          await asyncLocalStorage.setItem(
+            'refresh_token',
+            response.refresh_token,
+          );
           window.location.search = '';
           return true;
         }
@@ -206,25 +212,41 @@ export class Provider extends Component {
   componentDidMount = async () => {
     const isTokenValid = await this.checkToken();
     if (isTokenValid) {
-      const filters = JSON.parse(localStorage.getItem('filters'));
-      const hoursMarked = JSON.parse(localStorage.getItem('hoursMarked'));
-      const cardContent = JSON.parse(localStorage.getItem('cardContent'));
-      const savedSortings = JSON.parse(localStorage.getItem('sorting')) || {};
+      const filters = JSON.parse(await asyncLocalStorage.getItem('filters'));
+      const hoursMarked = JSON.parse(
+        await asyncLocalStorage.getItem('hoursMarked'),
+      );
+      const cardContent = JSON.parse(
+        await asyncLocalStorage.getItem('cardContent'),
+      );
+      const savedSortings = JSON.parse(await asyncLocalStorage.getItem('sorting')) || {};
+
       this.setState({
         filters: filters || this.state.filters,
         hoursMarked: hoursMarked || this.state.hoursMarked,
         cardContent: cardContent || this.state.cardContent,
-        sorting: savedSortings.sorting || this.state.sorting,
+        sorting: savedSortings || this.state.sorting,
       });
 
       try {
         await setCurrentUser()(this.state.dispatch);
-        return setDefaultTeams(this.state.currentUser)(
-          this.state.dispatch,
-        );
+        await getTeams()(this.state.dispatch);
+        setDefaultTeams(this.state.currentUser)(this.state.dispatch);
       } catch (err) {
         return this.redirectToLogin();
       }
+      const {
+        sorting, selectedTeam, startDate, endDate,
+      } = this.state;
+      await fetchIncidents({
+        sorting,
+        selectedTeam,
+        startDate,
+        endDate,
+      })(this.state.dispatch);
+      return this.setState({
+        loading: false,
+      });
     }
     return this.redirectToLogin();
   };

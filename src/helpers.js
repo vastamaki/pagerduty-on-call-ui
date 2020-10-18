@@ -52,7 +52,6 @@ const mapIncidentToDay = (incidents, sorting) => {
         return 0;
       })
       .filter((incident) => {
-        console.log(incident);
         const date = format(
           new Date(
             sorting.times.by === 'createdAt'
@@ -80,7 +79,7 @@ const mapIncidentToDay = (incidents, sorting) => {
           incidentNumber,
           createdAt,
           service,
-          summary,
+          summary: summary.replace(/([A-Z]+)/g, ' $1').replace(/([A-Z][a-z])/g, ' $1'),
           htmlUrl,
           lastStatusChangeAt,
           lastStatusChangeBy,
@@ -130,5 +129,12 @@ export function sortIncidents(incidents, sorting) {
   });
   return sortedIncidents;
 }
+
+export const asyncLocalStorage = {
+  setItem: (key, value) => Promise.resolve().then(() => {
+    localStorage.setItem(key, value);
+  }),
+  getItem: (key) => Promise.resolve().then(() => localStorage.getItem(key)),
+};
 
 export default mapIncidentToDay;
