@@ -1,98 +1,26 @@
-import React, { PureComponent } from 'react';
-import TimeSelect from './Components/TimeSelect';
+import React, { useContext } from 'react';
 import Incidents from './Components/Incidents';
-import Header from './Components/Header';
-import fetch from './Components/Fetch';
-import mapIncidentToDay from './helpers';
-import {
-  saveIncidents,
-  clearIncidents,
-  toggleNotification,
-} from './Context/actions';
 import { Context } from './Context';
-import 'react-datepicker/dist/react-datepicker.css';
-import './GetView.css';
+import Sidebar from './Components/Sidebar';
+import './GetView.scss';
 
-export default class GetView extends PureComponent {
-  state = {
-    offset: 0,
-    loading: false,
-  };
+const GetView = () => {
+  const { loading } = useContext(Context);
 
-  fetchIncidents = async (startDate, endDate) => {
-    const { dispatch, sorting, selectedTeam } = this.context;
+  return (
+    <React.Fragment>
+      <div className="App">
+        {!loading ? (
+          <>
+            <Sidebar />
+            <Incidents />
+          </>
+        ) : (
+          <div className="loading-spinner" />
+        )}
+      </div>
+    </React.Fragment>
+  );
+};
 
-    this.setState({
-      loading: true,
-    });
-
-    const params = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/vnd.pagerduty+json;version=2',
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-    };
-
-    const teams = selectedTeam.map((team) => `&team_ids[]=${team}`).join('');
-
-    let incidents = [];
-    let offset = 0;
-    let response;
-    do {
-      /* eslint-disable no-await-in-loop */
-      response = await fetch(
-        encodeURI(
-          `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&time_zone=UTC&total=true&limit=100&offset=${offset}&${teams}`,
-        ),
-        params,
-      );
-
-      if (!response.incidents[0] || response.error) {
-        this.setState({
-          loading: false,
-        });
-        toggleNotification({
-          hidden: false,
-          success: false,
-          message: 'No incidents found!',
-          timeout: 3000,
-        })(dispatch);
-        return clearIncidents()(dispatch);
-      }
-      offset += 100;
-      incidents = incidents.concat(response.incidents);
-    } while (response.more);
-
-    const sortedIncidents = mapIncidentToDay(incidents, sorting);
-    saveIncidents(sortedIncidents)(dispatch);
-    return this.setState({
-      loading: false,
-    });
-  };
-
-  render() {
-    const { showIncidents } = this.context;
-    const { loading } = this.state;
-
-    return (
-      <React.Fragment>
-        <Header />
-        <div className="App">
-          <div className="App-header">
-            {!loading && showIncidents ? (
-              <Incidents />
-            ) : (
-              <TimeSelect
-                loading={loading}
-                fetchIncidents={this.fetchIncidents}
-              />
-            )}
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  }
-}
-
-GetView.contextType = Context;
+export default GetView;

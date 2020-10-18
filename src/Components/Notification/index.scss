@@ -12,6 +12,9 @@
   background-position: 15px center;
   background-repeat: no-repeat;
   cursor: pointer;
+  > p {
+    margin: 0;
+  }
 }
 
 .notification > p {
