@@ -153,7 +153,7 @@ const Incidents = () => {
             title={summary}
             onClick={(e) => !e.ctrlKey && window.open(htmlUrl, '_blank')}
           >
-            {summary.length > 50 ? `${summary.substr(0, 50)}...` : summary}
+            {summary.length > 50 ? `${summary.substr(0, 70).trim()}...` : summary}
           </h4>
         )}
         {cardContent.createdAt && (
