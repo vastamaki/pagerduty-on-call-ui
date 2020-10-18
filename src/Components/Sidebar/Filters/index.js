@@ -13,11 +13,12 @@ const Filters = () => {
   };
 
   const handleCheckboxChange = (e, name) => {
-    setFilters({
+    const newFilters = {
       ...filters,
       [name]: e.target.checked,
-    })(dispatch);
-    localStorage.setItem('filters', JSON.stringify(filters));
+    };
+    setFilters(newFilters)(dispatch);
+    return localStorage.setItem('filters', JSON.stringify(newFilters));
   };
 
   return (
