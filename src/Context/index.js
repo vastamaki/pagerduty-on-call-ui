@@ -47,15 +47,6 @@ export const Provider = (props) => {
     endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
   });
 
-  useEffect(() => {
-    (async function () {
-      await localforage.setItem('cardContent', state.cardContent);
-      await localforage.setItem('filters', state.filters);
-      await localforage.setItem('sorting', state.sorting);
-      await localforage.setItem('hoursMarked', state.hoursMarked);
-    }());
-  }, [state.cardContent, state.filters, state.sorting, state.hoursMarked]);
-
   const checkToken = async () => {
     const token = localforage.getItem('access_token');
     const { search } = window.location;
@@ -124,10 +115,10 @@ export const Provider = (props) => {
             type: 'SET_DEFAULT_TEAMS',
             payload: teamIDs,
           });
-          const cardContent = await localforage.getItem('cardContent');
-          const filters = await localforage.getItem('filters');
-          const sorting = await localforage.getItem('sorting');
-          const hoursMarked = await localforage.getItem('hoursMarked');
+          const cardContent = (await localforage.getItem('cardContent')) || state.cardContent;
+          const filters = (await localforage.getItem('filters')) || state.filters;
+          const sorting = (await localforage.getItem('sorting')) || state.sorting;
+          const hoursMarked = (await localforage.getItem('hoursMarked')) || state.hoursMarked;
           dispatch({
             type: 'LOAD_SETTINGS',
             payload: {

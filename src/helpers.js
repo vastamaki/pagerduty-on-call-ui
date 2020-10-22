@@ -8,7 +8,7 @@ const mapIncidentToDay = (incidents, sorting) => {
     new Set(
       incidents.map((incident) => format(
         new Date(
-          sorting.times.createdAt
+          sorting.times.by === 'createdAt'
             ? incident.created_at
             : incident.last_status_change_at,
         ),
@@ -106,7 +106,7 @@ export function sortIncidents(incidents, sorting) {
           if (b.service.summary > a.service.summary) return 1;
         }
       }
-      if (sorting.times.createdAt) {
+      if (sorting.times.by === 'createdAt') {
         if (sorting.times.direction === 'asc') {
           if (a.summary < b.summary) return -1;
           if (a.summary > b.summary) return 1;
@@ -115,7 +115,7 @@ export function sortIncidents(incidents, sorting) {
           if (b.summary > a.summary) return 1;
         }
       }
-      if (sorting.times.updatedAt) {
+      if (sorting.times.by === 'updatedAt') {
         if (sorting.times.direction === 'asc') {
           if (a.last_status_change_at < b.last_status_change_at) return -1;
           if (a.last_status_change_at > b.last_status_change_at) return 1;

@@ -22,25 +22,28 @@ const Sorting = () => {
   const changeNameSorting = async (e) => {
     const state = e.target[e.target.selectedIndex].value;
     if (state === 'disabled') {
-      dispatch({
-        ...sorting,
-        names: {
-          ...sorting.names,
-          by: 'serviceName',
-          active: false,
+      return dispatch({
+        type: 'CHANGE_SORTING',
+        payload: {
+          names: {
+            ...sorting.names,
+            by: 'serviceName',
+            active: false,
+          },
         },
       });
-    } else {
-      dispatch({
-        ...sorting,
+    }
+    return dispatch({
+      type: 'CHANGE_SORTING',
+      payload: {
         names: {
           ...sorting.names,
           by: 'serviceName',
           direction: state,
           active: true,
         },
-      });
-    }
+      },
+    });
   };
 
   const getNameSortingSelection = () => {

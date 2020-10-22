@@ -1,3 +1,4 @@
+import * as localforage from 'localforage';
 import { sortIncidents } from '../helpers';
 
 export default (state, action) => {
@@ -13,6 +14,7 @@ export default (state, action) => {
         loading: action.payload,
       };
     case 'SET_FILTERS':
+      localforage.setItem('filters', action.payload);
       return {
         ...state,
         filters: action.payload,
@@ -29,6 +31,7 @@ export default (state, action) => {
             : [action.payload.incidentNumber],
         },
       };
+      localforage.setItem('hoursMarked', hours);
       return hours;
     }
     case 'GET_INCIDENTS':
@@ -60,6 +63,10 @@ export default (state, action) => {
         },
       };
     case 'UPDATE_CARD_CONTENT':
+      localforage.setItem('cardContent', {
+        ...state.cardContent,
+        [action.payload.name]: action.payload.value,
+      });
       return {
         ...state,
         cardContent: {
@@ -70,16 +77,30 @@ export default (state, action) => {
     case 'LOAD_SETTINGS':
       return {
         ...state,
-        cardContent: action.payload.cardContent,
-        filter: action.payload.filter,
-        hoursMarked: action.payload.hoursMarked,
-        sorting: action.payload.sorting,
+        ...(action.payload.cardContent && {
+          cardContent: action.payload.cardContent,
+        }),
+        ...(action.payload.filters && { filters: action.payload.filters }),
+        ...(action.payload.hoursMarked && {
+          hoursMarked: action.payload.hoursMarked,
+        }),
+        ...(action.payload.sorting && { sorting: action.payload.sorting }),
       };
     case 'CHANGE_SORTING':
+      localforage.setItem('sorting', {
+        ...state.sorting,
+        ...action.payload,
+      });
       return {
         ...state,
-        sorting: action.payload,
-        incidents: sortIncidents(state.incidents, action.payload),
+        sorting: {
+          ...state.sorting,
+          ...action.payload,
+        },
+        incidents: sortIncidents(state.incidents, {
+          ...state.sorting,
+          ...action.payload,
+        }),
       };
     case 'SET_DEFAULT_TEAMS':
       return {
