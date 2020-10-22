@@ -1,21 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import format from 'date-fns/format';
 import { Context } from '../../Context';
-import { selectIncident, clearSelectedIncident } from '../../Context/actions';
 import ContextMenu from '../ContextMenu';
 import hourMark from '../../Icons/hour-mark.svg';
 import noHourMark from '../../Icons/no-hour-mark.svg';
 import './index.scss';
 
 const Incidents = () => {
+  const [context, dispatch] = useContext(Context);
   const {
-    dispatch,
     filters,
     currentUser,
     cardContent,
     selectedIncidents,
     incidents,
-  } = useContext(Context);
+  } = context;
 
   const [state, setState] = useState({
     collapsedTables: [''],
@@ -40,13 +39,18 @@ const Incidents = () => {
 
   const onClick = (e, incident) => {
     if (e.ctrlKey) {
-      selectIncident(incident)(dispatch);
+      dispatch({
+        type: 'SELECT_INCIDENT',
+        payload: incident.incidentNumber,
+      });
     }
   };
 
   const keyDown = (e) => {
     if (e.keyCode === 27) {
-      clearSelectedIncident()(dispatch);
+      dispatch({
+        type: 'CLEAR_SELECTED_INCIDENTS',
+      });
     }
   };
 
@@ -153,7 +157,9 @@ const Incidents = () => {
             title={summary}
             onClick={(e) => !e.ctrlKey && window.open(htmlUrl, '_blank')}
           >
-            {summary.length > 50 ? `${summary.substr(0, 70).trim()}...` : summary}
+            {summary.length > 50
+              ? `${summary.substr(0, 70).trim()}...`
+              : summary}
           </h4>
         )}
         {cardContent.createdAt && (

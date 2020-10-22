@@ -1,55 +1,37 @@
 import React, { useContext } from 'react';
-import { changeSorting } from '../../../Context/actions';
 import { Context } from '../../../Context';
 
 const Sorting = () => {
-  const { dispatch, sorting } = useContext(Context);
+  const [context, dispatch] = useContext(Context);
+  const { sorting } = context;
 
   const handleCheckboxChange = async (e) => {
     const { alt: type, name } = e.target;
-    await changeSorting({
-      ...sorting,
-      [type]: {
-        ...sorting[type],
-        by: name,
-      },
-    })(dispatch);
-    localStorage.setItem(
-      'sorting',
-      JSON.stringify({
+    return dispatch({
+      type: 'CHANGE_SORTING',
+      payload: {
         ...sorting,
         [type]: {
           ...sorting[type],
           by: name,
         },
-      }),
-    );
+      },
+    });
   };
 
   const changeNameSorting = async (e) => {
     const state = e.target[e.target.selectedIndex].value;
     if (state === 'disabled') {
-      await changeSorting({
+      dispatch({
         ...sorting,
         names: {
           ...sorting.names,
           by: 'serviceName',
           active: false,
         },
-      })(dispatch);
-      localStorage.setItem(
-        'sorting',
-        JSON.stringify({
-          ...sorting,
-          names: {
-            ...sorting.names,
-            by: 'serviceName',
-            active: false,
-          },
-        }),
-      );
+      });
     } else {
-      await changeSorting({
+      dispatch({
         ...sorting,
         names: {
           ...sorting.names,
@@ -57,19 +39,7 @@ const Sorting = () => {
           direction: state,
           active: true,
         },
-      })(dispatch);
-      localStorage.setItem(
-        'sorting',
-        JSON.stringify({
-          ...sorting,
-          names: {
-            ...sorting.names,
-            by: 'serviceName',
-            direction: state,
-            active: true,
-          },
-        }),
-      );
+      });
     }
   };
 

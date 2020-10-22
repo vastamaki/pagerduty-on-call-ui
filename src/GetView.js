@@ -5,7 +5,8 @@ import Sidebar from './Components/Sidebar';
 import './GetView.scss';
 
 const GetView = () => {
-  const { loading } = useContext(Context);
+  const [context] = useContext(Context);
+  const { loading } = context;
 
   return (
     <React.Fragment>

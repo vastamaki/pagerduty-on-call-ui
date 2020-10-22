@@ -1,25 +1,27 @@
 import React, { useContext } from 'react';
 import { Context } from '../../../Context';
-import { setFilters } from '../../../Context/actions';
 
 const Filters = () => {
-  const { dispatch, filters } = useContext(Context);
+  const [context, dispatch] = useContext(Context);
+  const { filters } = context;
 
   const onFilterChange = async (filter, e) => {
-    setFilters({
-      ...filters,
-      [filter]: e.target.value,
-    })(dispatch);
+    dispatch({
+      type: 'SET_FILTERS',
+      payload: {
+        ...filters,
+        [filter]: e.target.value,
+      },
+    });
   };
 
-  const handleCheckboxChange = (e, name) => {
-    const newFilters = {
+  const handleCheckboxChange = (e, name) => dispatch({
+    type: 'SET_FILTERS',
+    payload: {
       ...filters,
       [name]: e.target.checked,
-    };
-    setFilters(newFilters)(dispatch);
-    return localStorage.setItem('filters', JSON.stringify(newFilters));
-  };
+    },
+  });
 
   return (
     <div className="filters">

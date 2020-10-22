@@ -11,6 +11,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.8",
     "date-fns": "^2.16.1",
+    "localforage": "^1.9.0",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",

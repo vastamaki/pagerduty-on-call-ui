@@ -1,15 +1,18 @@
 import React, { useContext } from 'react';
-import { hideNotification } from '../../Context/actions';
 import { Context } from '../../Context';
 import './index.scss';
 
 const Notification = () => {
-  const { notification, dispatch } = useContext(Context);
+  const [context] = useContext(Context);
+  const { notification, dispatch } = context;
 
   return (
     !notification.hidden && (
       <div
-        onClick={() => hideNotification()(dispatch)}
+        onClick={() => dispatch({
+          type: 'HIDE_NOTIFICATION',
+        })
+        }
         className={`notification ${notification.success ? 'success' : 'error'}`}
       >
         <p>{notification.success ? 'Success!' : 'Oops.. :('}</p>

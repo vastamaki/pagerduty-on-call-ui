@@ -1,20 +1,18 @@
 import React, { useContext } from 'react';
-import { updateCardContent } from '../../../Context/actions';
 import { Context } from '../../../Context';
 
 const Cards = () => {
-  const { dispatch, cardContent } = useContext(Context);
+  const [context, dispatch] = useContext(Context);
+  const { cardContent } = context;
 
   const handleCheckboxChange = async (e, name) => {
-    updateCardContent({
-      name,
-      value: e.target.checked,
-    })(dispatch);
-    const newStore = {
-      ...cardContent,
-      [name]: e.target.checked,
-    };
-    localStorage.setItem('cardContent', JSON.stringify(newStore));
+    dispatch({
+      type: 'UPDATE_CARD_CONTENT',
+      payload: {
+        name,
+        value: e.target.checked,
+      },
+    });
   };
 
   return (
@@ -57,7 +55,10 @@ const Cards = () => {
           onChange={(e) => handleCheckboxChange(e, 'changedBy')}
           checked={cardContent.changedBy}
         />
-        <label className="checkbox-label" htmlFor="card-latest-change-by-switch" />
+        <label
+          className="checkbox-label"
+          htmlFor="card-latest-change-by-switch"
+        />
         <p>Latest change by</p>
       </div>
     </div>

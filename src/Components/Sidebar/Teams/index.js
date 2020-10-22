@@ -1,19 +1,29 @@
 import React, { useContext } from 'react';
-import { setSelectedTeam, setDefaultTeams } from '../../../Context/actions';
 import { Context } from '../../../Context';
 
 const Teams = () => {
-  const { dispatch, currentUser, teams } = useContext(Context);
+  const [context, dispatch] = useContext(Context);
+  const { currentUser, teams } = context;
 
   const changeTeamID = async (e) => {
     const teamName = e.target[e.target.selectedIndex].text;
     const teamID = e.target[e.target.selectedIndex].value;
 
     if (teamID === 'default') {
-      return setDefaultTeams(currentUser)(dispatch);
+      const teamIDs = currentUser.teams.map((team) => team.id);
+      return dispatch({
+        type: 'SET_DEFAULT_TEAMS',
+        payload: teamIDs,
+      });
     }
 
-    setSelectedTeam(teamID, teamName)(dispatch);
+    dispatch({
+      type: 'SET_SELECTED_TEAM',
+      payload: {
+        teamID,
+        teamName,
+      },
+    });
     return true;
   };
 

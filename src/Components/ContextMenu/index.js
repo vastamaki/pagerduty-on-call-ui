@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
 import * as PropTypes from 'prop-types';
-import { markHour, toggleNotification } from '../../Context/actions';
 import { Context } from '../../Context';
 import './index.scss';
 
 const ContextMenu = (props) => {
-  const { dispatch, selectedIncidents } = useContext(Context);
+  const [context, dispatch] = useContext(Context);
+  const { selectedIncidents } = context;
   const [state, setState] = useState({
     visibleTimeout: 0,
   });
@@ -22,14 +22,20 @@ const ContextMenu = (props) => {
       navigator.clipboard.writeText(props.incident.summary);
     }
 
-    toggleNotification({
-      hidden: false,
-      success: true,
-      message: 'Summary copied to clipboard!',
-      timeout: 3000,
-    })(dispatch);
+    dispatch({
+      type: 'TOGGLE_NOTIFICATION',
+      payload: {
+        hidden: false,
+        success: true,
+        message: 'Summary copied to clipboard!',
+        timeout: 3000,
+      },
+    });
 
-    markHour(props.incident)(dispatch);
+    dispatch({
+      type: 'SET_HOUR_MARK',
+      payload: props.incident,
+    });
 
     props.closeContextMenu();
   };
