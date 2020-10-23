@@ -22,7 +22,7 @@ export const setCurrentUser = async () => {
   }
 };
 
-export const getTeams = () => async () => {
+export const getTeams = async () => {
   const params = {
     method: 'GET',
     headers: {

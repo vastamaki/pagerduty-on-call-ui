@@ -105,7 +105,7 @@ export const Provider = (props) => {
             payload: currentUser,
           });
 
-          const teams = getTeams();
+          const teams = await getTeams();
           dispatch({
             type: 'SET_TEAMS',
             payload: teams,

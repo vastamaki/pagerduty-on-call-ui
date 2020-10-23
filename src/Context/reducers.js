@@ -3,7 +3,7 @@ import { sortIncidents } from '../helpers';
 
 export default (state, action) => {
   switch (action.type) {
-    case 'GET_TEAMS':
+    case 'SET_TEAMS':
       return {
         ...state,
         teams: action.payload,
