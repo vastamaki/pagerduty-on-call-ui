@@ -6,50 +6,22 @@
   > h4 {
     margin: 5px;
   }
+  &.hour-mark {
+    border-right: 1px solid #5fb15f;
+  }
   .summary {
-    text-overflow: ellipsis;
     display: flex;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
     width: 100%;
     align-items: center;
-    justify-content: space-between;
-    align-items: center;
-
-    > p {
-      white-space: nowrap;
-      margin: 0;
-      overflow: hidden;
-      max-width: 20ch;
-      text-overflow: ellipsis;
-    }
 
     > h3 {
       white-space: nowrap;
-      margin: 0;
+      margin: auto;
       overflow: hidden;
       max-width: 20ch;
       text-overflow: ellipsis;
     }
 
-    > .hour-mark {
-      float: right;
-      min-width: 25px;
-      min-height: 25px;
-      max-width: 25px;
-      max-height: 25px;
-      user-select: none;
-    }
-
-    > .no-hour-mark {
-      float: right;
-      min-width: 25px;
-      min-height: 25px;
-      max-width: 25px;
-      max-height: 25px;
-      user-select: none;
-    }
     > .status {
       min-width: 20px;
       min-height: 20px;

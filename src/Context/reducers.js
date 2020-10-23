@@ -21,18 +21,22 @@ export default (state, action) => {
       };
     case 'SET_HOUR_MARK': {
       const hours = {
-        hoursMarked: {
-          ...state.hoursMarked,
-          [action.payload.day]: state.hoursMarked[action.payload.day]
-            ? [
-              ...state.hoursMarked[action.payload.day],
-              action.payload.incidentNumber,
-            ]
-            : [action.payload.incidentNumber],
-        },
+        ...state.hoursMarked,
+        [action.payload.day]: state.hoursMarked[action.payload.day]
+          ? [
+            ...state.hoursMarked[action.payload.day],
+            action.payload.incidentNumber,
+          ]
+          : [action.payload.incidentNumber],
       };
       localforage.setItem('hoursMarked', hours);
-      return hours;
+      return {
+        ...state,
+        hoursMarked: {
+          ...state.hoursMarked,
+          ...hours,
+        },
+      };
     }
     case 'GET_INCIDENTS':
       return {
@@ -59,7 +63,7 @@ export default (state, action) => {
         ...state,
         notification: {
           hidden: true,
-          timeout: clearTimeout(state.notification.timeout),
+          timeout: 0,
         },
       };
     case 'UPDATE_CARD_CONTENT':

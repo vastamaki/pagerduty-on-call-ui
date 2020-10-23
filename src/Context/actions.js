@@ -74,9 +74,6 @@ export const fetchIncidents = async (options) => {
 
     if (!response.incidents[0] || response.error) {
       dispatch({
-        type: 'HIDE_NOTIFICATION',
-      });
-      dispatch({
         type: 'TOGGLE_NOTIFICATION',
         payload: {
           hidden: false,

@@ -1,10 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Context } from '../../Context';
 import './index.scss';
 
 const Notification = () => {
-  const [context] = useContext(Context);
-  const { notification, dispatch } = context;
+  const [context, dispatch] = useContext(Context);
+  const { notification } = context;
+
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch({
+        type: 'HIDE_NOTIFICATION',
+      });
+    }, notification.timeout);
+  }, [notification.hidden, notification.timeout, dispatch]);
 
   return (
     !notification.hidden && (

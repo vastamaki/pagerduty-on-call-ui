@@ -3,7 +3,6 @@ import format from 'date-fns/format';
 import { Context } from '../../Context';
 import ContextMenu from '../ContextMenu';
 import hourMark from '../../Icons/hour-mark.svg';
-import noHourMark from '../../Icons/no-hour-mark.svg';
 import './index.scss';
 
 const Incidents = () => {
@@ -14,6 +13,7 @@ const Incidents = () => {
     cardContent,
     selectedIncidents,
     incidents,
+    hoursMarked,
   } = context;
 
   const [state, setState] = useState({
@@ -99,25 +99,13 @@ const Incidents = () => {
     );
   };
 
-  const hoursMarked = (incidentNumber, day) => {
-    const isHoursMarked = hoursMarked[day] && hoursMarked[day].includes(incidentNumber);
-    if (isHoursMarked) {
-      return <img alt="Hours marked" src={hourMark} className="hour-mark" />;
-    }
-    return (
-      <img alt="Hours not marked" src={noHourMark} className="no-hour-mark" />
-    );
-  };
-
   const renderCardHeader = (incident) => {
-    const {
-      day, incidentNumber, status, service,
-    } = incident;
+    const { incidentNumber, status, service } = incident;
 
     return (
       <div className="summary">
         {!selectedIncidents.includes(incidentNumber) ? (
-          <p
+          <div
             style={{
               backgroundColor: incidentStatusToColor(status, incidentNumber),
             }}
@@ -128,7 +116,6 @@ const Incidents = () => {
           <img alt="Incident selected" className="status" src={hourMark} />
         )}
         <h3 title={service.summary}>{service.summary}</h3>
-        {hoursMarked(incidentNumber, day)}
       </div>
     );
   };
@@ -208,7 +195,11 @@ const Incidents = () => {
                   {incidents[day].map(
                     (incident) => !isFilteredOut(incident) && (
                         <li
-                          className="incident"
+                          className={`incident ${
+                            hoursMarked[day] && hoursMarked[day].includes(incident.incidentNumber)
+                              ? 'hour-mark'
+                              : ''
+                          }`}
                           key={incident.summary}
                           onContextMenu={(e) => onContextMenu(e, incident)}
                           onClick={(e) => onClick(e, incident)}
