@@ -58,6 +58,9 @@ const Incidents = () => {
     document.addEventListener('keydown', keyDown);
   });
 
+  // eslint-disable-next-line
+  useEffect(() => () => document.removeEventListener('keydown', keyDown), []);
+
   const toggleDay = (index) => {
     const collapsedTables = [...state.collapsedTables];
     collapsedTables[index] = !collapsedTables[index];
@@ -107,7 +110,7 @@ const Incidents = () => {
         {!selectedIncidents.includes(incidentNumber) ? (
           <div
             style={{
-              backgroundColor: incidentStatusToColor(status, incidentNumber),
+              backgroundColor: incidentStatusToColor(status),
             }}
             className="status"
             title="Incident status"
