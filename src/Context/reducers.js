@@ -124,6 +124,13 @@ export default (state, action) => {
         selectedTeamName: action.payload.teamName,
       };
     case 'SELECT_INCIDENT':
+      if (state.selectedIncidents.includes(action.payload)) {
+        const index = state.selectedIncidents.indexOf(action.payload);
+        return {
+          ...state,
+          ...state.selectedIncidents.splice(index, 1),
+        };
+      }
       return {
         ...state,
         selectedIncidents: [...state.selectedIncidents, action.payload],
