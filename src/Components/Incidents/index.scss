@@ -1,40 +1,42 @@
-.incident {
+.incident-wrapper {
   background-color: #2a2e32;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  > h4 {
-    margin: 5px;
-  }
   &.hour-mark {
     border-right: 1px solid #5fb15f;
   }
-  .summary {
+  > .incident {
     display: flex;
-    width: 100%;
+    flex-direction: column;
     align-items: center;
-
-    > h3 {
-      white-space: nowrap;
-      margin: auto;
-      overflow: hidden;
-      max-width: 20ch;
-      text-overflow: ellipsis;
+    > h4 {
+      margin: 5px;
     }
-
-    > .status {
-      min-width: 20px;
-      min-height: 20px;
-      max-width: 20px;
-      max-height: 20px;
-      margin: 0;
-      border-radius: 50%;
-    }
-  }
-  > .content {
     > .summary {
-      cursor: pointer;
-      text-decoration: underline;
+      display: flex;
+      width: 100%;
+      align-items: center;
+
+      > h3 {
+        white-space: nowrap;
+        margin: auto;
+        overflow: hidden;
+        max-width: 20ch;
+        text-overflow: ellipsis;
+      }
+
+      > .status {
+        min-width: 20px;
+        min-height: 20px;
+        max-width: 20px;
+        max-height: 20px;
+        margin: 0;
+        border-radius: 50%;
+      }
+    }
+    > .content {
+      > .summary {
+        cursor: pointer;
+        text-decoration: underline;
+      }
     }
   }
 }

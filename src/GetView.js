@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import Incidents from './Components/Incidents';
 import { Context } from './Context';
 import Sidebar from './Components/Sidebar';
+import Loader from './Components/Loader';
 import './GetView.scss';
 
 const GetView = () => {
@@ -11,13 +12,13 @@ const GetView = () => {
   return (
     <React.Fragment>
       <div className="App">
-        {!loading ? (
+      <Sidebar />
+        {loading ? (
+          <Loader />
+        ) : (
           <>
-            <Sidebar />
             <Incidents />
           </>
-        ) : (
-          <div className="loading-spinner" />
         )}
       </div>
     </React.Fragment>

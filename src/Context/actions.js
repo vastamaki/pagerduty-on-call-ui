@@ -82,6 +82,10 @@ export const fetchIncidents = async (options) => {
           timeout: 3000,
         },
       });
+      dispatch({
+        type: 'SET_LOADING',
+        value: false,
+      });
       return dispatch({
         type: 'CLEAR_INCIDENTS',
       });

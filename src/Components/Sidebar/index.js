@@ -18,10 +18,10 @@ const Sidebar = () => {
           <img
             alt=""
             className="profile-picture"
-            src={currentUser.avatar_url}
+            src={currentUser.avatar_url || ''}
           />
           <div>
-            <h3>{currentUser.name}</h3>
+            <h3>{currentUser.name || 'John Doe'}</h3>
             <h3>{selectedTeamName}</h3>
           </div>
         </div>

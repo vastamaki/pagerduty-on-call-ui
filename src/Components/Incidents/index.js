@@ -198,7 +198,7 @@ const Incidents = () => {
                   {incidents[day].map(
                     (incident) => !isFilteredOut(incident) && (
                         <li
-                          className={`incident ${
+                          className={`incident-wrapper ${
                             hoursMarked[day] && hoursMarked[day].includes(incident.incidentNumber)
                               ? 'hour-mark'
                               : ''
@@ -207,8 +207,11 @@ const Incidents = () => {
                           onContextMenu={(e) => onContextMenu(e, incident)}
                           onClick={(e) => onClick(e, incident)}
                         >
+                      <div className="incident">
+
                           {renderCardHeader(incident)}
                           {renderCardContent(incident)}
+                        </div>
                         </li>
                     ),
                   )}
