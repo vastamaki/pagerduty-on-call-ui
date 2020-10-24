@@ -1,0 +1,61 @@
+.incident-wrapper {
+  background-color: #2a2e32;
+  &.hour-mark {
+    border-right: 1px solid #5fb15f;
+  }
+  > .incident {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > h4 {
+      margin: 5px;
+    }
+    > .summary {
+      display: flex;
+      width: 100%;
+      align-items: center;
+
+      > h3 {
+        white-space: nowrap;
+        margin: auto;
+        overflow: hidden;
+        max-width: 20ch;
+        text-overflow: ellipsis;
+      }
+
+      > .status {
+        min-width: 20px;
+        min-height: 20px;
+        max-width: 20px;
+        max-height: 20px;
+        margin: 0;
+        border-radius: 50%;
+      }
+    }
+    > .content {
+      > .summary {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+.day {
+  > h1 {
+    cursor: pointer;
+  }
+
+  .day-header > hr {
+    border: solid 1px #f5f5f5;
+    width: 33%;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  > ul {
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0;
+  }
+}

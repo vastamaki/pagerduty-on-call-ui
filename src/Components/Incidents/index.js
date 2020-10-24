@@ -1,27 +1,34 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import format from 'date-fns/format';
 import { Context } from '../../Context';
-import { selectIncident, clearSelectedIncident } from '../../Context/actions';
 import ContextMenu from '../ContextMenu';
-import checkMark from '../../Icons/checkMark.svg';
 import hourMark from '../../Icons/hour-mark.svg';
-import noHourMark from '../../Icons/no-hour-mark.svg';
-import './index.css';
+import './index.scss';
 
-class Incidents extends PureComponent {
-  state = {
-    collapsedTables: [],
+const Incidents = () => {
+  const [context, dispatch] = useContext(Context);
+  const {
+    filters,
+    currentUser,
+    cardContent,
+    selectedIncidents,
+    incidents,
+    hoursMarked,
+  } = context;
+
+  const [state, setState] = useState({
+    collapsedTables: [''],
     showContextMenu: false,
     cursorPosition: {
       x: 0,
       y: 0,
     },
-  };
+  });
 
-  onContextMenu = (e, incident) => {
+  const onContextMenu = (e, incident) => {
     e.preventDefault();
-    this.setState({
-      showContextMenu: !this.state.showContextMenu,
+    setState({
+      showContextMenu: !state.showContextMenu,
       selectedIncident: incident,
       cursorPosition: {
         x: e.pageX,
@@ -30,33 +37,39 @@ class Incidents extends PureComponent {
     });
   };
 
-  onClick = (e, incident) => {
+  const onClick = (e, incident) => {
     if (e.ctrlKey) {
-      const { dispatch } = this.context;
-      selectIncident(incident)(dispatch);
+      dispatch({
+        type: 'SELECT_INCIDENT',
+        payload: incident.incidentNumber,
+      });
     }
   };
 
-  keyDown = (e) => {
+  const keyDown = (e) => {
     if (e.keyCode === 27) {
-      const { dispatch } = this.context;
-      clearSelectedIncident()(dispatch);
+      dispatch({
+        type: 'CLEAR_SELECTED_INCIDENTS',
+      });
     }
   };
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.keyDown);
-  }
+  useEffect(() => {
+    document.addEventListener('keydown', keyDown);
+  });
 
-  toggleDay = (index) => {
-    const collapsedTables = [...this.state.collapsedTables];
+  // eslint-disable-next-line
+  useEffect(() => () => document.removeEventListener('keydown', keyDown), []);
+
+  const toggleDay = (index) => {
+    const collapsedTables = [...state.collapsedTables];
     collapsedTables[index] = !collapsedTables[index];
-    this.setState({
+    setState({
       collapsedTables,
     });
   };
 
-  incidentStatusToColor = (status) => {
+  const incidentStatusToColor = (status) => {
     switch (status) {
       case 'acknowledged':
         return '#ffb347';
@@ -67,16 +80,15 @@ class Incidents extends PureComponent {
     }
   };
 
-  closeContextMenu = () => {
-    this.setState({
+  const closeContextMenu = () => {
+    setState({
       showContextMenu: false,
       selectedIncident: {},
       cursorPosition: {},
     });
   };
 
-  isFilteredOut = (incident) => {
-    const { filters } = this.context;
+  const isFilteredOut = (incident) => {
     const { lastStatusChangeBy, service } = incident;
     if (filters.exclude) {
       const excluded = filters.exclude
@@ -86,47 +98,32 @@ class Incidents extends PureComponent {
     }
     return (
       filters.showOnlyOwnIncidents
-      && lastStatusChangeBy.summary !== this.context.currentUser.name
+      && lastStatusChangeBy.summary !== currentUser.name
     );
   };
 
-  hoursMarked = (incidentNumber, day) => {
-    const isHoursMarked = this.context.hoursMarked[day]
-      && this.context.hoursMarked[day].includes(incidentNumber);
-    if (isHoursMarked) {
-      return <img alt="Hours marked" src={hourMark} className="hour-mark" />;
-    }
-    return <img alt="Hours not marked" src={noHourMark} className="no-hour-mark" />;
-  };
-
-  renderCardHeader = (incident) => {
-    const {
-      day, incidentNumber, status, service,
-    } = incident;
+  const renderCardHeader = (incident) => {
+    const { incidentNumber, status, service } = incident;
 
     return (
-      <h3 className="summary">
-        {!this.context.selectedIncidents.includes(incidentNumber) ? (
-          <p
+      <div className="summary">
+        {!selectedIncidents.includes(incidentNumber) ? (
+          <div
             style={{
-              backgroundColor: this.incidentStatusToColor(
-                status,
-                incidentNumber,
-              ),
+              backgroundColor: incidentStatusToColor(status),
             }}
-            className="incident-status"
+            className="status"
             title="Incident status"
           />
         ) : (
-          <img alt="Incident selected" className="incident-status" src={checkMark} />
+          <img alt="Incident selected" className="status" src={hourMark} />
         )}
-        {service.summary}
-        {this.hoursMarked(incidentNumber, day)}
-      </h3>
+        <h3 title={service.summary}>{service.summary}</h3>
+      </div>
     );
   };
 
-  renderCardContent = (incident) => {
+  const renderCardContent = (incident) => {
     const {
       summary,
       htmlUrl,
@@ -134,16 +131,25 @@ class Incidents extends PureComponent {
       lastStatusChangeAt,
       lastStatusChangeBy,
     } = incident;
-    const { cardContent } = this.context;
+
+    const getLastStatusChangeBy = (statusChangedBy) => {
+      if (statusChangedBy === incident.service.summary) {
+        return 'Service';
+      }
+      return statusChangedBy;
+    };
+
     return (
-      <React.Fragment>
+      <div className="content">
         {cardContent.summary && (
           <h4
-            className="incident-summary"
+            className="summary"
             title={summary}
             onClick={(e) => !e.ctrlKey && window.open(htmlUrl, '_blank')}
           >
-            {summary.length > 50 ? `${summary.substr(0, 50)}...` : summary}
+            {summary.length > 50
+              ? `${summary.substr(0, 70).trim()}...`
+              : summary}
           </h4>
         )}
         {cardContent.createdAt && (
@@ -156,64 +162,67 @@ class Incidents extends PureComponent {
           </h4>
         )}
         {cardContent.changedBy && (
-          <h4>Last status change by: {lastStatusChangeBy.summary}</h4>
+          <h4>
+            Last status change by:{' '}
+            {getLastStatusChangeBy(lastStatusChangeBy.summary)}
+          </h4>
         )}
-      </React.Fragment>
+      </div>
     );
   };
 
-  render() {
-    const { incidents } = this.context;
+  return (
+    <React.Fragment>
+      {state.showContextMenu && (
+        <ContextMenu
+          incident={state.selectedIncident}
+          cursorPosition={state.cursorPosition}
+          closeContextMenu={closeContextMenu}
+        />
+      )}
+      <div className="columns">
+        {Object.keys(incidents).map((day, index) => {
+          const { collapsedTables } = state;
 
-    return (
-      <React.Fragment>
-        {this.state.showContextMenu && (
-          <ContextMenu
-            incident={this.state.selectedIncident}
-            cursorPosition={this.state.cursorPosition}
-            closeContextMenu={this.closeContextMenu}
-          />
-        )}
-        <div className="columns">
-          {Object.keys(incidents).map((day, index) => {
-            const totalIncidentsOfDay = incidents[day].length;
-            const isTableCollapsed = this.state.collapsedTables[index];
+          const totalIncidentsOfDay = incidents[day].length;
+          const isTableCollapsed = collapsedTables && collapsedTables[index];
 
-            return (
-              <div className="day" key={index}>
-                <h1
-                  className="day-header"
-                  onClick={() => this.toggleDay(index)}
-                >
-                  {day} ({totalIncidentsOfDay})
-                  <hr />
-                </h1>
-                {!isTableCollapsed && (
-                  <ul id={day}>
-                    {incidents[day].map(
-                      (incident) => !this.isFilteredOut(incident) && (
-                          <li
-                            className="incident"
-                            key={incident.summary}
-                            onContextMenu={(e) => this.onContextMenu(e, incident)
-                            }
-                            onClick={(e) => this.onClick(e, incident)}
-                          >
-                            {this.renderCardHeader(incident)}
-                            {this.renderCardContent(incident)}
-                          </li>
-                      ),
-                    )}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </React.Fragment>
-    );
-  }
-}
+          return (
+            <div className="day" key={index}>
+              <h1 className="day-header" onClick={() => toggleDay(index)}>
+                {day} ({totalIncidentsOfDay})
+                <hr />
+              </h1>
+              {!isTableCollapsed && (
+                <ul id={day}>
+                  {incidents[day].map(
+                    (incident) => !isFilteredOut(incident) && (
+                        <li
+                          className={`incident-wrapper ${
+                            hoursMarked[day] && hoursMarked[day].includes(incident.incidentNumber)
+                              ? 'hour-mark'
+                              : ''
+                          }`}
+                          key={incident.summary}
+                          onContextMenu={(e) => onContextMenu(e, incident)}
+                          onClick={(e) => onClick(e, incident)}
+                        >
+                      <div className="incident">
 
-Incidents.contextType = Context;
+                          {renderCardHeader(incident)}
+                          {renderCardContent(incident)}
+                        </div>
+                        </li>
+                    ),
+                  )}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </React.Fragment>
+  );
+};
+
 export default Incidents;

@@ -1,0 +1,132 @@
+* {
+  font-family: "Titillium Web", sans-serif;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  background-color: #212529;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+}
+
+.input {
+  background-color: #2a2e32;
+  color: #f5f5f5;
+  border-radius: 8px;
+  border: none;
+  text-align: center;
+  font-size: 20px;
+  margin: 10px 0 10px 0;
+  padding: 3px;
+  width: 100%;
+}
+
+.submit {
+  color: #f5f5f5;
+  background-color: #5fb15f;
+  padding: 10px;
+  margin: 10px 0 0 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-label {
+  margin: 0 10px 0 0;
+  cursor: pointer;
+  width: 45px;
+  height: 20px;
+  background: grey;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+  &:after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    transition: 0.4s;
+  }
+}
+
+input[type="checkbox"]:checked + .checkbox-label {
+  background: #5fb15f;
+  &.checkbox-label:after {
+    left: calc(100% - 5px);
+    transform: translateX(-100%);
+  }
+}
+
+.checkbox-label:active:after {
+  width: 25px;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.radio-label {
+  margin: 0 10px 0 0;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background: grey;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+  &:after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    transition: 0.4s;
+  }
+}
+
+input[type="radio"]:checked + .radio-label {
+  background: #5fb15f;
+}
+
+.dropdown {
+  position: relative;
+  &:after {
+    content: "<>";
+    transform: rotate(90deg);
+    right: 5px;
+    top: 17px;
+    position: absolute;
+    pointer-events: none;
+    color: #f5f5f5;
+  }
+  > select {
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 50px;
+    margin: 5px 0px;
+    font-size: 16px;
+    border: none;
+    background-color: #2a2e32;
+    text-overflow: ellipsis;
+    padding: 0 1rem 0 1rem;
+  }
+}

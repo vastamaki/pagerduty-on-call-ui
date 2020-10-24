@@ -1,23 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import GetView from './GetView';
 import { Provider } from './Context';
 import Notification from './Components/Notification';
-import Modals from './Components/Modals';
-import Footer from './Components/Footer';
-import './index.css';
+import './index.scss';
 
 const routes = (
   <Provider>
     <Notification />
-    <Modals />
     <Router>
-      <Switch>
-        <Route exact path='/' component={GetView} />
-      </Switch>
+      <Route exact path="/" component={GetView} />
     </Router>
-    <Footer />
   </Provider>
 );
 

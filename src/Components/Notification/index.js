@@ -1,27 +1,33 @@
-import React, { PureComponent } from 'react';
-import { hideNotification } from '../../Context/actions';
+import React, { useContext, useEffect } from 'react';
 import { Context } from '../../Context';
-import './index.css';
+import './index.scss';
 
-class Notification extends PureComponent {
-  render() {
-    const { notification, dispatch } = this.context;
+const Notification = () => {
+  const [context, dispatch] = useContext(Context);
+  const { notification } = context;
 
-    return (
-      !notification.hidden && (
-        <div
-        onClick={() => hideNotification()(dispatch)}
-          className={`notification ${
-            notification.success ? 'success' : 'error'
-          }`}
-        >
-          <p>{notification.success ? 'Success!' : 'Oops.. :('}</p>
-          <p>{notification.message}</p>
-        </div>
-      )
-    );
-  }
-}
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch({
+        type: 'HIDE_NOTIFICATION',
+      });
+    }, notification.timeout);
+  }, [notification.hidden, notification.timeout, dispatch]);
 
-Notification.contextType = Context;
+  return (
+    !notification.hidden && (
+      <div
+        onClick={() => dispatch({
+          type: 'HIDE_NOTIFICATION',
+        })
+        }
+        className={`notification ${notification.success ? 'success' : 'error'}`}
+      >
+        <p>{notification.success ? 'Success!' : 'Oops.. :('}</p>
+        <p>{notification.message}</p>
+      </div>
+    )
+  );
+};
+
 export default Notification;

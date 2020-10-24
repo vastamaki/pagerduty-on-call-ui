@@ -1,83 +1,83 @@
-import React, { PureComponent } from 'react';
+import React, { useState, useContext } from 'react';
 import * as PropTypes from 'prop-types';
-import { markHour, toggleNotification } from '../../Context/actions';
 import { Context } from '../../Context';
-import './index.css';
+import './index.scss';
 
-class ContextMenu extends PureComponent {
-  state = {
+const ContextMenu = (props) => {
+  const [context, dispatch] = useContext(Context);
+  const { selectedIncidents } = context;
+  const [state, setState] = useState({
     visibleTimeout: 0,
-  };
+  });
 
-  copySummary = () => {
-    const { dispatch, selectedIncidents } = this.context;
-
+  const copySummary = () => {
     if (selectedIncidents.length >= 1) {
       let text = '';
       selectedIncidents.forEach((incident) => {
         text += ` [#${incident}]`;
       });
-      text += this.props.incident.summary;
+      text += props.incident.summary;
       navigator.clipboard.writeText(text);
     } else {
-      navigator.clipboard.writeText(this.props.incident.summary);
+      navigator.clipboard.writeText(props.incident.summary);
     }
 
-    toggleNotification({
-      hidden: false,
-      success: true,
-      message: 'Summary copied to clipboard!',
-      timeout: 3000,
-    })(dispatch);
+    dispatch({
+      type: 'TOGGLE_NOTIFICATION',
+      payload: {
+        hidden: false,
+        success: true,
+        message: 'Summary copied to clipboard!',
+        timeout: 3000,
+      },
+    });
 
-    markHour(this.props.incident)(dispatch);
+    dispatch({
+      type: 'SET_HOUR_MARK',
+      payload: props.incident,
+    });
 
-    this.props.closeContextMenu();
+    props.closeContextMenu();
   };
 
-  openIncidentInPagerduty = () => {
-    window.open(this.props.incident.htmlUrl, '_blank');
+  const openIncidentInPagerduty = () => {
+    window.open(props.incident.htmlUrl, '_blank');
 
-    this.props.closeContextMenu();
+    props.closeContextMenu();
   };
 
-  onMouseLeave = () => {
-    this.setState({
+  const onMouseLeave = () => {
+    setState({
       visibleTimeout: setTimeout(() => {
-        this.props.closeContextMenu();
+        props.closeContextMenu();
       }, 700),
     });
   };
 
-  onMouseEnter = () => {
-    this.setState({
-      visibleTimeout: clearTimeout(this.state.visibleTimeout),
+  const onMouseEnter = () => {
+    setState({
+      visibleTimeout: clearTimeout(state.visibleTimeout),
     });
   };
 
-  render() {
-    return (
-      <div
-        onMouseLeave={() => this.onMouseLeave()}
-        onMouseEnter={() => this.onMouseEnter()}
-        style={{
-          top: this.props.cursorPosition.y - 3,
-          left: this.props.cursorPosition.x - 3,
-        }}
-        className="context-menu"
-      >
-        <ul>
-          <li onClick={() => this.copySummary()}>Copy summary</li>
-          <li onClick={() => this.openIncidentInPagerduty()}>
-            Show in pagerduty
-          </li>
-        </ul>
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      onMouseLeave={() => onMouseLeave()}
+      onMouseEnter={() => onMouseEnter()}
+      style={{
+        top: props.cursorPosition.y - 3,
+        left: props.cursorPosition.x - 3,
+      }}
+      className="context-menu"
+    >
+      <ul>
+        <li onClick={() => copySummary()}>Copy summary</li>
+        <li onClick={() => openIncidentInPagerduty()}>Show in pagerduty</li>
+      </ul>
+    </div>
+  );
+};
 
-ContextMenu.contextType = Context;
 ContextMenu.propTypes = {
   closeContextMenu: PropTypes.func,
   cursorPosition: PropTypes.object,
