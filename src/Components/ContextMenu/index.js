@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
 import * as PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { Context } from '../../Context';
 import './index.scss';
 
 const ContextMenu = (props) => {
+  const history = useHistory();
   const [context, dispatch] = useContext(Context);
   const { selectedIncidents } = context;
   const [state, setState] = useState({
@@ -60,6 +62,10 @@ const ContextMenu = (props) => {
     });
   };
 
+  const showMoreDetails = () => {
+    history.push(`/incident/${props.incident.id}`);
+  };
+
   return (
     <div
       onMouseLeave={() => onMouseLeave()}
@@ -73,6 +79,7 @@ const ContextMenu = (props) => {
       <ul>
         <li onClick={() => copySummary()}>Copy summary</li>
         <li onClick={() => openIncidentInPagerduty()}>Show in pagerduty</li>
+        <li onClick={() => showMoreDetails()}>Show more details</li>
       </ul>
     </div>
   );

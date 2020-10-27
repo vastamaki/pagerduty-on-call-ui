@@ -1,5 +1,10 @@
 * {
   font-family: "Titillium Web", sans-serif;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 html,

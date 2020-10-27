@@ -9,42 +9,43 @@ export const Context = React.createContext({});
 
 export const Provider = (props) => {
   const [state, dispatch] = useReducer(reducer, {
-    teams: [],
-    incidents: {},
-    hoursMarked: {},
-    filters: {
-      exclude: '',
-      showOnlyOwnIncidents: false,
-    },
-    selectedIncidents: [],
-    notification: {
-      hidden: true,
-      message: '',
-      success: true,
-    },
     cardContent: {
       summary: true,
       createdAt: true,
       latestChange: true,
       changedBy: true,
     },
+    currentUser: {},
+    endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
+    filters: {
+      exclude: '',
+      showOnlyOwnIncidents: false,
+    },
+    hoursMarked: {},
+    incidents: {},
+    loading: true,
+    moreDetailsAbout: '',
+    notification: {
+      hidden: true,
+      message: '',
+      success: true,
+    },
+    selectedIncidents: [],
     sorting: {
-      times: {
-        by: 'createdAt',
-        direction: 'asc',
-      },
       names: {
         by: 'serviceName',
         direction: 'asc',
         active: false,
       },
+      times: {
+        by: 'createdAt',
+        direction: 'asc',
+      },
     },
-    loading: true,
-    currentUser: {},
+    teams: [],
     selectedTeamName: 'All current user teams',
     selectedTeam: [],
     startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
-    endDate: endOfWeek(new Date(), { weekStartsOn: 1 }),
   });
 
   const checkToken = async () => {

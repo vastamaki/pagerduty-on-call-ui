@@ -1,0 +1,174 @@
+.App {
+  > .incident {
+    text-align: center;
+    width: 100%;
+    padding: 0 0.625rem;
+    height: 100%;
+    > .header {
+      background-color: #2a2e32;
+      border-radius: 0 0 12px 12px;
+      display: flex;
+      padding: 0.525rem;
+      flex-direction: row;
+      > .title {
+        text-align: left;
+        > hr {
+          border: none;
+          border-bottom: 1px solid #5fb15f;
+          width: 60%;
+          margin: 0 0 0.525rem 0;
+        }
+        > h3 {
+          white-space: nowrap;
+          margin: auto;
+          overflow: hidden;
+          max-width: 65ch;
+          text-overflow: ellipsis;
+          > a {
+            color: #f5f5f5;
+          }
+        }
+      }
+      > .status {
+        margin: auto;
+        > p {
+          margin: 0;
+        }
+      }
+      > .duration {
+        > p {
+          margin: 0;
+        }
+        margin: auto;
+      }
+    }
+    > .content {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      > .details {
+        height: 100%;
+        background-color: #2a2e32;
+        margin: 0.525rem 0 0 0;
+        border-radius: 12px;
+        width: 70%;
+        text-align: left;
+        > .header {
+          > ul {
+            margin: 0 0.5rem 0.5rem 0.5rem;
+            padding: 0.5rem;
+            display: flex;
+            list-style-type: none;
+            > li {
+              cursor: pointer;
+              padding: 0;
+              > p {
+                margin: 0;
+              }
+              > hr {
+                border: none;
+                border-bottom: 3px solid #5fb15f;
+                margin: 0 0 0.525rem 0;
+              }
+            }
+          }
+        }
+        > .content {
+          > table {
+            margin: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 12px;
+            table-layout: fixed;
+            > tr {
+              > th {
+                padding: 0.5rem 0 0.5rem 0.5rem;
+                min-width: 10rem;
+              }
+              &:nth-child(odd) {
+                background-color: #212529;
+              }
+            }
+          }
+        }
+      }
+      > .notes-and-responders {
+        display: flex;
+        flex-direction: column;
+        width: 30%;
+        .responders {
+          height: 100%;
+          border-radius: 12px;
+          background-color: #2a2e32;
+          margin: 0.525rem 0 0 0.525rem;
+          padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem;
+          > hr {
+            border: none;
+            border-bottom: 1px solid #5fb15f;
+            width: 100%;
+          }
+          > h2 {
+            text-align: left;
+          }
+
+          > .user {
+            display: flex;
+            align-items: center;
+            > .profile-picture {
+              border-radius: 3.5rem;
+              width: 2.5rem;
+              height: 2.5rem;
+              background-color: #212529;
+              align-items: center;
+              justify-content: center;
+              display: flex;
+            }
+            > .user-details {
+              padding: 0 0 0 0.3125rem;
+              text-align: left;
+              > h5 {
+                margin: 0;
+              }
+            }
+          }
+        }
+        .notes {
+          > hr {
+            border: none;
+            border-bottom: 1px solid #5fb15f;
+            width: 100%;
+          }
+          height: 100%;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          overflow-y: scroll;
+          margin: 0.525rem 0 0 0.525rem;
+          padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem;
+          border-radius: 12px;
+          background-color: #2a2e32;
+          > h2 {
+            text-align: left;
+          }
+          > ul {
+            padding: 0;
+            list-style-type: none;
+            > li {
+              margin: 0;
+              background-color: #212529;
+              > h4 {
+                text-align: left;
+              }
+              > p {
+                text-align: left;
+                padding: 0 0 0 0.525rem;
+                margin: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
