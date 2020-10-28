@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import Incidents from './Components/Incidents';
 import { Context } from './Context';
-import Sidebar from './Components/Sidebar';
 import Loader from './Components/Loader';
 import './GetView.scss';
 
@@ -11,16 +10,11 @@ const GetView = () => {
 
   return (
     <React.Fragment>
-      <div className="App">
-      <Sidebar />
         {loading ? (
           <Loader />
         ) : (
-          <>
-            <Incidents />
-          </>
+          <Incidents />
         )}
-      </div>
     </React.Fragment>
   );
 };

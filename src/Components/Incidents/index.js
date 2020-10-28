@@ -3,6 +3,7 @@ import format from 'date-fns/format';
 import { Context } from '../../Context';
 import ContextMenu from '../ContextMenu';
 import hourMark from '../../Icons/hour-mark.svg';
+import { incidentStatusToColor } from '../../helpers';
 import './index.scss';
 
 const Incidents = () => {
@@ -67,17 +68,6 @@ const Incidents = () => {
     setState({
       collapsedTables,
     });
-  };
-
-  const incidentStatusToColor = (status) => {
-    switch (status) {
-      case 'acknowledged':
-        return '#ffb347';
-      case 'triggered':
-        return '#ff6961';
-      default:
-        return '#5fb15f';
-    }
   };
 
   const closeContextMenu = () => {

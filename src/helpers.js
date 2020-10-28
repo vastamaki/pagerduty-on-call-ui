@@ -73,8 +73,10 @@ const mapIncidentToDay = (incidents, sorting) => {
           last_status_change_at: lastStatusChangeAt,
           last_status_change_by: lastStatusChangeBy,
           status,
+          id,
         } = incident;
         sortedIncidents[day].push({
+          id,
           acknowledgements,
           incidentNumber,
           createdAt,
@@ -129,5 +131,16 @@ export function sortIncidents(incidents, sorting) {
   });
   return sortedIncidents;
 }
+
+export const incidentStatusToColor = (status) => {
+  switch (status) {
+    case 'acknowledged':
+      return '#ffb347';
+    case 'triggered':
+      return '#ff6961';
+    default:
+      return '#5fb15f';
+  }
+};
 
 export default mapIncidentToDay;
