@@ -3,7 +3,7 @@
     text-align: center;
     width: 100%;
     padding: 0 0.625rem;
-    height: 100%;
+    height: 100vh;
     > .header {
       background-color: #2a2e32;
       border-radius: 0 0 12px 12px;
@@ -15,7 +15,7 @@
         > hr {
           border: none;
           border-bottom: 1px solid #5fb15f;
-          width: 60%;
+          width: 30%;
           margin: 0 0 0.525rem 0;
         }
         > h3 {
@@ -45,48 +45,82 @@
     > .content {
       display: flex;
       flex-direction: row;
-      height: 100%;
+      height: 90vh;
       > .details {
-        height: 100%;
         background-color: #2a2e32;
         margin: 0.525rem 0 0 0;
         border-radius: 12px;
         width: 70%;
         text-align: left;
         > .header {
-          > ul {
-            margin: 0 0.5rem 0.5rem 0.5rem;
-            padding: 0.5rem;
-            display: flex;
-            list-style-type: none;
-            > li {
-              cursor: pointer;
-              padding: 0;
-              > p {
-                margin: 0;
-              }
-              > hr {
-                border: none;
-                border-bottom: 3px solid #5fb15f;
-                margin: 0 0 0.525rem 0;
-              }
+          display: flex;
+          height: 3.5rem;
+          margin: 0.525rem;
+          > p {
+            margin: auto 0.5rem auto 0.5rem;
+            padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+            cursor: pointer;
+            &.active {
+              background-color: #212529;
+              padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+              border-radius: 12px;
             }
+          }
+          > div {
+            display: flex;
+            align-items: center;
+            > p {
+              margin: 0;
+            }
+            > hr {
+              border: none;
+              border-bottom: 3px solid #5fb15f;
+              margin: 0 0 0.5rem 0;
+            }
+          }
+          > button {
+            margin: auto 1rem auto auto;
           }
         }
         > .content {
-          > table {
-            margin: 0.5rem;
-            padding: 0.5rem;
+          margin: 0.5rem;
+          padding: 0.5rem;
+          border-radius: 15px;
+          display: flex;
+          flex-direction: column;
+          overflow-y: auto;
+          height: 88%;
+          > div {
+            background-color: #212529;
+            margin: 0 0 0.5rem 0;
+            padding: 0 0.5rem 0.5rem 0.5rem;
             border-radius: 12px;
-            table-layout: fixed;
-            > tr {
-              > th {
-                padding: 0.5rem 0 0.5rem 0.5rem;
-                min-width: 10rem;
+            > div {
+              display: flex;
+              padding: 0 0.5rem 0.5rem 0;
+              > .submit {
+                margin: 0.5rem 0 auto auto;
               }
-              &:nth-child(odd) {
-                background-color: #212529;
+              > h4 {
+                width: 80%;
+                margin: 0.5rem 0 0 0;
               }
+            }
+            > table {
+              border-radius: 12px;
+              > tr {
+                > th {
+                  padding: 0.5rem 0 0.5rem 0.5rem;
+                  min-width: 10rem;
+                }
+                &:nth-child(odd) {
+                  background-color: #2a2e32;
+                }
+              }
+            }
+            > .submit {
+              top: 0;
+              margin: 0 0 auto auto;
             }
           }
         }
@@ -95,6 +129,8 @@
         display: flex;
         flex-direction: column;
         width: 30%;
+        overflow-y: auto;
+        height: 100%;
         .responders {
           height: 100%;
           border-radius: 12px;
@@ -143,7 +179,7 @@
           &::-webkit-scrollbar {
             display: none;
           }
-          overflow-y: scroll;
+          overflow-y: auto;
           margin: 0.525rem 0 0 0.525rem;
           padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem;
           border-radius: 12px;
@@ -155,14 +191,23 @@
             padding: 0;
             list-style-type: none;
             > li {
-              margin: 0;
+              margin: 0 0 0.5rem 0;
               background-color: #212529;
-              > h4 {
+              > hr {
+                border: none;
+                border-bottom: 1px solid #5fb15f;
+                width: 60%;
+                margin: 0.252rem 0 0.252rem 0;
+              }
+              > .user {
                 text-align: left;
+              }
+              > .timestamp {
+                text-align: right;
               }
               > p {
                 text-align: left;
-                padding: 0 0 0 0.525rem;
+                padding: 0;
                 margin: 0;
               }
             }

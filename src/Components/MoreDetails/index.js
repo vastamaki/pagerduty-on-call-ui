@@ -1,126 +1,184 @@
-/* eslint-disable */
-
-import React, { useContext, useEffect, useState } from "react";
-import * as localforage from "localforage";
-import fetch from "../Fetch";
-import Loader from "../Loader";
-import { format, formatDistance } from "date-fns";
-import { incidentStatusToColor } from "../../helpers";
-import "./index.scss";
-import "../../index.scss";
-import "../../GetView.scss";
+import React, { useEffect, useState } from 'react';
+import * as localforage from 'localforage';
+import { format, formatDistance } from 'date-fns';
+import * as PropTypes from 'prop-types';
+import fetch from '../Fetch';
+import Loader from '../Loader';
+import { incidentStatusToColor } from '../../helpers';
+import './index.scss';
+import '../../index.scss';
+import '../../GetView.scss';
 
 const MoreDetails = ({ props: incidentId }) => {
-  console.log(incidentId);
   const [loading, setLoading] = useState(true);
-  const [activeSubmenu, setActiveSubmenu] = useState("alerts");
-  const [state, setState] = useState();
+  const [activeSubmenu, setActiveSubmenu] = useState('alerts');
+  const [state, setState] = useState({
+    notes: [],
+    alerts: [],
+    incident: {},
+    logEntries: [],
+  });
 
   useEffect(() => {
     async function getIncident() {
       const params = {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Accept: "application/vnd.pagerduty+json;version=2",
-          Authorization: `Bearer ${await localforage.getItem("access_token")}`,
+          Accept: 'application/vnd.pagerduty+json;version=2',
+          Authorization: `Bearer ${await localforage.getItem('access_token')}`,
         },
       };
 
       const { incident } = await fetch(
         encodeURI(`https://api.pagerduty.com/incidents/${incidentId}`),
-        params
+        params,
       );
 
       const { alerts } = await fetch(
         encodeURI(`https://api.pagerduty.com/incidents/${incidentId}/alerts`),
-        params
+        params,
       );
 
-      const { log_entries } = await fetch(
-        encodeURI(
-          `https://api.pagerduty.com/incidents/${incidentId}/log_entries`
-        ),
-        params
-      );
+      let logEntries = [];
+      let response;
+      let offset = 0;
+      do {
+        /* eslint-disable no-await-in-loop */
+        response = await fetch(
+          encodeURI(
+            `https://api.pagerduty.com/incidents/${incidentId}/log_entries?offset=${offset}`,
+          ),
+          params,
+        );
+
+        offset += 100;
+        logEntries = logEntries.concat(response.log_entries);
+      } while (response.more);
 
       const { notes } = await fetch(
         encodeURI(`https://api.pagerduty.com/incidents/${incidentId}/notes`),
-        params
+        params,
       );
 
       setState({
         alerts,
         notes,
-        log_entries,
         incident,
+        logEntries,
       });
 
       return setLoading(false);
     }
     getIncident();
-  }, []);
+  }, [incidentId]);
 
   if (loading) return <Loader />;
 
-  const {
-    incident_number: incidentNumber,
-    title,
-    description,
-    created_at: createdAt,
-    status,
-    service,
-    last_status_change_at: lastStatusChangeAt,
-    last_status_change_by: lastStatusChangeBy,
-  } = state.alerts;
-
   const generateNotes = () => {
-    const generatedNotes = notes.map((note) => {
-      return (
-        <li>
-          <h4>
-            {note.user.summary} @{" "}
-            {format(new Date(note.created_at), "dd/MM hh:mm:ss")}
-          </h4>
-          <p>{note.content}</p>
-          <br />
-        </li>
-      );
-    });
+    const generatedNotes = state.notes.map((note) => (
+      <li key={note.created_at}>
+        <h4 className="user">{note.user.summary}</h4>
+        <hr />
+        <p>{note.content}</p>
+        <h4 className="timestamp">
+          {format(new Date(note.created_at), 'dd/MM @ hh:mm')}
+        </h4>
+      </li>
+    ));
 
     return generatedNotes;
   };
 
   const calculateDuration = () => {
-    if (state.incident.status !== "resolved") {
-      return formatDistance(new Date(), new Date(state.incident.createdAt));
+    if (state.incident.status !== 'resolved') {
+      return formatDistance(new Date(), new Date(state.incident.created_at));
     }
     return formatDistance(
       new Date(state.incident.last_status_change_at),
-      new Date(state.incident.created_at)
+      new Date(state.incident.created_at),
     );
   };
 
-  const renderContent = () => {
-    if (activeSubmenu === "timeline") {
+  const generateAlertBody = (alert) => {
+    if (alert.body?.cef_details.client === 'AWS Console') {
+      const { details } = alert.body;
+      const { Region, AWSAccountId } = details;
+      const {
+        Threshold, Period, Namespace, MetricName,
+      } = details.Trigger;
+      const { client_url: clientURL } = alert.body.cef_details;
       return (
-        <table>
-          {state.log_entries.sort((a, b) => a.created_at > b.created_at).map((entry) => {
-            return (
-              <tr>
-                <th>
-                  {format(new Date(entry.created_at), "dd/MM/yy HH:mm:ss")}
-                </th>
-                <th>{entry.summary}</th>
-              </tr>
-            );
-          })}
-        </table>
+        <div>
+          <div>
+          <h4>{alert.summary}</h4>
+          <button
+            className="submit"
+            onClick={() => window.open(clientURL, '_blank')}
+            >
+            Open in AWS
+          </button>
+            </div>
+          <table>
+            <tr>
+              <th>Region</th>
+              <th>{Region}</th>
+            </tr>
+            <tr>
+              <th>AWS Account</th>
+              <th>{AWSAccountId}</th>
+            </tr>
+            <tr>
+              <th>Threshold</th>
+              <th>{Threshold}</th>
+            </tr>
+            <tr>
+              <th>Period</th>
+              <th>{Period}</th>
+            </tr>
+            <tr>
+              <th>Namespace</th>
+              <th>{Namespace}</th>
+            </tr>
+            <tr>
+              <th>Metricname</th>
+              <th>{MetricName}</th>
+            </tr>
+          </table>
+        </div>
       );
-    } else if (activeSubmenu === "alerts") {
-      return null;
-    } else {
-      return null;
     }
+    return null;
+  };
+
+  const renderContent = () => {
+    if (activeSubmenu === 'timeline') {
+      return (
+        <div>
+          <table>
+            {state.logEntries
+              .sort((a, b) => a.created_at > b.created_at)
+              .map((entry) => (
+                <tr key={entry.created_at}>
+                  <th>
+                    {format(new Date(entry.created_at), 'dd/MM/yy HH:mm:ss')}
+                  </th>
+                  <th>{entry.summary}</th>
+                </tr>
+              ))}
+          </table>
+        </div>
+      );
+    }
+    if (activeSubmenu === 'alerts') {
+      return (
+        <>
+          {state.alerts
+            .sort((a, b) => a.created_at > b.created_at)
+            .map((alert) => generateAlertBody(alert))}
+        </>
+      );
+    }
+    return null;
   };
 
   return (
@@ -130,7 +188,7 @@ const MoreDetails = ({ props: incidentId }) => {
           <h2>{`Incident ${state.incident.incident_number}`}</h2>
           <hr />
           <h3>
-            <a href={state.incident.html_url}>{state.incident.summary}</a>
+            <a href={state.incident.html_url}>{state.incident.title}</a>
           </h3>
         </div>
         <div className="status">
@@ -151,16 +209,20 @@ const MoreDetails = ({ props: incidentId }) => {
       <div className="content">
         <div className="details">
           <div className="header">
-            <ul>
-              <li onClick={() => setActiveSubmenu("alerts")}>
-                <p>Alerts</p>
-                {activeSubmenu === "alerts" && <hr />}
-              </li>
-              <li onClick={() => setActiveSubmenu("timeline")}>
-                <p>Timeline</p>
-                {activeSubmenu === "timeline" && <hr />}
-              </li>
-            </ul>
+            <p
+              className={`menu-item ${activeSubmenu === 'alerts' && 'active'}`}
+              onClick={() => setActiveSubmenu('alerts')}
+            >
+              Alerts
+            </p>
+            <p
+              className={`menu-item ${
+                activeSubmenu === 'timeline' && 'active'
+              }`}
+              onClick={() => setActiveSubmenu('timeline')}
+            >
+              Timeline
+            </p>
           </div>
           <div className="content">{renderContent()}</div>
         </div>
@@ -169,29 +231,27 @@ const MoreDetails = ({ props: incidentId }) => {
             <div className="responders">
               <h2>Responders</h2>
               <hr />
-              {state.incident.acknowledgements.map((i) => {
-                return (
-                  <div className="user">
-                    <div className="profile-picture">
-                      {i.acknowledger.summary.substr(0, 1)}
-                    </div>
-                    <div className="user-details">
-                      <h4>{i.acknowledger.summary}</h4>
-                      <h5>
-                        Ack'd at {format(new Date(i.at), "HH:mm")} (
-                        {formatDistance(new Date(), new Date(i.at))} ago)
-                      </h5>
-                    </div>
+              {state.incident.acknowledgements.map((i) => (
+                <div key={i.created_at} className="user">
+                  <div className="profile-picture">
+                    {i.acknowledger.summary.substr(0, 1)}
                   </div>
-                );
-              })}
+                  <div className="user-details">
+                    <h4>{i.acknowledger.summary}</h4>
+                    <h5>
+                      Ack&apos;d at {format(new Date(i.at), 'HH:mm')} (
+                      {formatDistance(new Date(), new Date(i.at))} ago)
+                    </h5>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           <div className="notes">
             <h2>Notes</h2>
             <hr />
             <ul>
-              {state.notes.length > 1 ? (
+              {state.notes.length > 0 ? (
                 generateNotes()
               ) : (
                 <li>
@@ -207,3 +267,9 @@ const MoreDetails = ({ props: incidentId }) => {
 };
 
 export default MoreDetails;
+
+MoreDetails.propTypes = {
+  props: PropTypes.shape({
+    incidentId: PropTypes.string,
+  }),
+};
