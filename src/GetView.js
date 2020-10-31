@@ -8,15 +8,6 @@ const GetView = () => {
   const [context] = useContext(Context);
   const { loading } = context;
 
-  return (
-    <React.Fragment>
-        {loading ? (
-          <Loader />
-        ) : (
-          <Incidents />
-        )}
-    </React.Fragment>
-  );
+  return loading ? <Loader /> : <Incidents />;
 };
-
 export default GetView;
