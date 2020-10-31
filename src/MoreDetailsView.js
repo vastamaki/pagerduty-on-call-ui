@@ -15,15 +15,7 @@ const MoreDetailsView = (props) => {
     },
   } = props;
 
-  return (
-    <React.Fragment>
-        {loading ? (
-          <Loader />
-        ) : (
-          <MoreDetails props={incident} />
-        )}
-    </React.Fragment>
-  );
+  return loading ? <Loader /> : <MoreDetails props={incident} />;
 };
 
 export default MoreDetailsView;
