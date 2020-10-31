@@ -1,6 +1,6 @@
 import * as localforage from 'localforage';
 import fetch from '../Components/Fetch';
-import mapIncidentToDay from '../helpers';
+import { mapIncidentToDay } from '../helpers';
 
 export const setCurrentUser = async () => {
   const params = {

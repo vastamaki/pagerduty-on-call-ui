@@ -1,7 +1,38 @@
 import format from 'date-fns/format';
 
+const sort = (a, b, sorting) => {
+  if (sorting.names.by === 'serviceName' && sorting.names.active) {
+    if (sorting.names.direction === 'asc') {
+      if (a.service.summary < b.service.summary) return -1;
+      if (a.service.summary > b.service.summary) return 1;
+    } else {
+      if (b.service.summary < a.service.summary) return -1;
+      if (b.service.summary > a.service.summary) return 1;
+    }
+  }
+  if (sorting.times.by === 'createdAt') {
+    if (sorting.times.direction === 'asc') {
+      if (a.summary < b.summary) return -1;
+      if (a.summary > b.summary) return 1;
+    } else {
+      if (b.summary < a.summary) return -1;
+      if (b.summary > a.summary) return 1;
+    }
+  }
+  if (sorting.times.by === 'latestChange') {
+    if (sorting.times.direction === 'asc') {
+      if (a.lastStatusChangeAt < b.lastStatusChangeAt) return -1;
+      if (a.lastStatusChangeAt > b.lastStatusChangeAt) return 1;
+    } else {
+      if (b.lastStatusChangeAt < a.lastStatusChangeAt) return -1;
+      if (b.lastStatusChangeAt > a.lastStatusChangeAt) return 1;
+    }
+  }
+  return 0;
+};
+
 /* eslint-disable camelcase */
-const mapIncidentToDay = (incidents, sorting) => {
+export const mapIncidentToDay = (incidents, sorting) => {
   const sortedIncidents = {};
 
   const weekdays = Array.from(
@@ -15,42 +46,13 @@ const mapIncidentToDay = (incidents, sorting) => {
         'dd/MM/yyyy',
       )),
     ),
-  ).sort();
+  ).sort((a, b) => new Date(a) - new Date(b));
 
   weekdays.forEach((day) => {
     sortedIncidents[day] = [];
 
     incidents
-      .sort((a, b) => {
-        if (sorting.names.by === 'serviceName') {
-          if (sorting.names.direction === 'asc') {
-            if (a.service.summary < b.service.summary) return -1;
-            if (a.service.summary > b.service.summary) return 1;
-          } else {
-            if (b.service.summary < a.service.summary) return -1;
-            if (b.service.summary > a.service.summary) return 1;
-          }
-        }
-        if (sorting.times.by === 'createdAt') {
-          if (sorting.times.direction === 'asc') {
-            if (a.summary < b.summary) return -1;
-            if (a.summary > b.summary) return 1;
-          } else {
-            if (b.summary < a.summary) return -1;
-            if (b.summary > a.summary) return 1;
-          }
-        }
-        if (sorting.times.by === 'latestChange') {
-          if (sorting.times.direction === 'asc') {
-            if (a.lastStatusChangeAt < b.lastStatusChangeAt) return -1;
-            if (a.lastStatusChangeAt > b.lastStatusChangeAt) return 1;
-          } else {
-            if (b.lastStatusChangeAt < a.lastStatusChangeAt) return -1;
-            if (b.lastStatusChangeAt > a.lastStatusChangeAt) return 1;
-          }
-        }
-        return 0;
-      })
+      .sort((a, b) => sort(a, b, sorting))
       .filter((incident) => {
         const date = format(
           new Date(
@@ -81,7 +83,7 @@ const mapIncidentToDay = (incidents, sorting) => {
           incidentNumber,
           createdAt,
           service,
-          summary: summary.replace(/([A-Z]+)/g, ' $1').replace(/([A-Z][a-z])/g, ' $1'),
+          summary: summary.replace(/([A-Z]+)/g, ' $1').replace(/ {1,}/g, ' '),
           htmlUrl,
           lastStatusChangeAt,
           lastStatusChangeBy,
@@ -98,36 +100,7 @@ export function sortIncidents(incidents, sorting) {
   const days = Object.keys(incidents);
 
   days.forEach((day) => {
-    sortedIncidents[day] = incidents[day].sort((a, b) => {
-      if (sorting.names.serviceName) {
-        if (sorting.names.direction === 'asc') {
-          if (a.service.summary < b.service.summary) return -1;
-          if (a.service.summary > b.service.summary) return 1;
-        } else {
-          if (b.service.summary < a.service.summary) return -1;
-          if (b.service.summary > a.service.summary) return 1;
-        }
-      }
-      if (sorting.times.by === 'createdAt') {
-        if (sorting.times.direction === 'asc') {
-          if (a.summary < b.summary) return -1;
-          if (a.summary > b.summary) return 1;
-        } else {
-          if (b.summary < a.summary) return -1;
-          if (b.summary > a.summary) return 1;
-        }
-      }
-      if (sorting.times.by === 'updatedAt') {
-        if (sorting.times.direction === 'asc') {
-          if (a.last_status_change_at < b.last_status_change_at) return -1;
-          if (a.last_status_change_at > b.last_status_change_at) return 1;
-        } else {
-          if (b.last_status_change_at < a.last_status_change_at) return -1;
-          if (b.last_status_change_at > a.last_status_change_at) return 1;
-        }
-      }
-      return 0;
-    });
+    sortedIncidents[day] = incidents[day].sort((a, b) => sort(a, b, sorting));
   });
   return sortedIncidents;
 }
@@ -142,5 +115,3 @@ export const incidentStatusToColor = (status) => {
       return '#5fb15f';
   }
 };
-
-export default mapIncidentToDay;
