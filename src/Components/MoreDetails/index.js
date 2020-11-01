@@ -7,7 +7,7 @@ import Loader from '../Loader';
 import { incidentStatusToColor } from '../../helpers';
 import './index.scss';
 import '../../index.scss';
-import '../../GetView.scss';
+import '../../Views/Incidents/index.scss';
 
 const MoreDetails = ({ props: incidentId }) => {
   const [loading, setLoading] = useState(true);
@@ -108,7 +108,7 @@ const MoreDetails = ({ props: incidentId }) => {
       } = details.Trigger;
       const { client_url: clientURL } = alert.body.cef_details;
       return (
-        <div>
+        <div key={alert.id}>
           <div>
           <h4>{alert.summary}</h4>
           <button
@@ -119,6 +119,7 @@ const MoreDetails = ({ props: incidentId }) => {
           </button>
             </div>
           <table>
+            <tbody>
             <tr>
               <th>Region</th>
               <th>{Region}</th>
@@ -143,6 +144,7 @@ const MoreDetails = ({ props: incidentId }) => {
               <th>Metricname</th>
               <th>{MetricName}</th>
             </tr>
+            </tbody>
           </table>
         </div>
       );
@@ -155,16 +157,18 @@ const MoreDetails = ({ props: incidentId }) => {
       return (
         <div>
           <table>
+            <tbody>
             {state.logEntries
               .sort((a, b) => a.created_at > b.created_at)
               .map((entry) => (
-                <tr key={entry.created_at}>
+                <tr key={entry.id}>
                   <th>
                     {format(new Date(entry.created_at), 'dd/MM/yy HH:mm:ss')}
                   </th>
                   <th>{entry.summary}</th>
                 </tr>
               ))}
+              </tbody>
           </table>
         </div>
       );
@@ -269,7 +273,5 @@ const MoreDetails = ({ props: incidentId }) => {
 export default MoreDetails;
 
 MoreDetails.propTypes = {
-  props: PropTypes.shape({
-    incidentId: PropTypes.string,
-  }),
+  props: PropTypes.string,
 };

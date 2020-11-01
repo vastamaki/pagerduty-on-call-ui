@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import * as PropTypes from 'prop-types';
-import MoreDetails from './Components/MoreDetails';
-import { Context } from './Context';
-import Loader from './Components/Loader';
-import './GetView.scss';
+import MoreDetails from '../../Components/MoreDetails';
+import { Context } from '../../Context';
+import Loader from '../../Components/Loader';
 
 const MoreDetailsView = (props) => {
   const [context] = useContext(Context);
