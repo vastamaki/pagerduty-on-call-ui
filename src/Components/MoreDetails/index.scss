@@ -108,13 +108,15 @@
             }
             > table {
               border-radius: 12px;
-              > tr {
-                > th {
-                  padding: 0.5rem 0 0.5rem 0.5rem;
-                  min-width: 10rem;
-                }
-                &:nth-child(odd) {
-                  background-color: #2a2e32;
+              > tbody {
+                > tr {
+                  > th {
+                    padding: 0.5rem 0 0.5rem 0.5rem;
+                    min-width: 10rem;
+                  }
+                  &:nth-child(odd) {
+                    background-color: #2a2e32;
+                  }
                 }
               }
             }

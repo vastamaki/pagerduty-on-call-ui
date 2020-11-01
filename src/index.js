@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import GetView from './GetView';
-import MoreDetailsView from './MoreDetailsView';
+import Incidents from './Views/Incidents';
+import MoreDetailsView from './Views/MoreDetails';
 import Sidebar from './Components/Sidebar';
 import { Provider } from './Context';
 import Notification from './Components/Notification';
@@ -14,7 +14,7 @@ const routes = (
       <div className="App">
         <Sidebar />
         <Router>
-          <Route exact path="/" component={GetView} />
+          <Route exact path="/" component={Incidents} />
           <Route exact path="/incident/:incident" component={MoreDetailsView} />
         </Router>
       </div>
