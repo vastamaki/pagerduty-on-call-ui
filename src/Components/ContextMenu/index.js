@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
 import * as PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Context } from '../../Context';
 import './index.scss';
 
 const ContextMenu = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [context, dispatch] = useContext(Context);
   const { selectedIncidents } = context;
   const [state, setState] = useState({
@@ -63,7 +63,7 @@ const ContextMenu = (props) => {
   };
 
   const showMoreDetails = () => {
-    history.push(`/incident/${props.incident.id}`);
+    navigate(`/incident/${props.incident.id}`);
   };
 
   return (
@@ -74,7 +74,7 @@ const ContextMenu = (props) => {
         top: props.cursorPosition.y - 3,
         left: props.cursorPosition.x - 3,
       }}
-      className="context-menu"
+      className='context-menu'
     >
       <ul>
         <li onClick={() => copySummary()}>Copy summary</li>

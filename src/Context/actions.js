@@ -1,20 +1,20 @@
-import * as localforage from 'localforage';
-import fetch from '../Components/Fetch';
-import { mapIncidentToDay } from '../helpers';
+import * as localforage from "localforage";
+import fetch from "../Components/Fetch";
+import { mapIncidentToDay } from "../helpers";
 
 export const setCurrentUser = async () => {
   const params = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      Accept: 'application/vnd.pagerduty+json;version=2',
-      Authorization: `Bearer ${await localforage.getItem('access_token')}`,
+      Accept: "application/vnd.pagerduty+json;version=2",
+      Authorization: `Bearer ${await localforage.getItem("access_token")}`,
     },
   };
 
   try {
     const response = await fetch(
-      encodeURI('https://api.pagerduty.com/users/me'),
-      params,
+      encodeURI("https://api.pagerduty.com/users/me"),
+      params
     );
     return response.user;
   } catch (err) {
@@ -23,42 +23,42 @@ export const setCurrentUser = async () => {
 };
 
 export const getTeams = async () => {
+  console.log(await localforage.getItem("access_token"));
   const params = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      Accept: 'application/vnd.pagerduty+json;version=2',
-      Authorization: `Bearer ${await localforage.getItem('access_token')}`,
+      Accept: "application/vnd.pagerduty+json;version=2",
+      Authorization: `Bearer ${await localforage.getItem("access_token")}`,
     },
   };
 
   try {
     const response = await fetch(
-      encodeURI('https://api.pagerduty.com/teams'),
-      params,
+      encodeURI("https://api.pagerduty.com/teams"),
+      params
     );
 
     return response.teams;
   } catch (err) {
-    throw new Error(err);
+    console.error(err);
+    return [];
   }
 };
 
 export const fetchIncidents = async (options) => {
-  const {
-    selectedTeam, startDate, endDate, sorting, dispatch,
-  } = options;
+  const { selectedTeam, startDate, endDate, sorting, dispatch } = options;
   dispatch({
-    type: 'CLEAR_INCIDENTS',
+    type: "CLEAR_INCIDENTS",
   });
   const params = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      Accept: 'application/vnd.pagerduty+json;version=2',
-      Authorization: `Bearer ${await localforage.getItem('access_token')}`,
+      Accept: "application/vnd.pagerduty+json;version=2",
+      Authorization: `Bearer ${await localforage.getItem("access_token")}`,
     },
   };
 
-  const teams = selectedTeam.map((team) => `&team_ids[]=${team}`).join('');
+  const teams = selectedTeam.map((team) => `&team_ids[]=${team}`).join("");
 
   let incidents = [];
   let offset = 0;
@@ -67,27 +67,27 @@ export const fetchIncidents = async (options) => {
     /* eslint-disable no-await-in-loop */
     response = await fetch(
       encodeURI(
-        `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&time_zone=UTC&total=true&limit=100&offset=${offset}&${teams}`,
+        `https://api.pagerduty.com/incidents?since=${startDate}&until=${endDate}&time_zone=UTC&total=true&limit=100&offset=${offset}&${teams}`
       ),
-      params,
+      params
     );
 
     if (!response.incidents[0] || response.error) {
       dispatch({
-        type: 'TOGGLE_NOTIFICATION',
+        type: "TOGGLE_NOTIFICATION",
         payload: {
           hidden: false,
           success: false,
-          message: 'No incidents found!',
+          message: "No incidents found!",
           timeout: 3000,
         },
       });
       dispatch({
-        type: 'SET_LOADING',
+        type: "SET_LOADING",
         value: false,
       });
       return dispatch({
-        type: 'CLEAR_INCIDENTS',
+        type: "CLEAR_INCIDENTS",
       });
     }
     offset += 100;
@@ -96,11 +96,11 @@ export const fetchIncidents = async (options) => {
 
   const sortedIncidents = mapIncidentToDay(incidents, sorting);
   dispatch({
-    type: 'GET_INCIDENTS',
+    type: "GET_INCIDENTS",
     payload: sortedIncidents,
   });
   return dispatch({
-    type: 'SET_LOADING',
+    type: "SET_LOADING",
     payload: false,
   });
 };

@@ -1,7 +1,5 @@
-import nodeFetch from 'node-fetch';
-
-const fetch = async (url, params) => {
-  const res = await nodeFetch(url, params);
+const customFetch = async (url, params) => {
+  const res = await fetch(url, params);
 
   if (res.status < 200 || res.status >= 300) {
     const err = new Error(res.statusText);
@@ -12,4 +10,4 @@ const fetch = async (url, params) => {
   return res.json();
 };
 
-export default fetch;
+export default customFetch;
